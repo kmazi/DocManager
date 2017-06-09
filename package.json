@@ -1,0 +1,49 @@
+{
+  "name": "docmanager",
+  "version": "1.0.0",
+  "description": "A document manager that controls access rights and privileges",
+  "main": "main.js",
+  "scripts": {
+    "test": "tests",
+    "build": "babel main.js -d lib",
+    "dev": "babel-node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-mugochukwu/DocManager.git"
+  },
+  "keywords": [
+    "document",
+    "manager",
+    "restriction",
+    "owner",
+    "private",
+    "user",
+    "public"
+  ],
+  "author": "Mazi Ugochukwu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andela-mugochukwu/DocManager/issues"
+  },
+  "homepage": "https://github.com/andela-mugochukwu/DocManager#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "morgan": "^1.8.2",
+    "pg": "^6.2.3",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-env": "^1.5.2",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.0.1"
+  }
+}
