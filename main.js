@@ -1,11 +1,8 @@
-import express from 'express';
+import http from 'http';
+import app from './server/app';
 
-const app = express();
-// create app routes
-app.get('/', (req, res) => {
-  res.send('Yo! Just kickstarting cp2');
-});
-// connect the app to the given port
-app.listen(3500, () => {
-  console.log('Yo!');
-});
+const port = parseInt(process.env.PORT, 10) || 1844;
+app.set('port', port);
+
+const server = http.createServer(app);
+server.listen(port);
