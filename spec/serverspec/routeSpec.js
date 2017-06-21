@@ -16,6 +16,7 @@ describe('The app route', () => {
     request.get(endPoint, (error, response, body) => {
       expect(body).toBe(`404 error has occured! The page you're 
       searching for cannot be found`);
+      expect(response.statusCode).toBe(404);
       done();
     });
   });

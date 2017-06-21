@@ -16,7 +16,7 @@ const routes = (router) => {
   router.get('/documents/id', findDocument);
 
   router.get('*', (req, res) => {
-    res.send(`404 error has occured! The page you're 
+    res.status(404).send(`404 error has occured! The page you're 
       searching for cannot be found`);
   });
 };
