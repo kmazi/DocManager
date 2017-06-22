@@ -1,3 +1,5 @@
+import index from '../models';
+
 /**
  * function to create a document
  * @param {object} req - an object that contains the request body
@@ -5,7 +7,16 @@
  * @return {null} it returns no value
  */
 const createDocument = (req, res) => {
-
+  const document = index.Document;
+  document.findOrCreate({
+    where: { title: req.body.title },
+    defaults: {
+      body: req.body.body,
+      access: req.body.access
+    }
+  }).spread((docCreated, created) => {
+    res.status(200).send(created);
+  });
 };
 /**
  * function to fetch all documents from the database

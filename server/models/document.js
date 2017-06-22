@@ -1,9 +1,12 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Document = sequelize.define('Document', {
-    title: DataTypes.STRING,
-    body: DataTypes.TEXT,
-    access: DataTypes.STRING
+    title: { type: DataTypes.STRING,
+      allowNull: false },
+    body: { type: DataTypes.TEXT,
+      allowNull: false },
+    access: { type: DataTypes.STRING,
+      allowNull: false }
   }, {
     classMethods: {
       associate: (models) => {
