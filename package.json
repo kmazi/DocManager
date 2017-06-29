@@ -1,29 +1,44 @@
 {
-  "name": "webpack-react-redux",
+  "name": "docmanager",
   "version": "1.0.0",
-  "description": "A boilerplate for playing around with react, redux and react-router with the help of webpack.",
-  "main": "index.js",
+  "description": "A document manager that controls access rights and privileges",
+  "main": "main.js",
   "scripts": {
-    "test": "",
+    "test": "babel-node spec/run.js",
     "start": "nodemon main.js --exec babel-node --presets es2015",
     "start1": "node server",
-    "build": "rimraf dist && webpack --config ./webpack.production.config.js --progress --profile --colors",
+    "build": "rimraf dist && webpack --config ./webpack.config.js --progress --profile --colors",
     "eslint": "eslint ."
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-mugochukwu/DocManager.git"
+  },
   "keywords": [
-    "es6",
-    "react",
-    "redux"
+    "document",
+    "manager",
+    "restriction",
+    "owner",
+    "private",
+    "user",
+    "public"
   ],
-  "author": "Jean-Pierre Sierens",
+  "author": "Mazi Ugochukwu",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andela-mugochukwu/DocManager/issues"
+  },
+  "homepage": "https://github.com/andela-mugochukwu/DocManager#readme",
   "dependencies": {
     "babel-cli": "^6.24.1",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "file-loader": "^0.9.0",
+    "install": "^0.10.1",
+    "jquery": "^3.2.1",
     "morgan": "^1.8.2",
     "nodemon": "^1.11.0",
+    "npm": "^5.0.4",
     "pg": "^6.4.0",
     "pg-hstore": "^2.3.2",
     "postgresql": "^0.0.1",
@@ -48,11 +63,16 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "css-loader": "^0.23.1",
-    "eslint": "^2.9.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
     "eslint-loader": "^1.5.0",
-    "eslint-plugin-react": "^5.0.1",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jsx-a11y": "^5.0.1",
+    "eslint-plugin-react": "^7.1.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "html-webpack-plugin": "^2.16.1",
+    "jasmine": "^2.6.0",
+    "jest": "^20.0.4",
     "json-loader": "^0.5.4",
     "node-sass": "^3.7.0",
     "postcss-loader": "^0.9.1",
@@ -66,6 +86,8 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.0",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-middleware": "^1.11.0",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-hot-middleware": "^2.18.0"
   }
 }

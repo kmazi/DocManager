@@ -8,22 +8,29 @@ module.exports = {
     'babel-polyfill',
     'webpack-dev-server/client?http://localhost:1844',
     'webpack/hot/only-dev-server',
+    'webpack-hot-middleware/client',
     'react-hot-loader/patch',
     path.join(__dirname, 'client/Entry.jsx')
   ],
   output: {
-    path: path.join(__dirname, '/dist/'),
-    filename: '[name].js',
-    publicPath: '/client/'
+    path: path.join(__dirname, '/client/'),
+    filename: 'bundle.js',
+    publicPath: '/'
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'client/client.html',
+      template: 'client/client.tpl.html',
       inject: 'body'
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.$': 'jquery',
+      'window.jQuery': 'jquery'
+    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development')
     })
@@ -43,6 +50,10 @@ module.exports = {
       {
         test: /\.scss$/,
         loader: 'style-loader!css-loader?modules&localIdentName=[name]---[local]---[hash:base64:5]!sass-loader'
+      },
+      {
+        test: /\.(png|jpg)$/,
+        loader: 'file-loader'
       },
       { test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
       { test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/, loader: 'file' }

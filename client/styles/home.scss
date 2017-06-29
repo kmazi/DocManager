@@ -1,0 +1,17 @@
+.bkgImage{
+	background: green url('../images/officedoc.jpg');
+}
+.signform{
+	width: 500px;
+	height: 500px;
+	margin: 0 auto;
+	padding: 20px;
+	background: linear-gradient(green, darkgreen);
+}
+.footer {
+	margin-top: 20px;
+
+	a {
+		padding: 5px 10px 5px 0;
+	}
+}

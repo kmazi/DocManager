@@ -3,7 +3,8 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import path from 'path';
 import Webpack from 'webpack';
-import webpackmiddleware from 'webpack-dev-middleware';
+import webpackdevmiddleware from 'webpack-dev-middleware';
+import webpackhotmiddleware from 'webpack-hot-middleware';
 import config from '../webpack.config';
 import routes from './routes/routes';
 
@@ -12,13 +13,13 @@ const app = express();
 const compiler = Webpack(config);
 const router = express.Router();
 
-app.use(webpackmiddleware(compiler, {
+app.use(webpackdevmiddleware(compiler, {
   publicPath: config.output.publicPath,
   historyApiFallback: true,
   hot: true
 }));
-
-app.use(webpackmiddleware(compiler));
+path.join();
+app.use(webpackhotmiddleware(compiler));
 // set static path
 const sourcePath = path.join(__dirname, '/client/');
 app.use(express.static(sourcePath));
@@ -31,7 +32,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // get all routes
-routes(router);
+routes(router, compiler);
 
 app.use('/', router);
 

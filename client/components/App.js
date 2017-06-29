@@ -1,16 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { footer } from '../styles/footer.scss';
+import { footer,
+        signform, 
+        bkgImage } from '../styles/home.scss';
+import $ from 'jquery';
 import Routes from '../routes';
 
-const App = () =>
-  <div>
-    <h1>Filter table</h1>
-    {Routes}
-    <footer className={footer}>
+const App = () => {
+const height = { 
+  height: window.innerHeight || document.documentElement.clientHeight };
+return(
+  <section style= {height} className={bkgImage}>
+    <div className={signform}>
+    </div>
+    {/*{Routes}*/}
+    {/*<footer className={footer}>
       <Link to="/">Filterable Table</Link>
       <Link to="/about">About</Link>
-    </footer>
-  </div>;
+    </footer> */}
+  </section>
+  );
+}
 
 export default App;
