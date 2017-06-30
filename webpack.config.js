@@ -17,6 +17,9 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/'
   },
+  // resolve: {
+  //   extensions: ['.js', '.jsx']
+  // },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'client/client.tpl.html',
@@ -49,7 +52,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader?modules&localIdentName=[name]---[local]---[hash:base64:5]!sass-loader'
+        loader: 'style-loader!css-loader?modules&localIdentName=[local]!sass-loader'
       },
       {
         test: /\.(png|jpg)$/,
