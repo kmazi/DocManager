@@ -7,9 +7,6 @@ module.exports = {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    userId: {
-      type: Sequelize.INTEGER
-    },
     roletype: {
       type: Sequelize.STRING
     },

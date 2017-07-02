@@ -11,18 +11,29 @@ const createDocument = (req, res) => {
   const document = index.Document;
   const title = req.body.title;
   const body = req.body.body;
+  const userId = req.body.userId;
   const access = req.body.access;
+  // Don't create document if fields are empty
   if (title === '' || body === '' || access === '') {
-    res.status(422).send('Validation error!');
+    res.send('Empty title or body or access field!');
   } else {
+    // check to see if document with same title exist before creation
     document.findOrCreate({
       where: { title },
       defaults: {
         body,
-        access
+        access,
+        userId
       }
-    }).spread((docCreated, created) => {
-      res.status(200).send(created);
+    }).spread((docCreated, isCreated) => {
+      if (isCreated) {
+        res.send('successful');
+      }
+    }).catch((err) => {
+      res.send({
+        status: 'unsuccessful',
+        err
+      });
     });
   }
 };
