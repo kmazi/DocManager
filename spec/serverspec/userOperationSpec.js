@@ -1,7 +1,7 @@
 import request from 'request';
 import index from '../../server/models';
 
-describe('When signin up a user:', () => {
+describe('Signup: ', () => {
   const userDetails = {
     userName: 'audax',
     email: 'audax.mazi@andela.com',
@@ -32,15 +32,59 @@ describe('When signin up a user:', () => {
     });
   });
   const url = 'http://localhost:1844/';
-  it(`successfully add user info to database when all form fields
+  it(`should Add user info to database when all form fields
   are correctly filled`, (done) => {
+      const route = `${url}users`;
+      request({
+        url: route,
+        method: 'POST',
+        json: userDetails,
+      }, (req, res, body) => {
+        expect(body.status).toBe('successful');
+        done();
+      });
+    });
+
+  it('should return error when some fields are not filled', (done) => {
     const route = `${url}users`;
+    userDetails.email = '';
     request({
       url: route,
       method: 'POST',
       json: userDetails,
     }, (req, res, body) => {
-      expect(body.status).toBe('successful');
+      expect(body.email.length).not.toBe(0);
+      done();
+    });
+  });
+
+  it('should return error when invalid email is filled', (done) => {
+    const route = `${url}users`;
+    userDetails.email = 'hgfuy.com';
+    request({
+      url: route,
+      method: 'POST',
+      json: userDetails,
+    }, (req, res, body) => {
+      expect(body.email.length).not.toBe(0);
+      expect(body.email[0]).toBe('Email has got a wrong format');
+      done();
+    });
+  });
+
+  it('should return error when invalid email is filled', (done) => {
+    const route = `${url}users`;
+    userDetails.email = 'hgfuy.com';
+    userDetails.password = 'hgfuy';
+    request({
+      url: route,
+      method: 'POST',
+      json: userDetails,
+    }, (req, res, body) => {
+      expect(body.email.length).not.toBe(0);
+      expect(body.email[0]).toBe('Email has got a wrong format');
+      expect(body.password.length).not.toBe(0);
+      expect(body.password.includes('Password length must be between 6 and 20')).toBe(true);
       done();
     });
   });

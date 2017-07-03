@@ -2,6 +2,7 @@ import path from 'path';
 import { createDocument,
         getAllDocuments,
         findDocument } from '../controller/documentOperations';
+import { userValidation } from '../controller/middlewares/validation';
 import { signUpUser } from '../controller/userOperation';
 /**
  * Creates the document model
@@ -32,7 +33,7 @@ const routes = (router, compiler) => {
   // route to find a specific document
   router.get('/documents/id', findDocument);
   // route to create a new user
-  router.post('/users', signUpUser);
+  router.post('/users', userValidation, signUpUser);
 // Default route when ther is no match
   router.get('*', (req, res) => {
     res.status(404).send(`404 error has occured! The page you're 
