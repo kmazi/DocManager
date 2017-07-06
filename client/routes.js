@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Home from './components/Home.jsx';
-import Authenticate from './components/Authenticate.jsx';
+import Authenticate from './containers/Authenticate.jsx';
 
 export default (
   <Switch>

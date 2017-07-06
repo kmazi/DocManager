@@ -1,5 +1,4 @@
 import React from 'react';
-import { signform } from '../styles/home.scss';
 
 const signIn = () => (
   <div id="signinform" className="container hide">
