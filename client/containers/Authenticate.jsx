@@ -1,27 +1,29 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import SignIn from '../components/SignIn.jsx';
 import SignUp from '../components/SignUp.jsx';
 
 const Authenticate = () => {
-  let displaySignUp = true;
-  let displaySignIn = false;
-
   return (
-    <div>
-      <div>
-        <div>
-          <a href="/">SignUp</a>
+    <div className="container">
+      <div id="authbuttons" className="row">
+        <div className="col s6">
+          <span
+            className="a center-align waves-effect waves-light btn"
+            href="/"
+          >SignIn</span>
         </div>
-        <div>
-          <a href="/">SignIn</a>
+        <div className="col s6">
+          <span
+            className="a center-align waves-effect waves-light btn"
+            href="/"
+          >SignUp</span>
         </div>
       </div>
       <div>
         <SignIn />
-        <SignUp />
       </div>
     </div>
   );
 };
-
 export default Authenticate;

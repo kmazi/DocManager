@@ -1,10 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/home.scss';
-import '../styles/materialize-src/sass/materialize.scss';
+import Authenticate from '../containers/Authenticate.jsx';
 
-const home = () =>
-  (
+const home = () => {
+  return (
     <section>
       <div className="row homescreen">
         <h1 className="center-align">DocManager</h1>
@@ -12,11 +10,9 @@ const home = () =>
           We let you create, secure and access documents
           from anywhere in the world.
         </p>
-        <Link
-          className="center-align waves-effect waves-light btn"
-          to="/signin"
-        >Get Started</Link>
+        <Authenticate />
       </div>
     </section>
   );
+};
 export default home;

@@ -1,5 +1,6 @@
 import React from 'react';
-import { bkgImage } from '../styles/home.scss';
+import '../styles/materialize-src/sass/materialize.scss';
+import '../styles/home.scss';
 import Routes from '../routes';
 
 const App = () => {
@@ -11,7 +12,7 @@ const App = () => {
     width: window.innerWidth || document.documentElement.clientWidth
   };
   return (
-    <section style={minHeight} className={bkgImage}>
+    <section style={minHeight} className="bkgImage">
       <div id="mainoverlay" style={maxWidth}>
         {Routes}
       </div>

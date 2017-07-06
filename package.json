@@ -46,7 +46,7 @@
     "pg": "^6.4.0",
     "pg-hstore": "^2.3.2",
     "postgresql": "^0.0.1",
-    "prop-types": "^15.5.9",
+    "prop-types": "^15.5.10",
     "react": "^15.0.2",
     "react-dom": "^15.0.2",
     "react-hot-loader": "^3.0.0-beta.7",

@@ -17,7 +17,7 @@ const signUserUp = (event) => {
 };
 
 const SignUp = () => (
-  <div id="signupform" className="container hide">
+  <div id="signupform" className="hide">
     <form onSubmit={signUserUp}>
       <div className="row">
         <input

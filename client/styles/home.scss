@@ -8,9 +8,13 @@ h1.center-align{
 .homescreen{
 	width: 50%;
 
-	a{
-		display: block;
+	#gettingstarted{
+		margin-left: 40%;
+		margin-right: auto;
 	}
+}
+.a{
+	display: block;
 }
 .bkgImage{
 	background: green url('../images/officedoc.jpg') center/cover;
