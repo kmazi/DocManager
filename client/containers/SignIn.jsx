@@ -1,5 +1,5 @@
 import React from 'react';
-import $ from 'jquery';
+import { signform } from '../styles/home.scss';
 
 const signIn = () => (
   <div id="signinform" className="container hide">

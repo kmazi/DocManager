@@ -1,1 +1,2 @@
-export const FILTER = 'FILTER';
+export const SIGNUP = 'SIGNUP';
+export const SIGNIN = 'SIGNIN';

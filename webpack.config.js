@@ -10,7 +10,8 @@ module.exports = {
     'webpack/hot/only-dev-server',
     'webpack-hot-middleware/client',
     'react-hot-loader/patch',
-    path.join(__dirname, 'client/Entry.jsx')
+    path.join(__dirname, 'client/Entry.jsx'),
+    path.join(__dirname, 'client/styles/home.scss')
   ],
   output: {
     path: path.join(__dirname, '/client/'),

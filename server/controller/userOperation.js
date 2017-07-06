@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import index from '../models';
 
 /**
@@ -10,11 +11,14 @@ const signUpUser = (req, res) => {
   const user = index.User;
   const userName = req.body.userName;
   const email = req.body.email;
-  const password = req.body.password;
   const roleId = req.body.roleId;
+  let password = req.body.password;
+  const saltRound = 10;
+  bcrypt.hash(password, saltRound, (err, hash) => {
+    password = hash;
+  });
   user.findOrCreate({
     where: {
-      email,
       username: userName
     },
     defaults: {

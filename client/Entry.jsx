@@ -18,7 +18,7 @@ if (module.hot) {
     const newConfigureStore = require('./store/configureStore');
     const newStore = newConfigureStore.configureStore();
     const newHistory = newConfigureStore.history;
-    const NewRoot = require('./containers/Root').default;
+    const NewRoot = Root.default;
     render(
       <AppContainer>
         <NewRoot store={newStore} history={newHistory} />

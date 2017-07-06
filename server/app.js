@@ -7,12 +7,13 @@ import webpackdevmiddleware from 'webpack-dev-middleware';
 import webpackhotmiddleware from 'webpack-hot-middleware';
 import config from '../webpack.config';
 import routes from './routes/routes';
-
+import secretConfig from '../config';
 // Set up the express app
 const app = express();
 const compiler = Webpack(config);
 const router = express.Router();
 
+app.set('secret', secretConfig.secret);
 app.use(webpackdevmiddleware(compiler, {
   publicPath: config.output.publicPath,
   historyApiFallback: true,

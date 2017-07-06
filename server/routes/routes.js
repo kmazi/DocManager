@@ -26,14 +26,14 @@ const routes = (router, compiler) => {
       res.end();
     });
   });
+  // route to create a new user
+  router.post('/users', userValidation, signUpUser);
   // route to create a new document
   router.post('/documents', createDocument);
   // route to get all documents
   router.get('/documents', getAllDocuments);
   // route to find a specific document
   router.get('/documents/id', findDocument);
-  // route to create a new user
-  router.post('/users', userValidation, signUpUser);
 // Default route when ther is no match
   router.get('*', (req, res) => {
     res.status(404).send(`404 error has occured! The page you're 
