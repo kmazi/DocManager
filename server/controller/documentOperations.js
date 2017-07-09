@@ -1,5 +1,6 @@
 import index from '../models';
 
+const document = index.Document;
 /**
  * function to create a document
  * @param {object} req - an object that contains the request body
@@ -8,14 +9,16 @@ import index from '../models';
  * and false otherwise
  */
 const createDocument = (req, res) => {
-  const document = index.Document;
   const title = req.body.title;
   const body = req.body.body;
   const userId = req.body.userId;
   const access = req.body.access;
   // Don't create document if fields are empty
   if (title === '' || body === '' || access === '') {
-    res.send('Empty title or body or access field!');
+    res.send({
+      status: 'unsuccessful',
+      message: 'Empty title or body or access field!',
+    });
   } else {
     // check to see if document with same title exist before creation
     document.findOrCreate({
@@ -27,12 +30,14 @@ const createDocument = (req, res) => {
       }
     }).spread((docCreated, isCreated) => {
       if (isCreated) {
-        res.send('successful');
+        res.send({
+          status: 'successful'
+        });
       }
-    }).catch((err) => {
+    }).catch(() => {
       res.send({
         status: 'unsuccessful',
-        err
+        message: 'Could not create the document!',
       });
     });
   }
@@ -53,7 +58,29 @@ const getAllDocuments = (req, res) => {
  * @return {null} it returns no value
  */
 const getUserDocuments = (req, res) => {
-  
+  const userId = req.params.id;
+  document.findAndCountAll({
+    where: {
+      userId,
+    },
+  }).then((documents) => {
+    if (documents.count > 0) {
+      res.send({
+        status: 'successful',
+        documents: documents.rows
+      });
+    } else {
+      res.send({
+        status: 'unsuccessful',
+        message: 'No document was found',
+      });
+    }
+  }).catch(() => {
+    res.send({
+      status: 'unsuccessful',
+      message: 'Could not fetch all your documents!',
+    });
+  });
 };
 /**
  * function to fetch a specific document from the database

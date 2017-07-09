@@ -18,7 +18,7 @@ const verifyToken = (req, res, next) => {
   const token = req.body.token || req.query.token;
   let user = {};
   try {
-    const user = JwtToken.verify(token, process.env.SUPERSECRET);
+    user = JwtToken.verify(token, process.env.SUPERSECRET);
     req.body.authUser = user;
   } catch (err) {
     next();
@@ -95,10 +95,10 @@ const validatePassword = (inputPassword) => {
  * @return {object} returns void
  */
 const signInValidation = (req, res, next) => {
-// get the user detail from the request body
+  // get the user detail from the request body
   const userInfo =
-  (Object.keys(req.body).length === 0 && req.body.constructor === Object)
-  ? req.query : req.body;
+    (Object.keys(req.body).length === 0 && req.body.constructor === Object)
+      ? req.query : req.body;
   const err = { status: 'successful', message: [] };
   const userNameValidation = generalValidation(userInfo.userName);
   const passwordValidation = validatePassword(userInfo.password);
@@ -107,14 +107,14 @@ const signInValidation = (req, res, next) => {
     err.message = userNameValidation.message;
     res.send(err);
   } else
-  // set error message when password is invalid
-  if (passwordValidation.status !== 'successful') {
-    err.status = 'unsuccessful';
-    err.message = passwordValidation.message;
-    res.send(err);
-  } else {
-    next();
-  }
+    // set error message when password is invalid
+    if (passwordValidation.status !== 'successful') {
+      err.status = 'unsuccessful';
+      err.message = passwordValidation.message;
+      res.send(err);
+    } else {
+      next();
+    }
 };
 
 /**
@@ -137,21 +137,21 @@ const signUpValidation = (req, res, next) => {
     err.message = userNameValidation.message;
     res.send(err);
   } else
-  // set error message when password is invalid
-  if (passwordValidation.status !== 'successful') {
-    err.status = 'unsuccessful';
-    err.message = passwordValidation.message;
-    res.send(err);
-  } else
-  // validating user email
-  if (emailValidation.status !== 'successful') {
-    err.status = 'unsuccessful';
-    err.message = emailValidation.message;
-    res.send(err);
-  } else {
-    // send execution to the next middleware if no error exist
-    next();
-  }
+    // set error message when password is invalid
+    if (passwordValidation.status !== 'successful') {
+      err.status = 'unsuccessful';
+      err.message = passwordValidation.message;
+      res.send(err);
+    } else
+      // validating user email
+      if (emailValidation.status !== 'successful') {
+        err.status = 'unsuccessful';
+        err.message = emailValidation.message;
+        res.send(err);
+      } else {
+        // send execution to the next middleware if no error exist
+        next();
+      }
 };
 
 export {

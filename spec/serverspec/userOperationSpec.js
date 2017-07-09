@@ -1,7 +1,9 @@
 import request from 'request';
+import queryString from 'querystring';
 import index from '../../server/models';
 
-describe('When signup with signUpUser(): ', () => {
+const url = 'http://localhost:1844/';
+describe('When signing up users with signUpUser(): ', () => {
   const userDetails = {
     userName: 'audax',
     email: 'audax.mazi@andela.com',
@@ -19,7 +21,6 @@ describe('When signup with signUpUser(): ', () => {
       done();
     });
   });
-  const url = 'http://localhost:1844/';
   it(`should Add user info to database when all form fields
   are correctly filled`, (done) => {
     const route = `${url}users`;
@@ -81,6 +82,25 @@ describe('When signup with signUpUser(): ', () => {
       expect(body.password.length).not.toBe(0);
       expect(body.password.includes('Password length must be between 6 and 20'))
         .toBe(true);
+      done();
+    });
+  });
+});
+
+describe('When signing in users with signInUser()', () => {
+  it(`should return status as successful when
+  the user is successfully authenticated`, (done) => {
+    const info = queryString.stringify({
+      userName: 'james007',
+      password: 'testing1',
+    });
+    const signInUrl = `${url}users?${info}`;
+    request({
+      url: signInUrl,
+      method: 'GET',
+      json: info,
+    }, (req, res, body) => {
+      expect(body.status).toBe('successful');
       done();
     });
   });
