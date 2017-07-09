@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
+import queryString from 'querystring';
 import index from '../models';
+import { createToken } from '../controller/middlewares/validation';
 
 /**
  * Signs up new users to access the application
@@ -9,37 +11,84 @@ import index from '../models';
  */
 const signUpUser = (req, res) => {
   const user = index.User;
-  const userName = req.body.userName;
-  const email = req.body.email;
-  const roleId = req.body.roleId;
-  let password = req.body.password;
+  const userInfo = req.body;
   const saltRound = 10;
-  bcrypt.hash(password, saltRound, (err, hash) => {
-    password = hash;
-  });
-  user.findOrCreate({
-    where: {
-      username: userName
-    },
-    defaults: {
-      username: userName,
-      email,
-      password,
-      roleId,
-    }
-  }).spread((createdUser, isCreated) => {
-    if (isCreated) {
+  bcrypt.hash(userInfo.password, saltRound, (err, hash) => {
+    userInfo.password = hash;
+    // find or create the user if they don't already exist in the
+  // database
+    user.findOrCreate({
+      where: {
+        username: userInfo.userName
+      },
+      defaults: {
+        username: userInfo.userName,
+        email: userInfo.email,
+        password: userInfo.password,
+        roleId: userInfo.roleId,
+      }
+    }).spread((createdUser, isCreated) => {
+      // send successful as response when the user is created
+      if (isCreated) {
+        const token = createToken(userInfo);
+        const query = queryString.stringify({
+          status: 'successful',
+          userName: createdUser.username,
+          token
+        });
+        res.redirect(`/users/${createdUser.id}/documents?${query}`);
+      } else {
+        res.send({
+          status: 'unsuccessful',
+          message: 'User already exist',
+        });
+      }
+    }).catch(() => {
       res.send({
-        status: 'successful',
-        userId: createdUser.id
+        status: 'unsuccessful',
+        message:
+        'An error just occured on the server while trying to sign you up'
       });
-    }
-  }).catch((err) => {
-    res.send({
-      status: 'unsuccessful',
-      err
     });
   });
 };
 
-export { signUpUser };
+const signInUser = (req, res) => {
+  const user = index.User;
+  const userInfo = req.query;
+  user.find({
+    where: {
+      username: userInfo.userName,
+    }
+  }).then((existingUser) => {
+    const userPassword = existingUser.password;
+    bcrypt.compare(userInfo.password, userPassword, (err, isValid) => {
+      // check if the password is correct then create a token
+      if (isValid) {
+        const userDetail = {
+          userName: existingUser.username,
+          roleId: existingUser.roleId,
+          userEmail: existingUser.email,
+        };
+        const token = createToken(userDetail);
+        const query = queryString.stringify({
+          userName: existingUser.username,
+          token
+        });
+        res.redirect(`/users/${existingUser.id}/documents?${query}`);
+      } else {
+        res.send({
+          status: 'unsuccessful',
+          message: 'Wrong username or password',
+        });
+      }
+    });
+  }).catch(() => {
+    res.send({
+      status: 'unsuccessful',
+      message: 'Wrong username',
+    });
+  });
+};
+
+export { signUpUser, signInUser };

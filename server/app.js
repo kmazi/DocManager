@@ -2,18 +2,17 @@ import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import path from 'path';
+import dotenv from 'dotenv';
 import Webpack from 'webpack';
 import webpackdevmiddleware from 'webpack-dev-middleware';
 import webpackhotmiddleware from 'webpack-hot-middleware';
 import config from '../webpack.config';
 import routes from './routes/routes';
-import secretConfig from '../config';
 // Set up the express app
 const app = express();
 const compiler = Webpack(config);
 const router = express.Router();
-
-app.set('secret', secretConfig.secret);
+dotenv.config();
 app.use(webpackdevmiddleware(compiler, {
   publicPath: config.output.publicPath,
   historyApiFallback: true,

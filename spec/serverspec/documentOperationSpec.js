@@ -1,4 +1,3 @@
-
 import request from 'request';
 import index from '../../server/models';
 
@@ -31,7 +30,7 @@ describe('The app route', () => {
       title: 'I love programming in python',
       body: 'Javascript is frustrating, but cannot say the same for python.',
       access: 'private',
-      userId: '6',
+      userId: '132',
     };
   });
 
@@ -55,6 +54,19 @@ describe('The app route', () => {
       });
     });
 
+  it('should return successful when document is successfully created',
+    (done) => {
+      const endPoint = `${url}documents`;
+      request({
+        url: endPoint,
+        method: 'POST',
+        json: userInfo,
+      }, (err, res, body) => {
+        expect(body).toBe('successful');
+        done();
+      });
+    });
+
   it('should not hit the database to save anything when empty form is sent',
     (done) => {
       // create the endpoint url
@@ -72,19 +84,6 @@ describe('The app route', () => {
         json: userInfo,
       }, (err, res, body) => {
         expect(body).toBe('Empty title or body or access field!');
-        done();
-      });
-    });
-
-  it('should return successful when document is successfully created',
-    (done) => {
-      const endPoint = `${url}documents`;
-      request({
-        url: endPoint,
-        method: 'POST',
-        json: userInfo,
-      }, (err, res, body) => {
-        expect(body).toBe('successful');
         done();
       });
     });

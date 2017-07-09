@@ -46,7 +46,15 @@ const createDocument = (req, res) => {
 const getAllDocuments = (req, res) => {
 
 };
-
+/**
+ * function to fetch all documents belonging to a user from the database
+ * @param {object} req - an object that contains the request body
+ * @param {object} res - an object that contains the response body
+ * @return {null} it returns no value
+ */
+const getUserDocuments = (req, res) => {
+  
+};
 /**
  * function to fetch a specific document from the database
  * @param {object} req - an object that contains the request body
@@ -57,4 +65,4 @@ const findDocument = (req, res) => {
 
 };
 
-export { createDocument, getAllDocuments, findDocument };
+export { createDocument, getAllDocuments, findDocument, getUserDocuments };

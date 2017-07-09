@@ -1,25 +1,13 @@
 import request from 'request';
 import index from '../../server/models';
 
-describe('Signup: ', () => {
+describe('When signup with signUpUser(): ', () => {
   const userDetails = {
     userName: 'audax',
     email: 'audax.mazi@andela.com',
     password: 'testing4',
     roleId: '1',
   };
-  // beforeAll((done) => {
-  //   const user = index.User;
-  //   user.create({
-  //     username: userDetials.userName,
-  //     email: userDetials.email,
-  //     password: userDetials.password,
-  //     roleId: userDetials.roleId,
-
-  //   }).then(() => {
-  //     done();
-  //   });
-  // });
 
   afterAll((done) => {
     const user = index.User;
@@ -41,7 +29,28 @@ describe('Signup: ', () => {
       json: userDetails,
     }, (req, res, body) => {
       expect(body.status).toBe('successful');
+      expect(body.userName).toBe('audax');
+      expect(body.token).not.toBeNull();
       done();
+    });
+  });
+
+  it('should not create users with the same username', (done) => {
+    const route = `${url}users`;
+    request({
+      url: route,
+      method: 'POST',
+      json: userDetails,
+    }, () => {
+      request({
+        url: route,
+        method: 'POST',
+        json: userDetails,
+      }, (req, res, body) => {
+        expect(body.status).toBe('unsuccessful');
+        expect(body.message).toBe('User already exist');
+        done();
+      });
     });
   });
 
@@ -61,20 +70,6 @@ describe('Signup: ', () => {
   it('should return error when invalid email is filled', (done) => {
     const route = `${url}users`;
     userDetails.email = 'hgfuy.com';
-    request({
-      url: route,
-      method: 'POST',
-      json: userDetails,
-    }, (req, res, body) => {
-      expect(body.email.length).not.toBe(0);
-      expect(body.email[0]).toBe('Email has got a wrong format');
-      done();
-    });
-  });
-
-  it('should return error when invalid email is filled', (done) => {
-    const route = `${url}users`;
-    userDetails.email = 'hgfuy.com';
     userDetails.password = 'hgfuy';
     request({
       url: route,
@@ -85,7 +80,7 @@ describe('Signup: ', () => {
       expect(body.email[0]).toBe('Email has got a wrong format');
       expect(body.password.length).not.toBe(0);
       expect(body.password.includes('Password length must be between 6 and 20'))
-      .toBe(true);
+        .toBe(true);
       done();
     });
   });
