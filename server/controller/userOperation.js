@@ -16,7 +16,7 @@ const signUpUser = (req, res) => {
   bcrypt.hash(userInfo.password, saltRound, (err, hash) => {
     userInfo.password = hash;
     // find or create the user if they don't already exist in the
-  // database
+    // database
     user.findOrCreate({
       where: {
         username: userInfo.userName
@@ -121,4 +121,34 @@ const getAllUsers = (req, res) => {
   });
 };
 
-export { signUpUser, signInUser, getAllUsers };
+/**
+ * Finds a specific user
+ * @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const findUser = (req, res) => {
+  const userId = req.params.id;
+  if (typeof userId !== 'undefined') {
+    user.findById(userId).then((knownUser) => {
+      if (knownUser === null) {
+        res.send({
+          status: 'unsuccessful',
+          message: 'Could not fetch any user!',
+        });
+      } else {
+        res.send({
+          status: 'successful',
+          userInfo: knownUser,
+        });
+      }
+    }).catch(() => {
+      res.send({
+        status: 'unsuccessful',
+        message: 'Could not fetch any user!',
+      });
+    });
+  }
+};
+
+export { signUpUser, signInUser, getAllUsers, findUser };

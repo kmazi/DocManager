@@ -33,6 +33,11 @@ const createDocument = (req, res) => {
         res.send({
           status: 'successful'
         });
+      } else {
+        res.send({
+          status: 'unsuccessful',
+          message: 'Document already exist!',
+        });
       }
     }).catch(() => {
       res.send({

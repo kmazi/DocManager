@@ -7,7 +7,8 @@ import { signUpValidation,
   signInValidation } from '../controller/middlewares/validation';
 import { signUpUser,
         signInUser,
-        getAllUsers } from '../controller/userOperation';
+        getAllUsers,
+        findUser } from '../controller/userOperation';
 /**
  * Creates the document model
  * @param {object} router - represents router object from express to use
@@ -19,6 +20,8 @@ const routes = (router, compiler) => {
   const sourcePath = path.join(__dirname, '../../client/');
   // route to get all users and paginate them
   router.get('/users', getAllUsers);
+  // Find a specific user
+  router.get('/users/:id', findUser);
   // route to signin a user
   router.get('/users/signin', signInValidation, signInUser);
   // route to create a new user
