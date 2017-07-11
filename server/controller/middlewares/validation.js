@@ -126,7 +126,9 @@ const signInValidation = (req, res, next) => {
  */
 const signUpValidation = (req, res, next) => {
   // get the user detail from the request body
-  const userInfo = req.body;
+  const userInfo =
+  (Object.keys(req.query).length === 0 && req.query.constructor === Object)
+  ? req.body : req.query;
   const err = { status: 'successful', message: [] };
   const userNameValidation = generalValidation(userInfo.userName);
   const passwordValidation = validatePassword(userInfo.password);

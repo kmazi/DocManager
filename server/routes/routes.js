@@ -1,14 +1,15 @@
 import path from 'path';
 import { createDocument,
-        getAllDocuments,
-        findDocument,
-      getUserDocuments } from '../controller/documentOperations';
+         getAllDocuments,
+         findDocument,
+         getUserDocuments } from '../controller/documentOperations';
 import { signUpValidation,
-  signInValidation } from '../controller/middlewares/validation';
+         signInValidation } from '../controller/middlewares/validation';
 import { signUpUser,
-        signInUser,
-        getAllUsers,
-        findUser } from '../controller/userOperation';
+         signInUser,
+         getAllUsers,
+         findUser,
+         updateUser } from '../controller/userOperation';
 /**
  * Creates the document model
  * @param {object} router - represents router object from express to use
@@ -22,6 +23,8 @@ const routes = (router, compiler) => {
   router.get('/users', getAllUsers);
   // Find a specific user
   router.get('/users/:id', findUser);
+  // Update a specific user
+  router.put('/users/:id', signUpValidation, updateUser);
   // route to signin a user
   router.get('/users/signin', signInValidation, signInUser);
   // route to create a new user

@@ -150,5 +150,45 @@ const findUser = (req, res) => {
     });
   }
 };
+/**
+ * Updates a specific user
+ * @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const updateUser = (req, res) => {
+  const userId = req.params.id;
+  const saltRound = 10;
+  bcrypt.hash(req.body.password, saltRound, (err, hash) => {
+    if (typeof userId !== 'undefined') {
+      user.update({
+        usename: req.body.userName,
+        roleId: req.body.roleId,
+        email: req.body.email,
+        password: hash,
+      }, {
+        where: {
+          id: userId,
+        }
+      }).then((result) => {
+        if (result > 0) {
+          res.send({
+            status: 'successful',
+          });
+        } else {
+          res.send({
+            status: 'unsuccessful',
+          });
+        }
+      }).catch((err) => {
+        res.send({
+          status: 'unsuccessful',
+          message: 'Could not find any user to update!',
+          err
+        });
+      });
+    }
+  });
+};
 
-export { signUpUser, signInUser, getAllUsers, findUser };
+export { signUpUser, signInUser, getAllUsers, findUser, updateUser };
