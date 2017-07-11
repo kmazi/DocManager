@@ -1,6 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { signInUser } from '../actions/userActions';
 
@@ -44,7 +45,7 @@ const Authenticate = ({ signInButtonText, onSignIn }) => (
         <Link
           id="signinbtn"
           className="center-align waves-effect waves-light btn"
-          to="/docs"
+          to="/user/documents"
         >{signInButtonText}</Link>
       </div>
 
@@ -84,7 +85,7 @@ const Authenticate = ({ signInButtonText, onSignIn }) => (
           />
           <Link
             id="signinbtn"
-            to="/docs"
+            to="/user/documents"
             className="center-align waves-effect waves-light btn"
           >Sign Up</Link>
         </div>
@@ -93,6 +94,11 @@ const Authenticate = ({ signInButtonText, onSignIn }) => (
     </div>
   </div>
 );
+
+Authenticate.propTypes = {
+  signInButtonText: PropTypes.string.isRequired,
+  onSignIn: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({
   signInButtonText: state.SignIn.status,

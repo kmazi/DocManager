@@ -16,6 +16,9 @@ section {
 		margin-right: $contentpadding;
 	}
 }
+#doccontent.header a{
+	display: block;
+}
 footer {
 	background: $shadebackground;
 	min-height: 35px;

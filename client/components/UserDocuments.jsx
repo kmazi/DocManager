@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import userRoutes from '../userRoutes';
 
+const minHeight = {
+  minHeight: window.innerHeight - 153 ||
+  document.documentElement.clientHeight - 153
+};
 const UserDocuments = () => (
   <section className="row">
     <div id="docheader" className="header">
@@ -26,17 +31,32 @@ const UserDocuments = () => (
     </div>
 
     <div id="doccontent" className="row">
-      <div className="col s3 header">
-
+      <div className="col s3 header" style={minHeight}>
+        <h3>Dashboard</h3>
+        <hr />
+        <p>
+          Hi Touchstone, you have created 21 documents
+        </p>
+        <hr />
+        <Link to="/user/documents">My docs</Link><br />
+        <Link to="/user/documents/createdocument">Create docs</Link><br />
+        <Link to="/user/documents/users">View all users</Link>
+        <div>
+          <input type="text" placeholder="search my documents" />
+          <a>search</a>
+        </div>
       </div>
       <div id="dashboard" className="col s9">
         <div className="row">
-          <input type="text" placeholder="search my documents" />
           <a>Search</a>
+          <input type="text" placeholder="search my documents" />
+        </div>
+        <div>
+          {userRoutes}
         </div>
       </div>
     </div>
-    
+
     <footer>DocManager &copy;2017</footer>
   </section>
 );

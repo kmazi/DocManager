@@ -6,6 +6,6 @@ import UserDocuments from './components/UserDocuments.jsx';
 export default (
   <Switch>
     <Route exact path="/" component={Home} />
-    <Route path="/docs" component={UserDocuments} />
+    <Route path="/user/documents" component={UserDocuments} />
   </Switch>
 );

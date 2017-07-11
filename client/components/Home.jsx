@@ -1,8 +1,7 @@
 import React from 'react';
 import Authenticate from '../containers/Authenticate.jsx';
 
-const home = () => {
-  return (
+const home = () => (
     <section>
       <div className="row homescreen">
         <h1 className="center-align">DocManager</h1>
@@ -14,5 +13,4 @@ const home = () => {
       </div>
     </section>
   );
-};
 export default home;
