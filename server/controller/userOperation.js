@@ -187,8 +187,54 @@ const updateUser = (req, res) => {
           err
         });
       });
+    } else {
+      res.send({
+        status: 'unsuccessful',
+        message: 'No user found!',
+      });
     }
   });
 };
 
-export { signUpUser, signInUser, getAllUsers, findUser, updateUser };
+/**
+ * Delete a specific user
+ * @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const deleteUser = (req, res) => {
+  const userId = req.params.id;
+  if (userId > 0 && Number.isInteger(Number(req.params.id))) {
+    user.findById(userId).then((knownUser) => {
+      if (knownUser === null) {
+        res.send({
+          status: 'unsuccessful',
+          message: 'Could not find any user!',
+        });
+      } else {
+        knownUser.destroy().then(() => {
+          res.send({
+            status: 'successful',
+            message: `${knownUser.username} has been deleted!`,
+          });
+        }).catch(() => {
+          res.send({
+            status: 'unsuccessful',
+            message: 'Could not delete the user!',
+          });
+        });
+      }
+    }).catch();
+  } else {
+    res.send({
+      status: 'unsuccessful',
+      message: 'No user found!',
+    });
+  }
+};
+export { signUpUser,
+  signInUser,
+  getAllUsers,
+  findUser,
+  updateUser,
+  deleteUser };

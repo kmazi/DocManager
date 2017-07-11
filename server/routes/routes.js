@@ -9,7 +9,8 @@ import { signUpUser,
          signInUser,
          getAllUsers,
          findUser,
-         updateUser } from '../controller/userOperation';
+         updateUser,
+         deleteUser } from '../controller/userOperation';
 /**
  * Creates the document model
  * @param {object} router - represents router object from express to use
@@ -25,6 +26,8 @@ const routes = (router, compiler) => {
   router.get('/users/:id', findUser);
   // Update a specific user
   router.put('/users/:id', signUpValidation, updateUser);
+  // Deletes a specific user
+  router.delete('/users/:id', deleteUser);
   // route to signin a user
   router.get('/users/signin', signInValidation, signInUser);
   // route to create a new user
@@ -52,7 +55,7 @@ const routes = (router, compiler) => {
   });
 // Default route when ther is no match
   router.get('*', (req, res) => {
-    res.status(404).send(`404 error has occured! The page you're 
+    res.status(404).send(`404 error! The page you're 
       searching for cannot be found`);
   });
 };
