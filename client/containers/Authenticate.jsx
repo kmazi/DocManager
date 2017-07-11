@@ -1,111 +1,113 @@
 import React from 'react';
 import $ from 'jquery';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { startSignInUser } from '../actions/userActions';
+import { signInUser } from '../actions/userActions';
 
-const Authenticate = ({ signInButtonText, onSignIn }) => {
-  const showSignInForm = () => {
-    const signInForm = $('#signinform');
-    const signUpForm = $('#signupform');
-    signUpForm.slideUp(400, () => {
-      signInForm.slideDown(400);
-    });
-  };
-  const showSignUpForm = () => {
-    const signInForm = $('#signinform');
-    const signUpForm = $('#signupform');
-    signInForm.slideUp(400, () => {
-      signUpForm.slideDown(400);
-    });
-  };
-  return (
-    <div className="container">
-      <div id="authbuttons" className="row">
-        <div className="col s6">
-          <span
-            className="a center-align waves-effect waves-light btn"
-            href="/"
-            onClick={() => { showSignInForm(); }}
-          >SignIn</span>
-        </div>
-        <div className="col s6">
-          <span
-            className="a center-align waves-effect waves-light btn"
-            href="/"
-            onClick={() => { showSignUpForm(); }}
-          >SignUp</span>
-        </div>
+const showSignInForm = () => {
+  const signInForm = $('#signinform');
+  const signUpForm = $('#signupform');
+  signUpForm.slideUp(400, () => {
+    signInForm.slideDown(400);
+  });
+};
+const showSignUpForm = () => {
+  const signInForm = $('#signinform');
+  const signUpForm = $('#signupform');
+  signInForm.slideUp(400, () => {
+    signUpForm.slideDown(400);
+  });
+};
+const Authenticate = ({ signInButtonText, onSignIn }) => (
+  <div className="container">
+    <div id="authbuttons" className="row">
+      <div className="col s6">
+        <span
+          className="a center-align waves-effect waves-light btn"
+          href="/"
+          onClick={() => { showSignInForm(); }}
+        >SignIn</span>
       </div>
-
-      <div id="authform">
-        <div id="signinform" className="">
-          <input type="text" className="forminput" placeholder="Username" />
-          <input type="password" className="forminput" placeholder="Password" />
-          <button
-            id="signinbtn"
-            className="center-align waves-effect waves-light btn"
-            onClick={(event) => {
-              event.preventDefault();
-              const userName = $('#signinform input[type=text]').val();
-              const password = $('#signinform input[type=password]').val();
-              const formData = { userName, password };
-              onSignIn(formData);
-            }}
-          >{signInButtonText}</button>
-        </div>
-
-        <div id="signupform" style={{ display: 'none' }}>
-
-          <div className="">
-            <input
-              className="forminput"
-              name="username"
-              type="text"
-              minLength="3"
-              placeholder="Username"
-              required
-            />
-            <input
-              className="forminput"
-              name="email"
-              type="email"
-              minLength="10"
-              placeholder="Email"
-              required
-            />
-            <input
-              className="forminput"
-              name="password"
-              type="password"
-              minLength="6"
-              placeholder="Password"
-              required
-            />
-            <input
-              className="forminput"
-              name="comfirmpassword"
-              type="password"
-              placeholder="Comfirm password"
-              required
-            />
-            <button
-              id="signinbtn"
-              className="center-align waves-effect waves-light btn"
-            >Sign Up</button>
-          </div>
-
-        </div>
+      <div className="col s6">
+        <span
+          className="a center-align waves-effect waves-light btn"
+          href="/"
+          onClick={() => { showSignUpForm(); }}
+        >SignUp</span>
       </div>
     </div>
-  );
-};
+
+    <div id="authform">
+      <div id="signinform" className="">
+        <input type="text" className="forminput" placeholder="Username" />
+        <input type="password" className="forminput" placeholder="Password" />
+        <Link
+          id="signinbtn"
+          className="center-align waves-effect waves-light btn"
+          to="/docs"
+        >{signInButtonText}</Link>
+      </div>
+
+      <div id="signupform" style={{ display: 'none' }}>
+
+        <div className="">
+          <input
+            className="forminput"
+            name="username"
+            type="text"
+            minLength="3"
+            placeholder="Username"
+            required
+          />
+          <input
+            className="forminput"
+            name="email"
+            type="email"
+            minLength="10"
+            placeholder="Email"
+            required
+          />
+          <input
+            className="forminput"
+            name="password"
+            type="password"
+            minLength="6"
+            placeholder="Password"
+            required
+          />
+          <input
+            className="forminput"
+            name="comfirmpassword"
+            type="password"
+            placeholder="Comfirm password"
+            required
+          />
+          <Link
+            id="signinbtn"
+            to="/docs"
+            className="center-align waves-effect waves-light btn"
+          >Sign Up</Link>
+        </div>
+
+      </div>
+    </div>
+  </div>
+);
 
 const mapStateToProps = state => ({
-  signInButtonText: state.beforeSignIn,
+  signInButtonText: state.SignIn.status,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onSignIn: event => dispatch(startSignInUser(event))
+  onSignIn: event => dispatch(signInUser(event)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Authenticate);
+
+// onClick={(event) => {
+//             event.preventDefault();
+//             const userName = $('#signinform input[type=text]').val();
+//             const password = $('#signinform input[type=password]').val();
+//             const formData = { userName, password };
+//             onSignIn(formData);
+//           }}

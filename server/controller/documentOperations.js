@@ -59,6 +59,7 @@ const getAllDocuments = (req, res) => {
  */
 const getUserDocuments = (req, res) => {
   const userId = req.params.id;
+  const userName = req.query.userName;
   document.findAndCountAll({
     where: {
       userId,
@@ -67,6 +68,8 @@ const getUserDocuments = (req, res) => {
     if (documents.count > 0) {
       res.send({
         status: 'successful',
+        userId,
+        userName,
         documents: documents.rows
       });
     } else {
