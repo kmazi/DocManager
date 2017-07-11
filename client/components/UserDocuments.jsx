@@ -32,7 +32,7 @@ const UserDocuments = () => (
 
     <div id="doccontent" className="row">
       <div className="col s3 header" style={minHeight}>
-        <h3>Dashboard</h3>
+        <h4>Dashboard</h4>
         <hr />
         <p>
           Hi Touchstone, you have created 21 documents

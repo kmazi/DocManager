@@ -5,7 +5,9 @@ import { createDocument,
       getUserDocuments } from '../controller/documentOperations';
 import { signUpValidation,
   signInValidation } from '../controller/middlewares/validation';
-import { signUpUser, signInUser } from '../controller/userOperation';
+import { signUpUser,
+        signInUser,
+        getAllUsers } from '../controller/userOperation';
 /**
  * Creates the document model
  * @param {object} router - represents router object from express to use
@@ -15,14 +17,16 @@ import { signUpUser, signInUser } from '../controller/userOperation';
 const routes = (router, compiler) => {
   // setup path for serving static files
   const sourcePath = path.join(__dirname, '../../client/');
+  // route to get all users and paginate them
+  router.get('/users', getAllUsers);
   // route to signin a user
-  router.get('/users', signInValidation, signInUser);
+  router.get('/users/signin', signInValidation, signInUser);
   // route to create a new user
   router.post('/users', signUpValidation, signUpUser);
-  // route to get all documents
-  router.get('/documents', getAllDocuments);
   // route to fetch documents belonging to a user
   router.get('/users/:id/documents', getUserDocuments);
+  // route to get all documents
+  router.get('/documents', getAllDocuments);
   // route to create a new document
   router.post('/documents', createDocument);
   // route to find a specific document

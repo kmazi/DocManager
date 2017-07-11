@@ -3,6 +3,7 @@ import queryString from 'querystring';
 import index from '../models';
 import { createToken } from '../controller/middlewares/validation';
 
+const user = index.User;
 /**
  * Signs up new users to access the application
  * @param {object} req - The request object
@@ -10,7 +11,6 @@ import { createToken } from '../controller/middlewares/validation';
  * @return {null} Returns void
  */
 const signUpUser = (req, res) => {
-  const user = index.User;
   const userInfo = req.body;
   const saltRound = 10;
   bcrypt.hash(userInfo.password, saltRound, (err, hash) => {
@@ -52,9 +52,13 @@ const signUpUser = (req, res) => {
     });
   });
 };
-
+/**
+ * Authenticates a user
+ * @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
 const signInUser = (req, res) => {
-  const user = index.User;
   const userInfo = req.query;
   user.find({
     where: {
@@ -86,9 +90,35 @@ const signInUser = (req, res) => {
   }).catch(() => {
     res.send({
       status: 'unsuccessful',
-      message: 'Wrong username',
+      message: 'Could not identify you!',
     });
   });
 };
 
-export { signUpUser, signInUser };
+/**
+ * Fetches all users
+ * @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const getAllUsers = (req, res) => {
+  const searchParams = req.query;
+  let params;
+  // check it limit and offset where passed
+  if (searchParams.offset && searchParams.limit) {
+    params = { offset: searchParams.offset, limit: searchParams.limit };
+  }
+  user.findAndCountAll({
+    attributes: ['id', 'username', 'email', 'roleId', 'createdAt'],
+    ...params
+  }).then((users) => {
+    res.send(users);
+  }).catch(() => {
+    res.send({
+      status: 'unsuccessful',
+      message: 'Could not fetch all users!',
+    });
+  });
+};
+
+export { signUpUser, signInUser, getAllUsers };
