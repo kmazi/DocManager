@@ -161,6 +161,39 @@ const findUser = (req, res) => {
 };
 
 /**
+ * Finds users by username
+ * @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const findUsers = (req, res) => {
+  if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
+    res.send({
+      status: 'unsuccessful',
+      message: 'No user detail to search for!'
+    });
+  } else {
+    user.findAndCountAll({
+      where: { username: {
+        $iLike: req.query.q
+      } },
+      attributes: ['id', 'username', 'email', 'roleId', 'createdAt'],
+    }).then((users) => {
+      res.send({
+        status: 'successful',
+        users
+      });
+    }).catch((err) => {
+      res.send({
+        status: 'unsuccessful',
+        message: 'Unable to get user(s)',
+        err
+      });
+    });
+  }
+};
+
+/**
  * Updates a specific user
  * @param {object} req - The request object from express server
  * @param {object} res - The response object from express server
@@ -247,4 +280,5 @@ export { signUpUser,
   getAllUsers,
   findUser,
   updateUser,
-  deleteUser };
+  deleteUser,
+  findUsers };

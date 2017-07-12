@@ -11,7 +11,8 @@ import { signUpUser,
          getAllUsers,
          findUser,
          updateUser,
-         deleteUser } from '../controller/userOperation';
+         deleteUser,
+         findUsers } from '../controller/userOperation';
 /**
  * Creates the document model
  * @param {object} router - represents router object from express to use
@@ -35,6 +36,8 @@ const routes = (router, compiler) => {
   router.post('/users', signUpValidation, signUpUser);
   // route to fetch documents belonging to a user
   router.get('/users/:id/documents', getUserDocuments);
+  // route to search for users
+  router.get('/search/users', findUsers);
   // route to get all documents
   router.get('/documents', getAllDocuments);
   // route to create a new document
