@@ -1,5 +1,7 @@
 import JwtToken from 'jsonwebtoken';
+import index from '../../models';
 
+const userModel = index.User;
 /**
  * Creates a web token for the user
  * @param {object} user - The user object to create token for
@@ -12,17 +14,27 @@ const createToken = user => JwtToken.sign(user,
  * Verifies that the submitted token is authentic before granting access
  * to other functionalities
  * @param {object} req - The token to verify
+ * @param {object} res - The token to verify
  * @return {null} Returns void
  */
 const verifyToken = (req, res, next) => {
   const token = req.body.token || req.query.token;
-  let user = {};
-  try {
-    user = JwtToken.verify(token, process.env.SUPERSECRET);
-    req.body.authUser = user;
-  } catch (err) {
-    next();
-  }
+  JwtToken.verify(token, process.env.SUPERSECRET, (err, verifiedToken) => {
+    if (err) {
+      res.send({
+        status: 'unsucessful',
+        message: 'You are not authenticated!',
+      });
+    } else {
+      userModel.findOne({
+        where: { username: verifiedToken.userName }
+      }).then(() => {
+        next();
+      }).catch(() => {
+        res.redirect('/');
+      });
+    }
+  });
 };
 /**
  * Middleware functionality to check for null or empty form fields

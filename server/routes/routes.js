@@ -5,7 +5,8 @@ import { createDocument,
          getUserDocuments,
          deleteDocument } from '../controller/documentOperations';
 import { signUpValidation,
-         signInValidation } from '../controller/middlewares/validation';
+         signInValidation,
+         verifyToken } from '../controller/middlewares/validation';
 import { signUpUser,
          signInUser,
          getAllUsers,
@@ -22,20 +23,22 @@ import { signUpUser,
 const routes = (router, compiler) => {
   // setup path for serving static files
   const sourcePath = path.join(__dirname, '../../client/');
-  // route to get all users and paginate them
-  router.get('/users', getAllUsers);
+  // route to create a new user
+  router.post('/users', signUpValidation, signUpUser);
   // route to signin a user
   router.get('/users/signin', signInValidation, signInUser);
+
+  router.use(verifyToken);
+  // route to get all users and paginate them
+  router.get('/users', getAllUsers);
   // Find a specific user
   router.get('/users/:id', findUser);
   // Update a specific user
   router.put('/users/:id', signUpValidation, updateUser);
-  // Deletes a specific user
-  router.delete('/users/:id', deleteUser);
-  // route to create a new user
-  router.post('/users', signUpValidation, signUpUser);
   // route to fetch documents belonging to a user
   router.get('/users/:id/documents', getUserDocuments);
+  // Deletes a specific user
+  router.delete('/users/:id', deleteUser);
   // route to search for users
   router.get('/search/users', findUsers);
   // route to get all documents
