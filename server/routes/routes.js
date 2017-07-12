@@ -39,7 +39,7 @@ const routes = (router, compiler) => {
   // route to create a new document
   router.post('/documents', createDocument);
   // route to find a specific document
-  router.get('/documents/id', findDocument);
+  router.get('/documents/:id', findDocument);
   // route that serves the home page
   // router.get('/', (req, res) => res.sendFile(`${sourcePath}index.html`));
   router.get('/', (req, res, next) => {

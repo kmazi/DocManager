@@ -54,7 +54,27 @@ const createDocument = (req, res) => {
  * @return {null} it returns no value
  */
 const getAllDocuments = (req, res) => {
-
+  const searchParams = req.query;
+  let params;
+  // check it limit and offset where passed
+  if (searchParams.offset && searchParams.limit) {
+    params = { offset: searchParams.offset, limit: searchParams.limit };
+  }
+  document.findAndCountAll({
+    attributes: ['id', 'title', 'body', 'access', 'createdAt'],
+    ...params
+  }).then((documents) => {
+    res.send({
+      status: 'successful',
+      count: documents.count,
+      documents: documents.rows,
+    });
+  }).catch(() => {
+    res.send({
+      status: 'unsuccessful',
+      message: 'Could not fetch all documents!',
+    });
+  });
 };
 /**
  * function to fetch all documents belonging to a user from the database
@@ -63,8 +83,9 @@ const getAllDocuments = (req, res) => {
  * @return {null} it returns no value
  */
 const getUserDocuments = (req, res) => {
-  const userId = req.params.id;
-  const userName = req.query.userName;
+  const userId =
+    (req.params.id > 0 && Number.isInteger(Number(req.params.id))) ?
+      req.params.id : 0;
   document.findAndCountAll({
     where: {
       userId,
@@ -74,8 +95,7 @@ const getUserDocuments = (req, res) => {
       res.send({
         status: 'successful',
         userId,
-        userName,
-        documents: documents.rows
+        documents: documents.rows,
       });
     } else {
       res.send({
@@ -97,7 +117,32 @@ const getUserDocuments = (req, res) => {
  * @return {null} it returns no value
  */
 const findDocument = (req, res) => {
-
+  const documentId = req.params.id;
+  if (documentId > 0 && Number.isInteger(Number(req.params.id))) {
+    document.findById(documentId).then((foundDocument) => {
+      if (foundDocument === null) {
+        res.send({
+          status: 'unsuccessful',
+          message: 'Could not find the document!',
+        });
+      } else {
+        res.send({
+          status: 'successful',
+          document: foundDocument,
+        });
+      }
+    }).catch(() => {
+      res.send({
+        status: 'unsuccessful',
+        message: 'Could not find any document!',
+      });
+    });
+  } else {
+    res.send({
+      status: 'unsuccessful',
+      message: 'Invalid search parameter!',
+    });
+  }
 };
 
 export { createDocument, getAllDocuments, findDocument, getUserDocuments };

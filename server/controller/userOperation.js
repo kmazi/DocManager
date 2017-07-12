@@ -112,7 +112,11 @@ const getAllUsers = (req, res) => {
     attributes: ['id', 'username', 'email', 'roleId', 'createdAt'],
     ...params
   }).then((users) => {
-    res.send(users);
+    res.send({
+      status: 'successful',
+      count: users.count,
+      users: users.rows,
+    });
   }).catch(() => {
     res.send({
       status: 'unsuccessful',
@@ -129,7 +133,7 @@ const getAllUsers = (req, res) => {
  */
 const findUser = (req, res) => {
   const userId = req.params.id;
-  if (typeof userId !== 'undefined') {
+  if (userId > 0 && Number.isInteger(Number(req.params.id))) {
     user.findById(userId).then((knownUser) => {
       if (knownUser === null) {
         res.send({
@@ -148,8 +152,14 @@ const findUser = (req, res) => {
         message: 'Could not fetch any user!',
       });
     });
+  } else {
+    res.send({
+      status: 'unsuccessful',
+      message: 'Invalid search parameter!',
+    });
   }
 };
+
 /**
  * Updates a specific user
  * @param {object} req - The request object from express server
@@ -160,7 +170,7 @@ const updateUser = (req, res) => {
   const userId = req.params.id;
   const saltRound = 10;
   bcrypt.hash(req.body.password, saltRound, (err, hash) => {
-    if (typeof userId !== 'undefined') {
+    if (userId > 0 && Number.isInteger(Number(req.params.id))) {
       user.update({
         usename: req.body.userName,
         roleId: req.body.roleId,
