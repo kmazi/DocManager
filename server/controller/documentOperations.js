@@ -145,4 +145,47 @@ const findDocument = (req, res) => {
   }
 };
 
-export { createDocument, getAllDocuments, findDocument, getUserDocuments };
+/**
+ * Delete a specific document
+ * @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const deleteDocument = (req, res) => {
+  const documentId = req.params.id;
+  if (documentId > 0 && Number.isInteger(Number(req.params.id))) {
+    document.findById(documentId).then((knownDocument) => {
+      if (knownDocument === null) {
+        res.send({
+          status: 'unsuccessful',
+          message: 'Could not find any document!',
+        });
+      } else {
+        knownDocument.destroy().then(() => {
+          res.send({
+            status: 'successful',
+            message: `"${knownDocument.title}" has been deleted!`,
+          });
+        }).catch(() => {
+          res.send({
+            status: 'unsuccessful',
+            message: 'Could not delete the document!',
+          });
+        });
+      }
+    }).catch(() => {
+      res.send({
+        status: 'unsuccessful',
+        message: 'No document found!',
+      });
+    });
+  } else {
+    res.send({
+      status: 'unsuccessful',
+      message: 'No document found!',
+    });
+  }
+};
+
+export { createDocument, getAllDocuments, findDocument, getUserDocuments,
+  deleteDocument };

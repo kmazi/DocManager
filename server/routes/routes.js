@@ -2,7 +2,8 @@ import path from 'path';
 import { createDocument,
          getAllDocuments,
          findDocument,
-         getUserDocuments } from '../controller/documentOperations';
+         getUserDocuments,
+         deleteDocument } from '../controller/documentOperations';
 import { signUpValidation,
          signInValidation } from '../controller/middlewares/validation';
 import { signUpUser,
@@ -22,14 +23,14 @@ const routes = (router, compiler) => {
   const sourcePath = path.join(__dirname, '../../client/');
   // route to get all users and paginate them
   router.get('/users', getAllUsers);
+  // route to signin a user
+  router.get('/users/signin', signInValidation, signInUser);
   // Find a specific user
   router.get('/users/:id', findUser);
   // Update a specific user
   router.put('/users/:id', signUpValidation, updateUser);
   // Deletes a specific user
   router.delete('/users/:id', deleteUser);
-  // route to signin a user
-  router.get('/users/signin', signInValidation, signInUser);
   // route to create a new user
   router.post('/users', signUpValidation, signUpUser);
   // route to fetch documents belonging to a user
@@ -40,6 +41,8 @@ const routes = (router, compiler) => {
   router.post('/documents', createDocument);
   // route to find a specific document
   router.get('/documents/:id', findDocument);
+  // route to delete a specific document
+  router.delete('/documents/:id', deleteDocument);
   // route that serves the home page
   // router.get('/', (req, res) => res.sendFile(`${sourcePath}index.html`));
   router.get('/', (req, res, next) => {
