@@ -2,27 +2,21 @@ import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import path from 'path';
+import dotenv from 'dotenv';
 import Webpack from 'webpack';
 import webpackdevmiddleware from 'webpack-dev-middleware';
 import webpackhotmiddleware from 'webpack-hot-middleware';
 import config from '../webpack.config';
 import routes from './routes/routes';
-
 // Set up the express app
 const app = express();
 const compiler = Webpack(config);
 const router = express.Router();
+dotenv.config();
 
-app.use(webpackdevmiddleware(compiler, {
-  publicPath: config.output.publicPath,
-  historyApiFallback: true,
-  hot: true
-}));
-path.join();
-app.use(webpackhotmiddleware(compiler));
 // set static path
-const sourcePath = path.join(__dirname, '/client/');
-app.use(express.static(sourcePath));
+const sourcePath = express.static(path.join(__dirname, '../client/assets'));
+app.use('/', sourcePath);
 
 // Log requests to the console.
 app.use(logger('dev'));
@@ -31,9 +25,21 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// get all routes
-routes(router, compiler);
+app.use(webpackdevmiddleware(compiler, {
+  publicPath: config.output.publicPath,
+  noInfo: true,
+  historyApiFallback: true,
+  hot: true
+}));
 
-app.use('/', router);
+app.use(webpackhotmiddleware(compiler));
+
+app.use('/api/v1', router);
+// get all routes
+routes(router);
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/index.html'));
+});
 
 module.exports = app;
