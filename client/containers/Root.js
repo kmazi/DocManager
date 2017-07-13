@@ -1,5 +1,8 @@
+import RootDev from './RootDev';
+import RootProd from './RootProd';
+
 if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./Root.prod');
+  module.exports = RootProd;
 } else {
-  module.exports = require('./Root.dev.jsx');
+  module.exports = RootDev;
 }

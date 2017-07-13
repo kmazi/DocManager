@@ -1,5 +1,5 @@
 import React from 'react';
-import Authenticate from '../containers/Authenticate.jsx';
+import Authenticate from '../containers/Authenticate';
 
 const home = () => (
     <section>

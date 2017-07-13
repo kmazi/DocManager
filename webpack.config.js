@@ -1,64 +1,80 @@
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  devtool: 'eval-source-map',
+  context: __dirname,
   entry: [
-    'babel-polyfill',
-    'react-hot-loader/patch',
+    'eventsource-polyfill',
     'webpack-hot-middleware/client',
-    path.join(__dirname, 'client/Entry.jsx'),
-    path.join(__dirname, 'client/styles/home.scss')
+    path.join(__dirname, 'client/Entry.jsx')
   ],
+  devtool: 'eval-source-map',
+  target: 'web',
   output: {
-    path: path.join(__dirname, '/client/'),
+    path: path.join(__dirname, '/client/assets/js'),
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: path.join(__dirname, '/client/assets')
   },
-  // resolve: {
-  //   extensions: ['.js', '.jsx']
-  // },
+  devServer: {
+    contentBase: `${__dirname}/client`
+  },
+  node: {
+    console: true,
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    dns: 'empty'
+  },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: 'client/client.tpl.html',
-      inject: 'body'
+    new webpack.LoaderOptionsPlugin({
+      debug: true
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.$': 'jquery',
-      'window.jQuery': 'jquery'
+    new webpack.NoEmitOnErrorsPlugin(),
+    new ExtractTextPlugin({
+      filename: '../css/style.css',
+      allChunks: true
     }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development')
-    })
   ],
   module: {
-    
     loaders: [
       {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader'
+        test: /.jsx?$/,
+        include: [path.join(__dirname, 'client'),
+          path.join(__dirname, 'server/shared')
+        ],
+        exclude: /(node_modules|bower_components)/,
+        loaders: ['react-hot-loader', 'babel-loader']
       },
       {
-        test: /\.json?$/,
-        loader: 'json'
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader?modules&localIdentName=[local]!sass-loader'
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          // resolve-url-loader may be chained before sass-loader if necessary
+          use: ['css-loader', 'sass-loader'],
+        }),
       },
       {
-        test: /\.(png|jpg|ico)$/,
-        loader: 'file-loader'
+        test: /\.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader?limit=100000',
       },
-      { test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
-      { test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/, loader: 'file' }
-    ]
+      { test: /\.json$/, loader: 'json-loader' },
+      {
+        test: /\.(jpe?g|jpg|png|gif|svg)$/i,
+        loaders: [
+          'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+          'image-webpack-loader?' +
+          'bypassOnDebug&optimizationLevel=7&interlaced=false'
+        ]
+      }
+    ],
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   }
 };

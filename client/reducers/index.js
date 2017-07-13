@@ -6,7 +6,7 @@ const SignIn = (state = {
   userId: 0,
   status: 'Sign In',
   userName: 'Guest',
-  errors: [],
+  errors: '',
   userDocs: [],
 }, action) => {
   switch (action.type) {
@@ -23,7 +23,7 @@ const SignIn = (state = {
     return Object.assign({}, state, {
       userDocs: [],
       status: 'Sign In',
-      errors: action.userDocs.message,
+      errors: action.errors.message[0],
     });
   default:
     return state;

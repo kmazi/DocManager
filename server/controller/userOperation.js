@@ -59,7 +59,7 @@ const signUpUser = (req, res) => {
  * @return {null} Returns null
  */
 const signInUser = (req, res) => {
-  const userInfo = req.query;
+  const userInfo = req.body;
   user.find({
     where: {
       username: userInfo.userName,
@@ -75,20 +75,20 @@ const signInUser = (req, res) => {
           userEmail: existingUser.email,
         };
         const token = createToken(userDetail);
-        res.send({
+        res.status(200).send({
           status: 'successful',
           userName: existingUser.username,
           token,
         });
       } else {
-        res.send({
+        res.status(400).send({
           status: 'unsuccessful',
           message: 'Wrong username or password',
         });
       }
     });
   }).catch(() => {
-    res.send({
+    res.status(400).send({
       status: 'unsuccessful',
       message: 'Could not identify you!',
     });

@@ -21,7 +21,7 @@ const verifyToken = (req, res, next) => {
   const token = req.body.token || req.query.token;
   JwtToken.verify(token, process.env.SUPERSECRET, (err, verifiedToken) => {
     if (err) {
-      res.send({
+      res.status(400).send({
         status: 'unsucessful',
         message: 'You are not authenticated!',
       });
@@ -35,6 +35,10 @@ const verifyToken = (req, res, next) => {
       });
     }
   });
+};
+
+const allowOnlyAdmin = (req, res) => {
+  const userDetails = req.query.user;
 };
 /**
  * Middleware functionality to check for null or empty form fields
@@ -118,13 +122,13 @@ const signInValidation = (req, res, next) => {
   if (userNameValidation.status !== 'successful') {
     err.status = 'unsuccessful';
     err.message = userNameValidation.message;
-    res.send(err);
+    res.status(400).send(err);
   } else
     // set error message when password is invalid
     if (passwordValidation.status !== 'successful') {
       err.status = 'unsuccessful';
       err.message = passwordValidation.message;
-      res.send(err);
+      res.status(400).send(err);
     } else {
       next();
     }
@@ -171,5 +175,5 @@ const signUpValidation = (req, res, next) => {
 
 export {
   signUpValidation, signInValidation, generalValidation, validateEmail,
-  validatePassword, createToken, verifyToken
+  validatePassword, createToken, verifyToken, allowOnlyAdmin
 };

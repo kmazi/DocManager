@@ -20,15 +20,14 @@ import { signUpUser,
  * @param {object} compiler - contains information in the webpack
  * @return {null} returns void
  */
-const routes = (router, compiler) => {
+const routes = (router) => {
   // setup path for serving static files
   const sourcePath = path.join(__dirname, '../../client/');
   // route to create a new user
   router.post('/users', signUpValidation, signUpUser);
   // route to signin a user
-  router.get('/users/signin', signInValidation, signInUser);
+  router.post('/users/login', signInValidation, signInUser);
 
-  router.use(verifyToken);
   // route to get all users and paginate them
   router.get('/users', getAllUsers);
   // Find a specific user
@@ -50,23 +49,23 @@ const routes = (router, compiler) => {
   // route to delete a specific document
   router.delete('/documents/:id', deleteDocument);
   // route that serves the home page
-  // router.get('/', (req, res) => res.sendFile(`${sourcePath}index.html`));
-  router.get('/', (req, res, next) => {
-    const filename = path.join(sourcePath, 'index.html');
-    compiler.outputFileSystem.readFile(filename, (err, result) => {
-      if (err) {
-        return next(err);
-      }
-      res.set('content-type', 'text/html');
-      res.send(result);
-      res.end();
-    });
-  });
-// Default route when ther is no match
-  router.get('*', (req, res) => {
-    res.status(404).send(`404 error! The page you're 
-      searching for cannot be found`);
-  });
+  // router.get('/*', (req, res) => res.sendFile(`${sourcePath}index.html`));
+  // router.get('/*', (req, res, next) => {
+  //   const filename = path.join(sourcePath, 'index.html');
+  //   compiler.outputFileSystem.readFile(filename, (err, result) => {
+  //     if (err) {
+  //       return next(err);
+  //     }
+  //     res.set('content-type', 'text/html');
+  //     res.send(result);
+  //     res.end();
+  //   });
+  // });
+// // Default route when ther is no match
+//   router.get('*', (req, res) => {
+//     res.status(404).send(`404 error! The page you're 
+//       searching for cannot be found`);
+//   });
 };
 
 export default routes;
