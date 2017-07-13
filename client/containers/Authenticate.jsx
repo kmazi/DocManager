@@ -132,7 +132,6 @@ class Authenticate extends React.Component {
 
 Authenticate.propTypes = {
   signInButtonText: PropTypes.string.isRequired,
-  onSignIn: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

@@ -2,7 +2,8 @@ import React from 'react';
 
 const CreateDocument = () => (
   <div>
-    Hello there! Want to create document
+    <input type="text" placeholder="title" />
+    
   </div>
 );
 
