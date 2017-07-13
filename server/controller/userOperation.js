@@ -75,11 +75,11 @@ const signInUser = (req, res) => {
           userEmail: existingUser.email,
         };
         const token = createToken(userDetail);
-        const query = queryString.stringify({
+        res.send({
+          status: 'successful',
           userName: existingUser.username,
-          token
+          token,
         });
-        res.redirect(`/users/${existingUser.id}/documents?${query}`);
       } else {
         res.send({
           status: 'unsuccessful',

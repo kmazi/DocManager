@@ -95,6 +95,7 @@ const getUserDocuments = (req, res) => {
       res.send({
         status: 'successful',
         userId,
+        userName: req.query.userName,
         documents: documents.rows,
       });
     } else {

@@ -5,9 +5,9 @@ export const startSignInUser = () => ({
   type: types.STARTSIGNIN,
 });
 
-export const finishSignInUser = userDocs => ({
+export const finishSignInUser = userDetail => ({
   type: types.SUCCESSFULSIGNIN,
-  userDocs,
+  userDetail,
 });
 
 export const errorSignInUser = errors => ({
@@ -19,15 +19,16 @@ export const signInUser = user => (dispatch) => {
   // Notify the user that signin process has started
   dispatch(startSignInUser());
   // make api calls via jquery ajax
-  $.ajax('/users', {
+  $.ajax('/api/v1/users/signin', {
     data: user,
     dataType: 'json',
-    success: (userDocs) => {
-      if (userDocs.status === 'successful') {
-        dispatch(finishSignInUser(userDocs));
+    success: (userDetail) => {
+      if (userDetail.status === 'successful') {
+        dispatch(finishSignInUser(userDetail));
+        localStorage.setItem('doctoken', userDetail.token);
       }
-      if (userDocs.status === 'unsuccessful') {
-        dispatch(finishSignInUser(userDocs));
+      if (userDetail.status === 'unsuccessful') {
+        dispatch(finishSignInUser(userDetail));
       }
     },
     error: (jqXHR, status) => {

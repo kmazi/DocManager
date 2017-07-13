@@ -62,6 +62,7 @@ const generalValidation = (formfield) => {
   return user;
 };
 
+
 /**
  * Validate the user email input
  * @param {string} inputEmail - The input email to validate
@@ -137,7 +138,7 @@ const signInValidation = (req, res, next) => {
  * @return {object} returns void
  */
 const signUpValidation = (req, res, next) => {
-  // get the user detail from the request body
+  // get the user detail from the request body and check if they are valid
   const userInfo =
   (Object.keys(req.query).length === 0 && req.query.constructor === Object)
   ? req.body : req.query;

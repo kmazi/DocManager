@@ -31,9 +31,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use('/api/v1', router);
 // get all routes
 routes(router, compiler);
 
-app.use('/', router);
 
 module.exports = app;

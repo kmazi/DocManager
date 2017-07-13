@@ -6,10 +6,8 @@ module.exports = {
   devtool: 'eval-source-map',
   entry: [
     'babel-polyfill',
-    'webpack-dev-server/client?http://localhost:1844',
-    'webpack/hot/only-dev-server',
-    'webpack-hot-middleware/client',
     'react-hot-loader/patch',
+    'webpack-hot-middleware/client',
     path.join(__dirname, 'client/Entry.jsx'),
     path.join(__dirname, 'client/styles/home.scss')
   ],
@@ -56,7 +54,7 @@ module.exports = {
         loader: 'style-loader!css-loader?modules&localIdentName=[local]!sass-loader'
       },
       {
-        test: /\.(png|jpg)$/,
+        test: /\.(png|jpg|ico)$/,
         loader: 'file-loader'
       },
       { test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },

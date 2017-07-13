@@ -109,7 +109,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Authenticate);
-
 // onClick={(event) => {
 //             event.preventDefault();
 //             const userName = $('#signinform input[type=text]').val();

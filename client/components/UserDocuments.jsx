@@ -13,7 +13,7 @@ const UserDocuments = () => (
         <span className="right">
           <Link to="/">Sign Out</Link>
         </span>
-        <span className="right">Welcome Touchstone</span>
+        <span className="right">Welcome </span>
       </div>
       <div className="row">
         <div className="col s8 offset-s4">
@@ -35,21 +35,25 @@ const UserDocuments = () => (
         <h4>Dashboard</h4>
         <hr />
         <p>
-          Hi Touchstone, you have created 21 documents
+          Hi , you have created  documents
         </p>
         <hr />
         <Link to="/user/documents">My docs</Link><br />
         <Link to="/user/documents/createdocument">Create docs</Link><br />
         <Link to="/user/documents/users">View all users</Link>
         <div>
-          <input type="text" placeholder="search my documents" />
+          <input type="text" placeholder="search own documents" />
           <a>search</a>
         </div>
       </div>
       <div id="dashboard" className="col s9">
         <div className="row">
-          <a>Search</a>
-          <input type="text" placeholder="search my documents" />
+          <div className="col s8">
+            <input type="text" placeholder="search my documents" />
+          </div>
+          <div className="col s2">
+            <i className="fa fa-search-plus small" aria-hidden="true">Search</i>
+          </div>
         </div>
         <div>
           {userRoutes}

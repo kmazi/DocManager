@@ -16,10 +16,8 @@ const SignIn = (state = {
     });
   case types.SUCCESSFULSIGNIN:
     return Object.assign({}, state, {
-      userId: action.userDocs.userId,
       status: 'Sign In',
-      userName: action.userDocs.userName,
-      userDocs: action.userDocs.documents,
+      userName: action.userDetail.userName,
     });
   case types.FAILEDSIGNIN:
     return Object.assign({}, state, {

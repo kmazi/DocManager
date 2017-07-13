@@ -1,5 +1,5 @@
 $backgroundcolor: rgba(7,31,36,1);
-$shadebackground: linear-gradient(rgba(7,31,36,1), #171a17, rgba(7,31,36,1));
+$shadebackground: linear-gradient(rgba(7,31,36,0.9), #171a17, rgba(7,31,36,0.9));
 $contentpadding: 5px;
 section {
 	color: #f1f2f2;
@@ -16,6 +16,9 @@ section {
 		margin-right: $contentpadding;
 	}
 }
+.docbackground{
+	background: $shadebackground;
+}
 #doccontent.header a{
 	display: block;
 }
@@ -28,7 +31,7 @@ footer {
 }
 h1.center-align{
 	font-size: 100px;
-	margin-top: 150px;
+	margin-top: 130px;
 }
 .homescreen{
 	width: 50%;
