@@ -12,12 +12,6 @@ module.exports = {
         isBetaMember: false
       }], {});
     */
-    return queryInterface.bulkInsert('User', [{
-      username: 'touchstone',
-      roleId: 3,
-      email: 'touchstone@gmail.com',
-      password: 'testing1',
-    }], {});
   },
 
   down(queryInterface) {

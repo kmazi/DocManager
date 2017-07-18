@@ -1,12 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-const CreateDocument = () => (
+import { documentCreation } from '../actions/documentActions';
+
+const CreateDocument = ({ createUserDocument }) => (
   <div>
     <input type="text" placeholder="title" />
     <textarea name="" id="" cols="100" rows="10" placeholder="content" />
     Access level:
     <p>
-      <input className="with-gap" name="group1" type="radio" id="public" value="public" />
+      <input
+        className="with-gap"
+        name="group1"
+        type="radio"
+        id="public"
+        value="public"
+      />
       <label htmlFor="public">Public</label>
     </p>
     <p>
@@ -23,10 +32,17 @@ const CreateDocument = () => (
       name="action"
       onClick={(event) => {
         event.preventDefault();
+        this.props.createUserDocument();
       }}
     >create
     </button>
   </div>
 );
 
-export default CreateDocument;
+const mapDispatchToProps = dispatch => ({
+    createUserDocument: () => {
+      dispatch(documentCreation());
+    },
+  });
+
+export default connect(mapDispatchToProps)(CreateDocument);
