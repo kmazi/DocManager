@@ -1,15 +1,21 @@
 import React from 'react';
 import $ from 'jquery';
-import { Link, withRouter, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { signInUser } from '../actions/userActions';
-
+/**
+ * Renders the authentication form
+ */
 class Authenticate extends React.Component {
+  /**
+   * Initializes the functions and state required
+   * @param {object} props - the state object containing error information
+   */
   constructor(props) {
     super(props);
     this.state = {
-      errors: this.props.SignIn.errors,
+      errors: this.props.signIn.errors,
     };
     this.showSignInForm = this.showSignInForm.bind(this);
     this.showSignUpForm = this.showSignUpForm.bind(this);
@@ -18,10 +24,15 @@ class Authenticate extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      errors: nextProps.SignIn.errors,
+      errors: nextProps.signIn.errors,
     });
   }
-
+/**
+ * Fires the function that authenticates a user
+ * @param {object} event - object containing data about the control that
+ * triggered an event
+ * @return {null} returns void
+ */
   signUserIn(event) {
     event.preventDefault();
     const userName = $('#signinform input[type=text]').val();
@@ -29,14 +40,15 @@ class Authenticate extends React.Component {
     const formData = { userName, password };
     this.props.signInUser(formData)
     .then((res) => {
-      if (res) {
-        console.log(this.state.errors);
-      } else {
+      if (!res) {
         this.props.history.push('/user/documents');
       }
     });
   }
-
+/**
+ * shows or hides the signin form
+ * @return {null} returns void
+ */
   showSignInForm() {
     const signInForm = $('#signinform');
     const signUpForm = $('#signupform');
@@ -44,7 +56,10 @@ class Authenticate extends React.Component {
       signInForm.slideDown(400);
     });
   }
-
+/**
+ * shows or hides the signup form
+ * @return {null} returns void
+ */
   showSignUpForm() {
     const signInForm = $('#signinform');
     const signUpForm = $('#signupform');
@@ -52,6 +67,10 @@ class Authenticate extends React.Component {
       signUpForm.slideDown(400);
     });
   }
+  /**
+   * Renders the html content on the browser
+   * @return {object} returns an object containing the html to be render
+   */
   render() {
     return (
       <div className="container">
@@ -135,8 +154,9 @@ Authenticate.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  signInButtonText: state.SignIn.status,
-  SignIn: state.SignIn,
+  signInButtonText: state.signIn.status,
+  signIn: state.signIn,
 });
 
-export default connect(mapStateToProps, { signInUser })(withRouter(Authenticate));
+export default connect(mapStateToProps,
+  { signInUser })(withRouter(Authenticate));

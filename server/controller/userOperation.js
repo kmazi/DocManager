@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import queryString from 'querystring';
 import index from '../models';
 import { createToken } from '../controller/middlewares/validation';
 
@@ -31,23 +30,28 @@ const signUpUser = (req, res) => {
       // send successful as response when the user is created
       if (isCreated) {
         const token = createToken(userInfo);
-        const query = queryString.stringify({
-          status: 'successful',
+        const userToken = {
           userName: createdUser.username,
-          token
+          roleId: createdUser.roleId,
+          userId: createdUser.id,
+          userEmail: createdUser.email,
+          token,
+        };
+        res.status(200).send({
+          status: 'successful',
+          ...userToken,
         });
-        res.redirect(`/users/${createdUser.id}/documents?${query}`);
       } else {
-        res.send({
+        res.status(400).send({
           status: 'unsuccessful',
           message: 'User already exist',
         });
       }
     }).catch(() => {
-      res.send({
+      res.status(500).send({
         status: 'unsuccessful',
         message:
-        'An error just occured on the server while trying to sign you up'
+        'Server error just occured!'
       });
     });
   });
@@ -72,18 +76,19 @@ const signInUser = (req, res) => {
         const userDetail = {
           userName: existingUser.username,
           roleId: existingUser.roleId,
+          userId: existingUser.id,
           userEmail: existingUser.email,
         };
         const token = createToken(userDetail);
         res.status(200).send({
           status: 'successful',
-          userName: existingUser.username,
+          ...userDetail,
           token,
         });
       } else {
         res.status(400).send({
           status: 'unsuccessful',
-          message: 'Wrong username or password',
+          message: 'Wrong username or password!',
         });
       }
     });
@@ -167,16 +172,18 @@ const findUser = (req, res) => {
  * @return {null} Returns null
  */
 const findUsers = (req, res) => {
-  if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
+  if (!req.query.q) {
     res.send({
       status: 'unsuccessful',
       message: 'No user detail to search for!'
     });
   } else {
     user.findAndCountAll({
-      where: { username: {
-        $iLike: req.query.q
-      } },
+      where: {
+        username: {
+          $iLike: `%${req.query.q}%`
+        }
+     },
       attributes: ['id', 'username', 'email', 'roleId', 'createdAt'],
     }).then((users) => {
       res.send({

@@ -9,10 +9,14 @@ const document = index.Document;
  * and false otherwise
  */
 const createDocument = (req, res) => {
-  const title = req.body.title;
-  const body = req.body.body;
-  const userId = req.body.userId;
-  const access = req.body.access;
+  const title = typeof req.body.title === 'undefined' ?
+    '' : req.body.title;
+  const body = typeof req.body.body === 'undefined' ?
+    '' : req.body.body;
+  const userId = typeof req.body.userId === 'undefined' ?
+    '' : req.body.userId;
+  const access = typeof req.body.access === 'undefined' ?
+    '' : req.body.access;
   // Don't create document if fields are empty
   if (title === '' || body === '' || access === '') {
     res.send({
@@ -92,20 +96,20 @@ const getUserDocuments = (req, res) => {
     },
   }).then((documents) => {
     if (documents.count > 0) {
-      res.send({
+      res.status(200).send({
         status: 'successful',
         userId,
         userName: req.query.userName,
         documents: documents.rows,
       });
     } else {
-      res.send({
+      res.status(400).send({
         status: 'unsuccessful',
         message: 'No document was found',
       });
     }
   }).catch(() => {
-    res.send({
+    res.status(400).send({
       status: 'unsuccessful',
       message: 'Could not fetch all your documents!',
     });
