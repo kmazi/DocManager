@@ -150,12 +150,12 @@ const signInValidation = (req, res, next) => {
       err.status = 'unsuccessful';
       err.message = err.message.concat(...userNameValidation.message,
         ...passwordValidation.message);
-      res.status(400).send(err);
+      res.send(err);
     }
   } else {
     err.status = 'unsuccessful';
     err.message.push('Empty forms are not allowed!');
-    res.status(400).send(err);
+    res.send(err);
   }
 };
 

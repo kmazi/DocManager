@@ -15,15 +15,15 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     }, {
-      roletype: 'fellow',
+      roletype: 'Fellow',
       createdAt: new Date(),
       updatedAt: new Date(),
     }, {
-      roletype: 'learning',
+      roletype: 'Learning',
       createdAt: new Date(),
       updatedAt: new Date(),
     }, {
-      roletype: 'pandc',
+      roletype: 'Devops',
       createdAt: new Date(),
       updatedAt: new Date(),
     }]);

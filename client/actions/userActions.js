@@ -38,10 +38,10 @@ export const signInUser = user => (dispatch) => {
     dispatch(finishSignInUser(response.data));
     localStorage.setItem('docmanagertoken', response.data.token);
   },
-({ response }) => {
-  dispatch(errorSignInUser(response.data.message));
+((errors) => {
+  dispatch(errorSignInUser(errors.data.message));
   return true;
-});
+}));
 };
 /**
  * Dispatches an action when signin starts

@@ -55,14 +55,14 @@ class Authenticate extends React.Component {
   signUserUp(event) {
     event.preventDefault();
     const userName = $('#signupform input[name=username]').val();
+    const email = $('#signupform input[type=email]').val();
     const password = $('#signupform input[type=password]').val();
     const comfirmPassword = $('#signupform input[type=password]').val();
-    const formData = { userName, password, comfirmPassword };
+    const roleId = $('#signupform input[name=group1]:checked').val();
+    const formData = { userName, email, password, comfirmPassword, roleId };
     this.props.signUserUp(formData)
-      .then((res) => {
-        if (!res) {
-          this.props.history.push('/user/documents');
-        }
+      .then(() => {
+        this.props.history.push('/user/documents');
       });
   }
   /**
@@ -159,26 +159,26 @@ class Authenticate extends React.Component {
               className="with-gap"
               name="group1"
               type="radio"
-              id="public"
-              value="Learning"
+              id="Learning"
+              value="2"
             />
-            <label htmlFor="public">Learning</label>
+            <label htmlFor="Learning">Learning</label>
             <input
               className="with-gap"
               name="group1"
               type="radio"
-              id="role"
-              value="Fellow"
+              id="Fellow"
+              value="1"
             />
-            <label htmlFor="role">Fellow</label>
+            <label htmlFor="Fellow">Fellow</label>
             <input
               className="with-gap"
               name="group1"
               type="radio"
-              id="private"
-              value="DevOps"
+              id="DevOps"
+              value="3"
             />
-            <label htmlFor="private">DevOps</label><br />
+            <label htmlFor="DevOps">DevOps</label><br />
             <button
               id="signinbtn"
               className="center-align waves-effect waves-light btn"
@@ -193,6 +193,7 @@ class Authenticate extends React.Component {
 
 Authenticate.propTypes = {
   signInButtonText: PropTypes.string.isRequired,
+  signUserUp: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

@@ -21,8 +21,36 @@ const signIn = (state = {
     });
   case types.FAILEDSIGNIN:
     return Object.assign({}, state, {
-      userDocs: [],
+      documents: [],
       status: 'Sign In',
+      errors: action.errors.message[0],
+    });
+  default:
+    return state;
+  }
+};
+
+const signUp = (state = {
+  userId: 0,
+  status: 'Sign Up',
+  userName: 'Guest',
+  errors: ''
+}, action) => {
+  switch (action) {
+  case types.STARTSIGNUP:
+    return Object.assign({}, state, {
+      status: 'Signing Up...',
+    });
+  case types.SUCCESSFULSIGNUP:
+    return Object.assign({}, state, {
+      status: 'Sign Up',
+      userName: action.userDetail.userName,
+      userId: action.userDetail.userId,
+    });
+  case types.FAILEDSIGNUP:
+    return Object.assign({}, state, {
+      documents: [],
+      status: 'Sign Up',
       errors: action.errors.message[0],
     });
   default:
@@ -57,6 +85,7 @@ const fetchDocuments = (state = {
 
 const rootReducer = combineReducers({
   signIn,
+  signUp,
   fetchDocuments,
   routing
 });
