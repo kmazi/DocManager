@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { signInUser } from '../actions/userActions';
+import { signInUser, signUserUp } from '../actions/userActions';
 /**
  * Renders the authentication form
  */
@@ -20,6 +20,7 @@ class Authenticate extends React.Component {
     this.showSignInForm = this.showSignInForm.bind(this);
     this.showSignUpForm = this.showSignUpForm.bind(this);
     this.signUserIn = this.signUserIn.bind(this);
+    this.signUserUp = this.signUserUp.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -27,28 +28,47 @@ class Authenticate extends React.Component {
       errors: nextProps.signIn.errors,
     });
   }
-/**
- * Fires the function that authenticates a user
- * @param {object} event - object containing data about the control that
- * triggered an event
- * @return {null} returns void
- */
+  /**
+   * Fires the function that authenticates a user
+   * @param {object} event - object containing data about the control that
+   * triggered an event
+   * @return {null} returns void
+   */
   signUserIn(event) {
     event.preventDefault();
     const userName = $('#signinform input[type=text]').val();
     const password = $('#signinform input[type=password]').val();
     const formData = { userName, password };
     this.props.signInUser(formData)
-    .then((res) => {
-      if (!res) {
-        this.props.history.push('/user/documents');
-      }
-    });
+      .then((res) => {
+        if (!res) {
+          this.props.history.push('/user/documents');
+        }
+      });
   }
-/**
- * shows or hides the signin form
+  /**
+ * Fires the function that authenticates a user
+ * @param {object} event - object containing data about the control that
+ * triggered an event
  * @return {null} returns void
  */
+  signUserUp(event) {
+    event.preventDefault();
+    const userName = $('#signupform input[name=username]').val();
+    const password = $('#signupform input[type=password]').val();
+    const comfirmPassword = $('#signupform input[type=password]').val();
+    const formData = { userName, password, comfirmPassword };
+    this.props.signUserUp(formData)
+      .then((res) => {
+        if (!res) {
+          this.props.history.push('/user/documents');
+        }
+      });
+  }
+  /**
+   * shows or hides the signin form
+   * @return {null} returns void
+   */
   showSignInForm() {
     const signInForm = $('#signinform');
     const signUpForm = $('#signupform');
@@ -56,10 +76,10 @@ class Authenticate extends React.Component {
       signInForm.slideDown(400);
     });
   }
-/**
- * shows or hides the signup form
- * @return {null} returns void
- */
+  /**
+   * shows or hides the signup form
+   * @return {null} returns void
+   */
   showSignUpForm() {
     const signInForm = $('#signinform');
     const signUpForm = $('#signupform');
@@ -103,45 +123,67 @@ class Authenticate extends React.Component {
           </div>
 
           <div id="signupform" style={{ display: 'none' }}>
-
-            <div className="">
-              <input
-                className="forminput"
-                name="username"
-                type="text"
-                minLength="3"
-                placeholder="Username"
-                required
-              />
-              <input
-                className="forminput"
-                name="email"
-                type="email"
-                minLength="10"
-                placeholder="Email"
-                required
-              />
-              <input
-                className="forminput"
-                name="password"
-                type="password"
-                minLength="6"
-                placeholder="Password"
-                required
-              />
-              <input
-                className="forminput"
-                name="comfirmpassword"
-                type="password"
-                placeholder="Comfirm password"
-                required
-              />
-              <button
-                id="signinbtn"
-                className="center-align waves-effect waves-light btn"
-              >Sign Up</button>
-            </div>
-
+            <input
+              className="forminput"
+              name="username"
+              type="text"
+              minLength="3"
+              placeholder="Username"
+              required
+            />
+            <input
+              className="forminput"
+              name="email"
+              type="email"
+              minLength="10"
+              placeholder="Email"
+              required
+            />
+            <input
+              className="forminput"
+              name="password"
+              type="password"
+              minLength="6"
+              placeholder="Password"
+              required
+            />
+            <input
+              className="forminput"
+              name="comfirmpassword"
+              type="password"
+              placeholder="Comfirm password"
+              required
+            />
+            Role:&nbsp;&nbsp;
+            <input
+              className="with-gap"
+              name="group1"
+              type="radio"
+              id="public"
+              value="Learning"
+            />
+            <label htmlFor="public">Learning</label>
+            <input
+              className="with-gap"
+              name="group1"
+              type="radio"
+              id="role"
+              value="Fellow"
+            />
+            <label htmlFor="role">Fellow</label>
+            <input
+              className="with-gap"
+              name="group1"
+              type="radio"
+              id="private"
+              value="DevOps"
+            />
+            <label htmlFor="private">DevOps</label><br />
+            <button
+              id="signinbtn"
+              className="center-align waves-effect waves-light btn"
+              onClick={event => this.signUserUp(event)}
+            >Sign Up</button>
           </div>
         </div>
       </div>
@@ -159,4 +201,4 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps,
-  { signInUser })(withRouter(Authenticate));
+  { signUserUp, signInUser })(withRouter(Authenticate));

@@ -74,7 +74,7 @@ export const errorSignUpUser = errors => ({
  * @param {object} user - Form data to send to the server
  * @return {func} returns a function that will be executed to signin a user
  */
-export const signUpUser = user => (dispatch) => {
+export const signUserUp = user => (dispatch) => {
   dispatch(startSignUpUser());
   return axios.post('/api/v1/users', user)
   .then((response) => {

@@ -40,9 +40,9 @@ const CreateDocument = ({ createUserDocument }) => (
 );
 
 const mapDispatchToProps = dispatch => ({
-    createUserDocument: () => {
-      dispatch(documentCreation());
-    },
-  });
+  createUserDocument: () => {
+    dispatch(documentCreation());
+  },
+});
 
 export default connect(mapDispatchToProps)(CreateDocument);
