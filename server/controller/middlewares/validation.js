@@ -55,10 +55,10 @@ const verifyToken = (req, res, next) => {
 const allowOnlyAdmin = (req, res, next) => {
   const userDetails = req.body.user;
   userRole.findById(userDetails.roleId).then((role) => {
-    if (role.roletype === 'admin' && userDetails.userName === 'touchstone') {
+    if (role.roletype === 'Admin' && userDetails.userName === 'touchstone') {
       next();
     } else {
-      res.send({
+      res.status(400).send({
         status: 'unsuccessful',
         message: 'Access denied!'
       });
@@ -76,16 +76,16 @@ const allowOnlyAdmin = (req, res, next) => {
  * @return {object} returns an object that contain validation status an
  * error messages if any
  */
-const generalValidation = (formfield) => {
+const generalValidation = (value, formField) => {
   const user = { status: 'successful', message: [] };
   // check for null and empty fields
-  if (formfield === null || formfield === '' || typeof formfield === 'undefined') {
+  if (value === null || value === '' || typeof value === 'undefined') {
     user.status = 'unsuccessful';
-    user.message.push('Empty or undefined fields are not allowed');
+    user.message.push(`Empty or undefined ${formField} field!`);
     return user;
   }
   // check to see if script characters are included
-  if (formfield.includes('<') || formfield.includes('>')) {
+  if (value.includes('<') || value.includes('>')) {
     user.status = 'unsuccessful';
     user.message.push('Invalid input character(s)');
   }
@@ -99,8 +99,8 @@ const generalValidation = (formfield) => {
  * @return {object} returns an object that contain validation status an
  * error messages if any
  */
-const validateEmail = (inputEmail) => {
-  const email = generalValidation(inputEmail);
+const validateEmail = (inputEmail, formField) => {
+  const email = generalValidation(inputEmail, formField);
   // check to see if email entered follows the standard format
   if (email.status === 'successful') {
     const foundMatch = inputEmail.match(
@@ -119,9 +119,9 @@ const validateEmail = (inputEmail) => {
  * @return {object} returns an object that contain validation status an
  * error messages if any
  */
-const validatePassword = (inputPassword) => {
+const validatePassword = (inputPassword, formField) => {
   // check if the password is empty or null
-  const password = generalValidation(inputPassword);
+  const password = generalValidation(inputPassword, formField);
   if (password.status === 'successful') {
     if (inputPassword.length < 6 || inputPassword.length > 20) {
       password.status = 'unsuccessful';
@@ -141,8 +141,8 @@ const signInValidation = (req, res, next) => {
   // get the user detail from the request body
   const err = { status: 'successful', message: [] };
   if (Object.keys(req.body).length !== 0 && req.body.constructor === Object) {
-    const userNameValidation = generalValidation(req.body.userName);
-    const passwordValidation = generalValidation(req.body.password);
+    const userNameValidation = generalValidation(req.body.userName, 'username');
+    const passwordValidation = generalValidation(req.body.password, 'password');
     if (userNameValidation.status === 'successful' &&
       passwordValidation.status === 'successful') {
       next();
@@ -150,12 +150,12 @@ const signInValidation = (req, res, next) => {
       err.status = 'unsuccessful';
       err.message = err.message.concat(...userNameValidation.message,
         ...passwordValidation.message);
-      res.send(err);
+      res.status(400).send(err);
     }
   } else {
     err.status = 'unsuccessful';
     err.message.push('Empty forms are not allowed!');
-    res.send(err);
+    res.status(400).send(err);
   }
 };
 
@@ -170,9 +170,9 @@ const signUpValidation = (req, res, next) => {
   const err = { status: 'successful', message: [] };
   // get the user detail from the request body and check if they are valid
   if (Object.keys(req.body).length !== 0 && req.body.constructor === Object) {
-    const userNameValidation = generalValidation(req.body.userName);
-    const passwordValidation = validatePassword(req.body.password);
-    const emailValidation = validateEmail(req.body.email);
+    const userNameValidation = generalValidation(req.body.userName, 'username');
+    const passwordValidation = validatePassword(req.body.password, 'password');
+    const emailValidation = validateEmail(req.body.email, 'email');
     if (userNameValidation.status === 'successful' &&
       passwordValidation.status === 'successful' &&
       emailValidation.status === 'successful') {

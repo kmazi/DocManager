@@ -42,7 +42,7 @@ class DocumentView extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  id: state.signIn.userId,
+  id: state.authenticateUser.userId,
   documents: state.fetchDocuments.documents,
   shouldDisplay: state.fetchDocuments.display,
   documentStatus: state.fetchDocuments.status,

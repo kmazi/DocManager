@@ -15,7 +15,7 @@ const UserDocuments = ({ userName }) => (
         <span className="right">
           <Link to="/">Sign Out</Link>
         </span>
-        <span className="right">Welcome {userName}</span>
+        <span className="right">Hi {userName}</span>
       </div>
       <div className="row">
         <div className="col s8 offset-s4">
@@ -72,6 +72,6 @@ UserDocuments.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  userName: state.signIn.userName,
+  userName: state.authenticateUser.userName,
 });
 export default connect(mapStateToProps)(UserDocuments);

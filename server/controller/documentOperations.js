@@ -18,7 +18,7 @@ const createDocument = (req, res) => {
   const access = typeof req.body.access === 'undefined' ?
     '' : req.body.access;
   // Don't create document if fields are empty
-  if (title === '' || body === '' || access === '') {
+  if (title === '' || body === '' || access === '' || userId) {
     res.send({
       status: 'unsuccessful',
       message: 'Empty title or body or access field!',

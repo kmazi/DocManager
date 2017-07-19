@@ -2,11 +2,12 @@ import { routerReducer as routing } from 'react-router-redux';
 import { combineReducers } from 'redux';
 import * as types from '../actions/types';
 
-const signIn = (state = {
+const authenticateUser = (state = {
   userId: 0,
   status: 'Sign In',
   userName: 'Guest',
-  errors: ''
+  errors: '',
+  isAuthenticated: false,
 }, action) => {
   switch (action.type) {
   case types.STARTSIGNIN:
@@ -16,14 +17,16 @@ const signIn = (state = {
   case types.SUCCESSFULSIGNIN:
     return Object.assign({}, state, {
       status: 'Sign In',
-      userName: action.userDetail.userName,
-      userId: action.userDetail.userId,
+      userName: action.userDetail.userName || 'Guest',
+      userId: action.userDetail.userId || 0,
+      isAuthenticated: true,
     });
   case types.FAILEDSIGNIN:
     return Object.assign({}, state, {
       documents: [],
       status: 'Sign In',
-      errors: action.errors.message[0],
+      errors: action.errors,
+      isAuthenticated: false,
     });
   default:
     return state;
@@ -84,7 +87,7 @@ const fetchDocuments = (state = {
 };
 
 const rootReducer = combineReducers({
-  signIn,
+  authenticateUser,
   signUp,
   fetchDocuments,
   routing

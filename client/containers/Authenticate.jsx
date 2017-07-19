@@ -40,9 +40,9 @@ class Authenticate extends React.Component {
     const password = $('#signinform input[type=password]').val();
     const formData = { userName, password };
     this.props.signInUser(formData)
-      .then((res) => {
-        if (!res) {
-          this.props.history.push('/user/documents');
+      .then(() => {
+        if (this.props.isAuthentic) {
+        this.props.history.push('/user/documents');
         }
       });
   }
@@ -194,11 +194,13 @@ class Authenticate extends React.Component {
 Authenticate.propTypes = {
   signInButtonText: PropTypes.string.isRequired,
   signUserUp: PropTypes.func.isRequired,
+  isAuthentic: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
-  signInButtonText: state.signIn.status,
-  signIn: state.signIn,
+  signInButtonText: state.authenticateUser.status,
+  signIn: state.authenticateUser,
+  isAuthentic: state.authenticateUser.isAuthenticated,
 });
 
 export default connect(mapStateToProps,

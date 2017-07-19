@@ -1,9 +1,9 @@
 import axios from 'axios';
 import * as types from './types';
 
-export const startCreatingDocument = () => {
-
-};
+export const startCreatingDocument = () => ({
+  type: types.STARTCREATINGDOCUMENT,
+});
 
 export const startGetUserDocuments = () => ({
   type: types.STARTGETUSERDOCUMENT,

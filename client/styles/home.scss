@@ -56,8 +56,11 @@ label{
 .a{
 	display: block;
 }
+span[data-id=authspan]{
+	color: red;
+}
 .bkgImage{
-	background: green url('../images/officedoc.jpg') center/cover;
+	background: green url('../assets/images/officedoc.jpg') center/cover;
 	position: relative;
 
 	#mainoverlay{

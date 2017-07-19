@@ -34,14 +34,13 @@ export const errorSignInUser = errors => ({
 export const signInUser = user => (dispatch) => {
   dispatch(startSignInUser());
   return axios.post('/api/v1/users/login', user)
-  .then((response) => {
-    dispatch(finishSignInUser(response.data));
-    localStorage.setItem('docmanagertoken', response.data.token);
-  },
-((errors) => {
-  dispatch(errorSignInUser(errors.data.message));
-  return true;
-}));
+    .then((response) => {
+      dispatch(finishSignInUser(response.data));
+      localStorage.setItem('docmanagertoken', response.data.token);
+    },
+     ({response}) =>
+      dispatch(errorSignInUser(response.data.message))
+    );
 };
 /**
  * Dispatches an action when signin starts
@@ -77,12 +76,12 @@ export const errorSignUpUser = errors => ({
 export const signUserUp = user => (dispatch) => {
   dispatch(startSignUpUser());
   return axios.post('/api/v1/users', user)
-  .then((response) => {
-    dispatch(finishSignUpUser(response.data));
-    localStorage.setItem('docmanagertoken', response.data.token);
-  },
-({ response }) => {
-  dispatch(errorSignUpUser(response.data.message));
-  return true;
-});
+    .then((response) => {
+      dispatch(finishSignUpUser(response.data));
+      localStorage.setItem('docmanagertoken', response.data.token);
+    },
+    ({ response }) => {
+      dispatch(errorSignUpUser(response.data.message));
+      return true;
+    });
 };
