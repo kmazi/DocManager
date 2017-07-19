@@ -86,16 +86,16 @@ const signInUser = (req, res) => {
           token,
         });
       } else {
-        res.send({
+        res.status(400).send({
           status: 'unsuccessful',
-          message: 'Wrong username or password!',
+          message: ['Wrong username or password!'],
         });
       }
     });
   }).catch(() => {
-    res.send({
+    res.status(400).send({
       status: 'unsuccessful',
-      message: 'Could not identify you!',
+      message: ['Could not identify you!'],
     });
   });
 };

@@ -19,16 +19,14 @@ export const errorGetUserDocuments = error => ({
   error,
 });
 
-export const getUserDocuments = (id, token) => (dispatch) => {
-  dispatch(startGetUserDocuments());
-  return axios.get(`/api/v1/users/${id}/documents?token=${token}`)
-  .then((documents) => {
-    dispatch(completeGetUserDocuments(documents.data.documents));
-  }, (errors) => {
-    dispatch(errorGetUserDocuments(errors.data));
+export const getUserDocuments = (id, token) => dispatch =>
+  axios.get(`/api/v1/users/${id}/documents?token=${token}`)
+  .then((response) => {
+    dispatch(completeGetUserDocuments(response.data.documents));
+  }, ({ response }) => {
+    dispatch(errorGetUserDocuments(response.data));
   });
-};
 
-export const documentCreation = () => dispatch => {
+export const documentCreation = () => (dispatch) => {
   dispatch(startCreatingDocument());
 };

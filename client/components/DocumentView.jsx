@@ -31,8 +31,8 @@ class DocumentView extends React.Component {
     // Render documents if successsfully loaded from server
     // else show loading message
     const finalRender = (this.props.shouldDisplay) ?
-      <DocumentPreview documents={this.props.documents} /> :
-      <span>{this.props.documentStatus}</span>;
+      <DocumentPreview userDocuments={this.props.documents} /> :
+      <p>{this.props.documentStatus}</p>;
     return (
       <div id="doc-view-background" className="row">
         {finalRender}
@@ -44,7 +44,7 @@ class DocumentView extends React.Component {
 const mapStateToProps = state => ({
   id: state.authenticateUser.userId,
   documents: state.fetchDocuments.documents,
-  shouldDisplay: state.fetchDocuments.display,
+  shouldDisplay: state.fetchDocuments.isReady,
   documentStatus: state.fetchDocuments.status,
 });
 

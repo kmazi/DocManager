@@ -20,7 +20,7 @@ const createToken = user => JwtToken.sign(user,
  * @return {null} Returns void
  */
 const verifyToken = (req, res, next) => {
-  const token = req.body.token || req.query.token;
+  const token = req.body.token || req.query.token || '';
   JwtToken.verify(token, process.env.SUPERSECRET, (err, verifiedToken) => {
     if (err) {
       res.status(400).send({
@@ -39,9 +39,10 @@ const verifyToken = (req, res, next) => {
         }
         req.body.user = verifiedToken;
         next();
-      }).catch(() => {
-        res.redirect('/');
-      });
+      }).catch(() => res.status(400).send({
+        status: 'unsuccessful',
+        message: 'An error occured in the server during authentication!',
+      }));
     }
   });
 };
@@ -64,7 +65,7 @@ const allowOnlyAdmin = (req, res, next) => {
       });
     }
   }).catch(() => {
-    res.status(404).send({
+    res.status(400).send({
       status: 'unsuccessful',
       message: 'Access denied!'
     });
@@ -142,7 +143,7 @@ const signInValidation = (req, res, next) => {
   const err = { status: 'successful', message: [] };
   if (Object.keys(req.body).length !== 0 && req.body.constructor === Object) {
     const userNameValidation = generalValidation(req.body.userName, 'username');
-    const passwordValidation = generalValidation(req.body.password, 'password');
+    const passwordValidation = validatePassword(req.body.password, 'password');
     if (userNameValidation.status === 'successful' &&
       passwordValidation.status === 'successful') {
       next();

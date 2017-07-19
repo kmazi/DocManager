@@ -37,7 +37,7 @@ const UserDocuments = ({ userName }) => (
         <h4>Dashboard</h4>
         <hr />
         <p>
-          Hi {userName} , you have created  documents
+          Hi {userName} , you have created documents
         </p>
         <hr />
         <Link to="/user/documents">My docs</Link><br />

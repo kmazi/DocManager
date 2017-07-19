@@ -35,10 +35,10 @@ export const signInUser = user => (dispatch) => {
   dispatch(startSignInUser());
   return axios.post('/api/v1/users/login', user)
     .then((response) => {
-      dispatch(finishSignInUser(response.data));
       localStorage.setItem('docmanagertoken', response.data.token);
+      dispatch(finishSignInUser(response.data));
     },
-     ({response}) =>
+     ({ response }) =>
       dispatch(errorSignInUser(response.data.message))
     );
 };

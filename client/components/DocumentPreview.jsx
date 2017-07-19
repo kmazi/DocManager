@@ -5,8 +5,8 @@ import propTypes from 'prop-types';
  * Template to render documents from store
  * @return {object} returns html object to render
  */
-const DocumentPreview = ({ documents }) => {
-  const docs = documents.map(document => (
+const DocumentPreview = ({ userDocuments }) => {
+  const docs = userDocuments.map(document => (
     <div key={document.id}>
       <h5>Title: {document.title}</h5>
       <h5>Access: {document.access}</h5>
@@ -21,7 +21,7 @@ const DocumentPreview = ({ documents }) => {
 };
 
 DocumentPreview.propTypes = {
-  documents: propTypes.array.isRequired,
+  userDocuments: propTypes.array.isRequired,
 };
 
 export default DocumentPreview;

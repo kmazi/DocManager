@@ -12,7 +12,7 @@ const authenticateUser = (state = {
   switch (action.type) {
   case types.STARTSIGNIN:
     return Object.assign({}, state, {
-      status: 'Sign In...',
+      status: 'Signing In...',
     });
   case types.SUCCESSFULSIGNIN:
     return Object.assign({}, state, {
@@ -37,7 +37,7 @@ const signUp = (state = {
   userId: 0,
   status: 'Sign Up',
   userName: 'Guest',
-  errors: ''
+  errors: [],
 }, action) => {
   switch (action) {
   case types.STARTSIGNUP:
@@ -49,6 +49,7 @@ const signUp = (state = {
       status: 'Sign Up',
       userName: action.userDetail.userName,
       userId: action.userDetail.userId,
+      errors: [],
     });
   case types.FAILEDSIGNUP:
     return Object.assign({}, state, {
@@ -62,24 +63,24 @@ const signUp = (state = {
 };
 
 const fetchDocuments = (state = {
-  display: false,
-  status: 'loading documents...',
+  isReady: false,
+  status: 'Loading documents...',
   documents: [],
 }, action) => {
   switch (action.type) {
   case types.STARTGETUSERDOCUMENT:
     return Object.assign({}, state, {
-      display: false,
+      isReady: false,
     });
   case types.SUCCESSGETUSERDOCUMENT:
     return Object.assign({}, state, {
-      display: true,
+      isReady: true,
       documents: action.documents,
     });
   case types.ERRORGETUSERDOCUMENT:
     return Object.assign({}, state, {
-      status: action.error,
-      display: false,
+      status: action.error.message,
+      isReady: false,
     });
   default:
     return state;
