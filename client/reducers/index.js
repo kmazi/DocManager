@@ -11,11 +11,11 @@ const authenticateUser = (state = {
   isAuthenticated: false,
 }, action) => {
   switch (action.type) {
-  case types.STARTSIGNUP:
+  case types.START_SIGNUP:
     return Object.assign({}, state, {
       signUpStatus: 'Signing Up...',
     });
-  case types.SUCCESSFULSIGNUP:
+  case types.SUCCESSFUL_SIGNUP:
     return Object.assign({}, state, {
       signUpStatus: 'Sign Up',
       userName: action.userDetail.userName || 'Guest',
@@ -23,24 +23,24 @@ const authenticateUser = (state = {
       isAuthenticated: true,
       errors: [],
     });
-  case types.FAILEDSIGNUP:
+  case types.FAILED_SIGNUP:
     return Object.assign({}, state, {
       documents: [],
       status: 'Sign Up',
       errors: action.errors,
     });
-  case types.STARTSIGNIN:
+  case types.START_SIGNIN:
     return Object.assign({}, state, {
       signInStatus: 'Signing In...',
     });
-  case types.SUCCESSFULSIGNIN:
+  case types.SUCCESSFUL_SIGNIN:
     return Object.assign({}, state, {
       signInStatus: 'Sign In',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
       isAuthenticated: true,
     });
-  case types.FAILEDSIGNIN:
+  case types.FAILED_SIGNIN:
     return Object.assign({}, state, {
       documents: [],
       signInStatus: 'Sign In',
@@ -57,15 +57,15 @@ const createDoc = (state = {
   errors: [],
 }, action) => {
   switch (action) {
-  case types.STARTCREATINGDOCUMENT:
+  case types.START_CREATING_DOCUMENT:
     return Object.assign({}, state, {
       status: 'Creating document...',
     });
-  case types.DONECREATINGDOCUMENT:
+  case types.DONE_CREATING_DOCUMENT:
     return Object.assign({}, state, {
       status: 'Successful',
     });
-  case types.ERRORCREATINGDOCUMENT:
+  case types.ERROR_CREATING_DOCUMENT:
     return Object.assign({}, state, {
       status: 'Unsuccessful',
       errors: action.errors.message,
@@ -81,16 +81,16 @@ const fetchDocuments = (state = {
   documents: [],
 }, action) => {
   switch (action.type) {
-  case types.STARTGETUSERDOCUMENT:
+  case types.START_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       isReady: false,
     });
-  case types.SUCCESSGETUSERDOCUMENT:
+  case types.SUCCESS_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       isReady: true,
       documents: action.documents,
     });
-  case types.ERRORGETUSERDOCUMENT:
+  case types.ERROR_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       status: action.error.message,
       isReady: false,
