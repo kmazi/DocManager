@@ -6,7 +6,7 @@ import * as types from './types';
  * @return {object} returns an object containing action type
  */
 export const startSignInUser = () => ({
-  type: types.STARTSIGNIN,
+  type: types.START_SIGNIN,
 });
 /**
  * Dispatches an action when signin completes successfully
@@ -14,7 +14,7 @@ export const startSignInUser = () => ({
  * @return {object} returns an object containing user details and action type
  */
 export const finishSignInUser = userDetail => ({
-  type: types.SUCCESSFULSIGNIN,
+  type: types.SUCCESSFUL_SIGNIN,
   userDetail,
 });
 /**
@@ -23,7 +23,7 @@ export const finishSignInUser = userDetail => ({
  * @return {object} returns an object containing errors and action type
  */
 export const errorSignInUser = errors => ({
-  type: types.FAILEDSIGNIN,
+  type: types.FAILED_SIGNIN,
   errors,
 });
 /**
@@ -47,7 +47,7 @@ export const signInUser = user => (dispatch) => {
  * @return {object} returns an object containing action type
  */
 export const startSignUpUser = () => ({
-  type: types.STARTSIGNUP,
+  type: types.START_SIGNUP,
 });
 /**
  * Dispatches an action when signup completes successfully
@@ -55,7 +55,7 @@ export const startSignUpUser = () => ({
  * @return {object} returns an object containing user details and action type
  */
 export const finishSignUpUser = userDetail => ({
-  type: types.SUCCESSFULSIGNUP,
+  type: types.SUCCESSFUL_SIGNUP,
   userDetail,
 });
 /**
@@ -64,7 +64,7 @@ export const finishSignUpUser = userDetail => ({
  * @return {object} returns an object containing errors and action type
  */
 export const errorSignUpUser = errors => ({
-  type: types.FAILEDSIGNUP,
+  type: types.FAILED_SIGNUP,
   errors,
 });
 
@@ -82,6 +82,5 @@ export const signUserUp = user => (dispatch) => {
     },
     ({ response }) => {
       dispatch(errorSignUpUser(response.data.message));
-      return true;
     });
 };

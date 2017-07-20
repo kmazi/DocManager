@@ -7,7 +7,7 @@ import propTypes from 'prop-types';
  */
 const DocumentPreview = ({ userDocuments }) => {
   const docs = userDocuments.map(document => (
-    <div key={document.id}>
+    <div key={document.id} className="col s3">
       <h5>Title: {document.title}</h5>
       <h5>Access: {document.access}</h5>
       <button id={document.id}>Read</button>
@@ -15,7 +15,7 @@ const DocumentPreview = ({ userDocuments }) => {
       <button id={document.id}>Delete</button>
     </div>));
   return (
-    <div className="col s3">
+    <div className="row">
       {docs}
     </div>);
 };

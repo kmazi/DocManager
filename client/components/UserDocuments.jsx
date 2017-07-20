@@ -4,11 +4,16 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import userRoutes from '../userRoutes';
 
+import { publicDocuments,
+  roleDocuments,
+  allDocuments } from '../actions/documentActions';
+
 const minHeight = {
   minHeight: window.innerHeight - 153 ||
   document.documentElement.clientHeight - 153
 };
-const UserDocuments = ({ userName }) => (
+const UserDocuments = ({ userName, history,
+  getPublicDocuments, getRoleDocuments, getAllDocuments }) => (
   <section className="row">
     <div id="docheader" className="header">
       <div className="row">
@@ -21,12 +26,36 @@ const UserDocuments = ({ userName }) => (
         <div className="col s8 offset-s4">
           <button
             className="center-align waves-effect waves-light btn"
+            onClick={(event) => {
+              event.preventDefault();
+              getPublicDocuments().then(() => {
+                if (this.props.isAuthentic) {
+                  history.push('/user/documents');
+                }
+              });
+            }}
           >Public Docs</button>
           <button
             className="center-align waves-effect waves-light btn"
+            onClick={(event) => {
+              event.preventDefault();
+              getRoleDocuments().then(() => {
+                if (this.props.isAuthentic) {
+                  history.push('/user/documents');
+                }
+              });
+            }}
           >Role Docs</button>
           <button
             className="center-align waves-effect waves-light btn"
+            onClick={(event) => {
+              event.preventDefault();
+              getAllDocuments().then(() => {
+                if (this.props.isAuthentic) {
+                  history.push('/user/documents');
+                }
+              });
+            }}
           >All Docs</button>
         </div>
       </div>
@@ -69,9 +98,25 @@ const UserDocuments = ({ userName }) => (
 
 UserDocuments.propTypes = {
   userName: propTypes.string.isRequired,
+  history: propTypes.object.isRequired,
+  getPublicDocuments: propTypes.func.isRequired,
+  getRoleDocuments: propTypes.func.isRequired,
+  getAllDocuments: propTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   userName: state.authenticateUser.userName,
 });
-export default connect(mapStateToProps)(UserDocuments);
+
+const mapDispatchToProps = dispatch => ({
+  getPublicDocuments: () => {
+    dispatch(publicDocuments());
+  },
+  getRoleDocuments: () => {
+    dispatch(roleDocuments());
+  },
+  getAllDocuments: () => {
+    dispatch(allDocuments());
+  },
+});
+export default connect(mapStateToProps, mapDispatchToProps)(UserDocuments);

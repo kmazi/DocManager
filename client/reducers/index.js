@@ -4,19 +4,38 @@ import * as types from '../actions/types';
 
 const authenticateUser = (state = {
   userId: 0,
-  status: 'Sign In',
+  signInStatus: 'Sign In',
+  signUpStatus: 'Sign Up',
   userName: 'Guest',
-  errors: '',
+  errors: [],
   isAuthenticated: false,
 }, action) => {
   switch (action.type) {
+  case types.STARTSIGNUP:
+    return Object.assign({}, state, {
+      signUpStatus: 'Signing Up...',
+    });
+  case types.SUCCESSFULSIGNUP:
+    return Object.assign({}, state, {
+      signUpStatus: 'Sign Up',
+      userName: action.userDetail.userName || 'Guest',
+      userId: action.userDetail.userId || 0,
+      isAuthenticated: true,
+      errors: [],
+    });
+  case types.FAILEDSIGNUP:
+    return Object.assign({}, state, {
+      documents: [],
+      status: 'Sign Up',
+      errors: action.errors,
+    });
   case types.STARTSIGNIN:
     return Object.assign({}, state, {
-      status: 'Signing In...',
+      signInStatus: 'Signing In...',
     });
   case types.SUCCESSFULSIGNIN:
     return Object.assign({}, state, {
-      status: 'Sign In',
+      signInStatus: 'Sign In',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
       isAuthenticated: true,
@@ -24,7 +43,7 @@ const authenticateUser = (state = {
   case types.FAILEDSIGNIN:
     return Object.assign({}, state, {
       documents: [],
-      status: 'Sign In',
+      signInStatus: 'Sign In',
       errors: action.errors,
       isAuthenticated: false,
     });
@@ -33,29 +52,23 @@ const authenticateUser = (state = {
   }
 };
 
-const signUp = (state = {
-  userId: 0,
-  status: 'Sign Up',
-  userName: 'Guest',
+const createDoc = (state = {
+  status: 'Unsuccessful',
   errors: [],
 }, action) => {
   switch (action) {
-  case types.STARTSIGNUP:
+  case types.STARTCREATINGDOCUMENT:
     return Object.assign({}, state, {
-      status: 'Signing Up...',
+      status: 'Creating document...',
     });
-  case types.SUCCESSFULSIGNUP:
+  case types.DONECREATINGDOCUMENT:
     return Object.assign({}, state, {
-      status: 'Sign Up',
-      userName: action.userDetail.userName,
-      userId: action.userDetail.userId,
-      errors: [],
+      status: 'Successful',
     });
-  case types.FAILEDSIGNUP:
+  case types.ERRORCREATINGDOCUMENT:
     return Object.assign({}, state, {
-      documents: [],
-      status: 'Sign Up',
-      errors: action.errors.message[0],
+      status: 'Unsuccessful',
+      errors: action.errors.message,
     });
   default:
     return state;
@@ -89,7 +102,7 @@ const fetchDocuments = (state = {
 
 const rootReducer = combineReducers({
   authenticateUser,
-  signUp,
+  createDoc,
   fetchDocuments,
   routing
 });

@@ -62,7 +62,9 @@ class Authenticate extends React.Component {
     const formData = { userName, email, password, comfirmPassword, roleId };
     this.props.signUserUp(formData)
       .then(() => {
+        if (this.props.isAuthentic) {
         this.props.history.push('/user/documents');
+        }
       });
   }
   /**
@@ -198,7 +200,7 @@ Authenticate.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  signInButtonText: state.authenticateUser.status,
+  signInButtonText: state.authenticateUser.signInStatus,
   signIn: state.authenticateUser,
   isAuthentic: state.authenticateUser.isAuthenticated,
 });

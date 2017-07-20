@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
+import alert from 'sweetalert2';
 import { connect } from 'react-redux';
 
 import { documentCreation } from '../actions/documentActions';
@@ -16,7 +17,7 @@ const CreateDocument = ({ createUserDocument, userId }) => (
         name="group1"
         type="radio"
         id="public"
-        value="public"
+        value="Public"
       />
       <label htmlFor="public">Public</label>
     </p>
@@ -36,27 +37,28 @@ const CreateDocument = ({ createUserDocument, userId }) => (
         const title = $('#docform input[name=title]').val();
         const body = $('#docform textarea[name=body]').val();
         const access = $('#docform input[name=group1]:checked').val();
-        const formValue = {title, body, access, userId };
-        console.log('////////////..........', formValue);
+        const token = localStorage.getItem('docmanagertoken');
+        const formValue = { title, body, access, userId, token };
         event.preventDefault();
-        createUserDocument();
+        createUserDocument(formValue);
       }}
     >create
     </button>
   </div>
 );
 
-CreateDocument.PropTypes = {
+CreateDocument.propTypes = {
   createUserDocument: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = state => ({
-  userId: state.signIn.userId,
+  userId: state.authenticateUser.userId,
 });
 
 const mapDispatchToProps = dispatch => ({
-  createUserDocument: () => {
-    dispatch(documentCreation());
+  createUserDocument: (formValue) => {
+    dispatch(documentCreation(formValue));
   },
 });
 

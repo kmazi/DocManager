@@ -18,8 +18,8 @@ const createDocument = (req, res) => {
   const access = typeof req.body.access === 'undefined' ?
     '' : req.body.access;
   // Don't create document if fields are empty
-  if (title === '' || body === '' || access === '' || userId) {
-    res.send({
+  if (title === '' || body === '' || access === '' || userId === '') {
+    res.status(400).send({
       status: 'unsuccessful',
       message: 'Empty title or body or access field!',
     });
@@ -34,17 +34,17 @@ const createDocument = (req, res) => {
       }
     }).spread((docCreated, isCreated) => {
       if (isCreated) {
-        res.send({
+        res.status(200).send({
           status: 'successful'
         });
       } else {
-        res.send({
+        res.status(400).send({
           status: 'unsuccessful',
           message: 'Document already exist!',
         });
       }
     }).catch(() => {
-      res.send({
+      res.status(400).send({
         status: 'unsuccessful',
         message: 'Could not create the document!',
       });
@@ -98,8 +98,6 @@ const getUserDocuments = (req, res) => {
     if (documents.count > 0) {
       res.status(200).send({
         status: 'successful',
-        userId,
-        userName: req.query.userName,
         documents: documents.rows,
       });
     } else {

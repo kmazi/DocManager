@@ -34,7 +34,7 @@ class DocumentView extends React.Component {
       <DocumentPreview userDocuments={this.props.documents} /> :
       <p>{this.props.documentStatus}</p>;
     return (
-      <div id="doc-view-background" className="row">
+      <div id="doc-view-background" >
         {finalRender}
       </div>
     );
