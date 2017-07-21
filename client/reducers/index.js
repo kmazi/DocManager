@@ -77,7 +77,7 @@ const createDoc = (state = {
 
 const fetchDocuments = (state = {
   isReady: false,
-  status: 'Loading documents...',
+  status: 'Loading my documents...',
   documents: [],
 }, action) => {
   switch (action.type) {
@@ -94,6 +94,66 @@ const fetchDocuments = (state = {
     return Object.assign({}, state, {
       status: action.error.message,
       isReady: false,
+    });
+
+  case types.START_FETCHING_PUBLIC_DOCUMENTS:
+    return Object.assign({}, state, {
+      status: 'Loading public documents...',
+      isReady: false,
+      documents: [],
+    });
+
+  case types.DONE_FETCHING_PUBLIC_DOCUMENTS:
+    return Object.assign({}, state, {
+      isReady: true,
+      documents: action.documents,
+    });
+
+  case types.ERROR_FETCHING_PUBLIC_DOCUMENTS:
+    return Object.assign({}, state, {
+      status: action.error,
+      isReady: false,
+      documents: [],
+    });
+
+  case types.START_FETCHING_ALL_DOCUMENTS:
+    return Object.assign({}, state, {
+      status: 'Loading all documents...',
+      isReady: false,
+      documents: [],
+    });
+
+  case types.DONE_FETCHING_ALL_DOCUMENTS:
+    return Object.assign({}, state, {
+      isReady: true,
+      documents: action.documents,
+    });
+
+  case types.ERROR_FETCHING_ALL_DOCUMENTS:
+    return Object.assign({}, state, {
+      status: action.error,
+      documents: [],
+      isReady: false,
+    });
+
+  case types.START_FETCHING_ROLE_DOCUMENTS:
+    return Object.assign({}, state, {
+      status: 'Loading role documents...',
+      isReady: false,
+      documents: [],
+    });
+
+  case types.DONE_FETCHING_ROLE_DOCUMENTS:
+    return Object.assign({}, state, {
+      isReady: true,
+      documents: action.documents,
+    });
+
+  case types.ERROR_FETCHING_ROLE_DOCUMENTS:
+    return Object.assign({}, state, {
+      isReady: false,
+      documents: [],
+      status: action.error
     });
   default:
     return state;

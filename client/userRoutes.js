@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import DocumentView from './components/DocumentView.jsx';
-import UserView from './components/UserView.jsx';
-import CreateDocument from './components/CreateDocument.jsx';
+import DocumentView from './components/DocumentView';
+import UserView from './components/UserView';
+import CreateDocument from './components/CreateDocument';
 
 export default (
   <Switch>

@@ -2,7 +2,8 @@ import { createDocument,
          getAllDocuments,
          findDocument,
          getUserDocuments,
-         deleteDocument } from '../controller/documentOperations';
+         deleteDocument,
+         getAccessLevelDocuments } from '../controller/documentOperations';
 import { signUpValidation,
          signInValidation,
          verifyToken,
@@ -42,8 +43,10 @@ const routes = (router) => {
   router.get('/search/users', allowOnlyAdmin, findUsers);
   // route to fetch documents belonging to a user
   router.get('/users/:id/documents', getUserDocuments);
+  // route to get access required documents
+  router.get('/:access/documents', getAccessLevelDocuments);
   // route to get all documents
-  router.get('/documents', getAllDocuments);
+  router.get('/documents', allowOnlyAdmin, getAllDocuments);
   // route to create a new document
   router.post('/documents', createDocument);
   // route to find a specific document

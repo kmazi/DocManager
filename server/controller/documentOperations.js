@@ -51,6 +51,39 @@ const createDocument = (req, res) => {
     });
   }
 };
+const getAccessLevelDocuments = (req, res) => {
+  const searchParams = req.query;
+  const access = { access: req.params.access || 'Public' };
+  let params;
+  // check it limit and offset where passed
+  if (searchParams.offset && searchParams.limit) {
+    params = { offset: searchParams.offset,
+      limit: searchParams.limit };
+  }
+  document.findAndCountAll({
+    where: { ...access },
+    attributes: ['id', 'title', 'body', 'access', 'createdAt'],
+    ...params
+  }).then((documents) => {
+    if (documents.count > 0) {
+      res.status(200).send({
+        status: 'successful',
+        count: documents.count,
+        documents: documents.rows,
+      });
+    } else {
+      res.status(400).send({
+        status: 'unsuccessful',
+        message: 'No documents found!',
+      });
+    }
+  }).catch(() => {
+    res.status(400).send({
+      status: 'unsuccessful',
+      message: 'Could not fetch all documents!',
+    });
+  });
+};
 /**
  * function to fetch all documents from the database
  * @param {object} req - an object that contains the request body
@@ -68,13 +101,20 @@ const getAllDocuments = (req, res) => {
     attributes: ['id', 'title', 'body', 'access', 'createdAt'],
     ...params
   }).then((documents) => {
-    res.send({
-      status: 'successful',
-      count: documents.count,
-      documents: documents.rows,
-    });
+    if (documents.count > 0) {
+      res.status(200).send({
+        status: 'successful',
+        count: documents.count,
+        documents: documents.rows,
+      });
+    } else {
+      res.status(400).send({
+        status: 'unsuccessful',
+        message: 'No documents found!',
+      });
+    }
   }).catch(() => {
-    res.send({
+    res.status(400).send({
       status: 'unsuccessful',
       message: 'Could not fetch all documents!',
     });
@@ -191,4 +231,4 @@ const deleteDocument = (req, res) => {
 };
 
 export { createDocument, getAllDocuments, findDocument, getUserDocuments,
-  deleteDocument };
+  deleteDocument, getAccessLevelDocuments };

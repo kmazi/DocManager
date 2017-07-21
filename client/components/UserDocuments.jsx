@@ -12,7 +12,9 @@ const minHeight = {
   minHeight: window.innerHeight - 153 ||
   document.documentElement.clientHeight - 153
 };
-const UserDocuments = ({ userName, history,
+const token = localStorage.getItem('docmanagertoken');
+
+const UserDocuments = ({ userName, history, isAuthentic,
   getPublicDocuments, getRoleDocuments, getAllDocuments }) => (
   <section className="row">
     <div id="docheader" className="header">
@@ -23,38 +25,26 @@ const UserDocuments = ({ userName, history,
         <span className="right">Hi {userName}</span>
       </div>
       <div className="row">
-        <div className="col s8 offset-s4">
+        <div className="col m10 offset-m2">
           <button
             className="center-align waves-effect waves-light btn"
             onClick={(event) => {
               event.preventDefault();
-              getPublicDocuments().then(() => {
-                if (this.props.isAuthentic) {
-                  history.push('/user/documents');
-                }
-              });
+              getPublicDocuments(token, isAuthentic, history);
             }}
           >Public Docs</button>
           <button
             className="center-align waves-effect waves-light btn"
             onClick={(event) => {
               event.preventDefault();
-              getRoleDocuments().then(() => {
-                if (this.props.isAuthentic) {
-                  history.push('/user/documents');
-                }
-              });
+              getRoleDocuments(token, isAuthentic, history);
             }}
           >Role Docs</button>
           <button
             className="center-align waves-effect waves-light btn"
             onClick={(event) => {
               event.preventDefault();
-              getAllDocuments().then(() => {
-                if (this.props.isAuthentic) {
-                  history.push('/user/documents');
-                }
-              });
+              getAllDocuments(token, isAuthentic, history);
             }}
           >All Docs</button>
         </div>
@@ -62,13 +52,14 @@ const UserDocuments = ({ userName, history,
     </div>
 
     <div id="doccontent" className="row">
-      <div className="col s3 header" style={minHeight}>
+      <div className="col m2 header" style={minHeight}>
         <h4>Dashboard</h4>
         <hr />
         <p>
           Hi {userName} , you have created documents
         </p>
         <hr />
+        <button>My docs</button>
         <Link to="/user/documents">My docs</Link><br />
         <Link to="/user/documents/createdocument">Create docs</Link><br />
         <Link to="/user/documents/users">View all users</Link>
@@ -77,7 +68,7 @@ const UserDocuments = ({ userName, history,
           <a>search</a>
         </div>
       </div>
-      <div id="dashboard" className="col s9">
+      <div id="dashboard" className="col m10">
         <div className="row">
           <div className="col s8">
             <input type="text" placeholder="search my documents" />
@@ -98,6 +89,7 @@ const UserDocuments = ({ userName, history,
 
 UserDocuments.propTypes = {
   userName: propTypes.string.isRequired,
+  isAuthentic: propTypes.bool.isRequired,
   history: propTypes.object.isRequired,
   getPublicDocuments: propTypes.func.isRequired,
   getRoleDocuments: propTypes.func.isRequired,
@@ -106,17 +98,18 @@ UserDocuments.propTypes = {
 
 const mapStateToProps = state => ({
   userName: state.authenticateUser.userName,
+  isAuthentic: state.authenticateUser.isAuthenticated,
 });
 
 const mapDispatchToProps = dispatch => ({
-  getPublicDocuments: () => {
-    dispatch(publicDocuments());
+  getPublicDocuments: (userToken, isAuthentic, history) => {
+    dispatch(publicDocuments(userToken, isAuthentic, history));
   },
-  getRoleDocuments: () => {
-    dispatch(roleDocuments());
+  getRoleDocuments: (userToken, isAuthentic, history) => {
+    dispatch(roleDocuments(userToken, isAuthentic, history));
   },
-  getAllDocuments: () => {
-    dispatch(allDocuments());
+  getAllDocuments: (userToken, isAuthentic, history) => {
+    dispatch(allDocuments(userToken, isAuthentic, history));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(UserDocuments);

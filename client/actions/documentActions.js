@@ -43,27 +43,15 @@ export const completeGetUserDocuments = documents => ({
 export const errorGetUserDocuments = error => ({
   type: types.ERROR_GET_USER_DOCUMENT,
   error,
-});
-
-export const fetchPublicDocuments = () => ({
-  type: types.START_FETCHING_PUBLIC_DOCUMENTS,
-});
-
-export const fetchRoleDocuments = () => ({
-  type: types.START_FETCHING_ROLE_DOCUMENTS,
-});
-
-export const fetchAllDocuments = () => ({
-  type: types.START_FETCHING_ALL_DOCUMENTS,
-});
+});// done fetching own documents
 
 export const getUserDocuments = (id, token) => dispatch =>
   axios.get(`/api/v1/users/${id}/documents?token=${token}`)
-  .then((response) => {
-    dispatch(completeGetUserDocuments(response.data.documents));
-  }, ({ response }) => {
-    dispatch(errorGetUserDocuments(response.data));
-  });
+    .then((response) => {
+      dispatch(completeGetUserDocuments(response.data.documents));
+    }, ({ response }) => {
+      dispatch(errorGetUserDocuments(response.data));
+    });
 
 export const documentCreation = formValue => (dispatch) => {
   dispatch(startCreatingDocument());
@@ -71,19 +59,86 @@ export const documentCreation = formValue => (dispatch) => {
     .then((response) => {
       dispatch(doneCreatingDocument(response.data.status));
     },
-     ({ response }) =>
+    ({ response }) =>
       dispatch(errorCreatingDocument(response.data))
     );
 };
 
-export const publicDocuments = () => (dispatch) => {
-  dispatch(fetchPublicDocuments());
+// fetching public document
+export const fetchingPublicDocuments = () => ({
+  type: types.START_FETCHING_PUBLIC_DOCUMENTS,
+});
+
+export const fetchingPublicDocumentsComplete = documents => ({
+  type: types.DONE_FETCHING_PUBLIC_DOCUMENTS,
+  documents,
+});
+
+export const fetchingPublicDocumentsFailed = error => ({
+  type: types.ERROR_FETCHING_PUBLIC_DOCUMENTS,
+  error,
+}); // done fetching public document
+
+export const publicDocuments = (token, isAuthentic, history) => (dispatch) => {
+  dispatch(fetchingPublicDocuments());
+  return axios.get(`/api/v1/Public/documents?token=${token}`)
+    .then((response) => {
+      dispatch(fetchingPublicDocumentsComplete(response.data.documents));
+      history.push('/user/documents');
+    },
+    ({ response }) => {
+      dispatch(fetchingPublicDocumentsFailed(response.data.message));
+    });
 };
 
-export const roleDocuments = () => (dispatch) => {
+// start fetching role documents
+export const fetchRoleDocuments = () => ({
+  type: types.START_FETCHING_ROLE_DOCUMENTS,
+});
+
+export const fetchRoleDocumentsComplete = documents => ({
+  type: types.DONE_FETCHING_ROLE_DOCUMENTS,
+  documents,
+});
+
+export const fetchRoleDocumentsFailed = error => ({
+  type: types.ERROR_FETCHING_ROLE_DOCUMENTS,
+  error,
+});
+// done fetching role documents
+export const roleDocuments = (token, isAuthentic, history) => (dispatch) => {
   dispatch(fetchRoleDocuments());
+  return axios.get(`/api/v1/Role/documents?token=${token}`).then((response) => {
+    dispatch(fetchRoleDocumentsComplete(response.data.documents));
+    history.push('/user/documents');
+  },
+    ({ response }) => {
+      dispatch(fetchRoleDocumentsFailed(response.data.message));
+    });
 };
 
-export const allDocuments = () => (dispatch) => {
+// start fetching all documents
+export const fetchAllDocuments = () => ({
+  type: types.START_FETCHING_ALL_DOCUMENTS,
+});
+
+export const fetchAllDocumentsComplete = documents => ({
+  type: types.DONE_FETCHING_ALL_DOCUMENTS,
+  documents,
+});
+
+export const fetchAllDocumentsFailed = error => ({
+  type: types.ERROR_FETCHING_ALL_DOCUMENTS,
+  error
+});// done fetching all documents
+
+export const allDocuments = (token, isAuthentic, history) => (dispatch) => {
   dispatch(fetchAllDocuments());
+  return axios.get(`/api/v1/documents?token=${token}`).then((response) => {
+    dispatch(fetchAllDocumentsComplete(response.data.documents));
+    history.push('/user/documents');
+  },
+    ({ response }) => {
+      dispatch(fetchAllDocumentsFailed(response.data.message));
+    });
 };

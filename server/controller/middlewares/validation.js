@@ -56,6 +56,9 @@ const verifyToken = (req, res, next) => {
 const allowOnlyAdmin = (req, res, next) => {
   const userDetails = req.body.user;
   userRole.findById(userDetails.roleId).then((role) => {
+    console.log('.......................', role);
+    console.log('.......................roletype', role.roletype === 'Admin');
+    console.log('.......................username', userDetails.userName === 'touchstone');
     if (role.roletype === 'Admin' && userDetails.userName === 'touchstone') {
       next();
     } else {
@@ -73,7 +76,8 @@ const allowOnlyAdmin = (req, res, next) => {
 };
 /**
  * Middleware functionality to check for null or empty form fields
- * @param {string} formfield - the input to validate
+ * @param {string} value - the input value to validate
+ * @param {string} formField - the input to validate
  * @return {object} returns an object that contain validation status an
  * error messages if any
  */
