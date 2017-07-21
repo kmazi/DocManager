@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 
 import App from '../components/App';
-import DevTools from './DevTools';
+// import DevTools from './DevTools';
 /**
  * The entry point of the redux application
  * @param {object} store - It contains the state of the application
@@ -18,7 +18,7 @@ export default function Root({ store, history }) {
         <ConnectedRouter history={history}>
           <Route path="/" component={App} />
         </ConnectedRouter>
-        <DevTools />
+        {/* <DevTools /> */}
       </div>
     </Provider>
   );
