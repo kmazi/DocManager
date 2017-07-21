@@ -77,8 +77,8 @@ export const signUserUp = user => (dispatch) => {
   dispatch(startSignUpUser());
   return axios.post('/api/v1/users', user)
     .then((response) => {
-      dispatch(finishSignUpUser(response.data));
       localStorage.setItem('docmanagertoken', response.data.token);
+      dispatch(finishSignUpUser(response.data));
     },
     ({ response }) => {
       dispatch(errorSignUpUser(response.data.message));

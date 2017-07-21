@@ -51,14 +51,23 @@ const createDocument = (req, res) => {
     });
   }
 };
+/**
+ * function to get documents that are protected by role
+ * @param {object} req - an object that contains the request body
+ * @param {object} res - an object that contains the response body
+ * @return {boolean} it returns true if the document was created
+ * and false otherwise
+ */
 const getAccessLevelDocuments = (req, res) => {
   const searchParams = req.query;
   const access = { access: req.params.access || 'Public' };
   let params;
   // check it limit and offset where passed
   if (searchParams.offset && searchParams.limit) {
-    params = { offset: searchParams.offset,
-      limit: searchParams.limit };
+    params = {
+      offset: searchParams.offset,
+      limit: searchParams.limit
+    };
   }
   document.findAndCountAll({
     where: { ...access },
@@ -188,6 +197,42 @@ const findDocument = (req, res) => {
   }
 };
 
+const updateDocument = (req, res) => {
+  const documentId = req.params.id;
+  if (documentId > 0 && Number.isInteger(Number(req.params.id))) {
+    document.update({
+      title: req.body.title,
+      body: req.body.body,
+      access: req.body.access,
+    }, {
+      where: {
+        id: documentId,
+      }
+    }).then((result) => {
+      if (result > 0) {
+        res.status(200).send({
+          status: 'successful',
+        });
+      } else {
+        res.status(200).send({
+          status: 'unsuccessful',
+        });
+      }
+    }).catch((err) => {
+      res.status(400).send({
+        status: 'unsuccessful',
+        message: 'Could not find any document to update!',
+        err
+      });
+    });
+  } else {
+    res.status(400).send({
+      status: 'unsuccessful',
+      message: 'No document found!',
+    });
+  }
+};
+
 /**
  * Delete a specific document
  * @param {object} req - The request object from express server
@@ -199,36 +244,38 @@ const deleteDocument = (req, res) => {
   if (documentId > 0 && Number.isInteger(Number(req.params.id))) {
     document.findById(documentId).then((knownDocument) => {
       if (knownDocument === null) {
-        res.send({
+        res.status(400).send({
           status: 'unsuccessful',
           message: 'Could not find any document!',
         });
       } else {
         knownDocument.destroy().then(() => {
-          res.send({
+          res.status(200).send({
             status: 'successful',
             message: `"${knownDocument.title}" has been deleted!`,
           });
         }).catch(() => {
-          res.send({
+          res.status(400).send({
             status: 'unsuccessful',
             message: 'Could not delete the document!',
           });
         });
       }
     }).catch(() => {
-      res.send({
+      res.status(400).send({
         status: 'unsuccessful',
         message: 'No document found!',
       });
     });
   } else {
-    res.send({
+    res.status(400).send({
       status: 'unsuccessful',
       message: 'No document found!',
     });
   }
 };
 
-export { createDocument, getAllDocuments, findDocument, getUserDocuments,
-  deleteDocument, getAccessLevelDocuments };
+export {
+  createDocument, getAllDocuments, findDocument, getUserDocuments,
+  deleteDocument, getAccessLevelDocuments, updateDocument
+};
