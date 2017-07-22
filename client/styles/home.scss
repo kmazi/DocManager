@@ -4,6 +4,34 @@ $contentpadding: 5px;
 section {
 	color: #f1f2f2;
 }
+.bkgImage{
+	background: rgb(62,111,111);
+	background: linear-gradient(#335d5d,#2d6363,#396868);
+	background: url('../assets/images/officedoc.jpg') center/cover;
+	position: relative;
+
+	.homescreen{
+	width: 50%;
+	background: rgba(55,99,99,0.8);
+	padding-bottom: 15px;
+	border-radius: 10px;
+		h1.center-align{
+			font-size: 90px;
+			margin-top: 100px;
+		}
+		#gettingstarted{
+			margin-left: 40%;
+			margin-right: auto;
+		}
+	}
+
+	#mainoverlay{
+		position: absolute;
+		background: rgba(62,111,111, 0.5);
+		top: 0;
+		left: 0;
+	}
+}
 .header {
 	background: $shadebackground;
 	padding: $contentpadding;
@@ -35,20 +63,8 @@ footer {
 	width: 100%;
 	bottom: 0;
 }
-h1.center-align{
-	font-size: 100px;
-	margin-top: 130px;
-}
 label{
 	padding-right: 10px;
-}
-.homescreen{
-	width: 50%;
-
-	#gettingstarted{
-		margin-left: 40%;
-		margin-right: auto;
-	}
 }
 .forminput {
 	padding-left: 5px;
@@ -58,17 +74,6 @@ label{
 }
 span[data-id=authspan]{
 	color: red;
-}
-.bkgImage{
-	background: green url('../assets/images/officedoc.jpg') center/cover;
-	position: relative;
-
-	#mainoverlay{
-		position: absolute;
-		background: rgba(7,31,36,0.5);
-		top: 0;
-		left: 0;
-	}
 }
 .signform{
 	width: 500px;

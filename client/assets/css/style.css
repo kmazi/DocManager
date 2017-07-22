@@ -6861,6 +6861,28 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
 section {
   color: #f1f2f2; }
 
+.bkgImage {
+  background: #3e6f6f;
+  background: linear-gradient(#335d5d, #2d6363, #396868);
+  background: url(/Users/andeladeveloper/Documents/AndelaProjects/DocManager/client/assets786deea405474f5ebfe40c4b3a4777f5.jpg) center/cover;
+  position: relative; }
+  .bkgImage .homescreen {
+    width: 50%;
+    background: rgba(55, 99, 99, 0.8);
+    padding-bottom: 15px;
+    border-radius: 10px; }
+    .bkgImage .homescreen h1.center-align {
+      font-size: 90px;
+      margin-top: 100px; }
+    .bkgImage .homescreen #gettingstarted {
+      margin-left: 40%;
+      margin-right: auto; }
+  .bkgImage #mainoverlay {
+    position: absolute;
+    background: rgba(62, 111, 111, 0.5);
+    top: 0;
+    left: 0; }
+
 .header {
   background: linear-gradient(rgba(7, 31, 36, 0.9), #171a17, rgba(7, 31, 36, 0.9));
   padding: 5px; }
@@ -6888,18 +6910,8 @@ footer {
   width: 100%;
   bottom: 0; }
 
-h1.center-align {
-  font-size: 100px;
-  margin-top: 130px; }
-
 label {
   padding-right: 10px; }
-
-.homescreen {
-  width: 50%; }
-  .homescreen #gettingstarted {
-    margin-left: 40%;
-    margin-right: auto; }
 
 .forminput {
   padding-left: 5px; }
@@ -6909,15 +6921,6 @@ label {
 
 span[data-id=authspan] {
   color: red; }
-
-.bkgImage {
-  background: green url(/Users/andeladeveloper/Documents/AndelaProjects/DocManager/client/assets786deea405474f5ebfe40c4b3a4777f5.jpg) center/cover;
-  position: relative; }
-  .bkgImage #mainoverlay {
-    position: absolute;
-    background: rgba(7, 31, 36, 0.5);
-    top: 0;
-    left: 0; }
 
 .signform {
   width: 500px;
