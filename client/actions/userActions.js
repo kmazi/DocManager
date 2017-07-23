@@ -37,9 +37,12 @@ export const signInUser = user => (dispatch) => {
     .then((response) => {
       localStorage.setItem('docmanagertoken', response.data.token);
       dispatch(finishSignInUser(response.data));
+      return response.data;
     },
-     ({ response }) =>
-      dispatch(errorSignInUser(response.data.message))
+     ({ response }) => {
+       dispatch(errorSignInUser(response.data.message));
+       return response.data;
+     }
     );
 };
 /**
@@ -77,10 +80,12 @@ export const signUserUp = user => (dispatch) => {
   dispatch(startSignUpUser());
   return axios.post('/api/v1/users', user)
     .then((response) => {
-      dispatch(finishSignUpUser(response.data));
       localStorage.setItem('docmanagertoken', response.data.token);
+      dispatch(finishSignUpUser(response.data));
+      return response.data;
     },
     ({ response }) => {
       dispatch(errorSignUpUser(response.data.message));
+      return response.data;
     });
 };

@@ -6868,7 +6868,7 @@ section {
   position: relative; }
   .bkgImage .homescreen {
     width: 50%;
-    background: rgba(55, 99, 99, 0.8);
+    background: rgba(55, 99, 99, 0.9);
     padding-bottom: 15px;
     border-radius: 10px; }
     .bkgImage .homescreen h1.center-align {
@@ -6877,19 +6877,28 @@ section {
     .bkgImage .homescreen #gettingstarted {
       margin-left: 40%;
       margin-right: auto; }
+  .bkgImage #signupform div {
+    margin-bottom: 15px; }
   .bkgImage #mainoverlay {
     position: absolute;
-    background: rgba(62, 111, 111, 0.5);
+    background: rgba(62, 111, 111, 0.7);
     top: 0;
     left: 0; }
 
 .header {
-  background: linear-gradient(rgba(7, 31, 36, 0.9), #171a17, rgba(7, 31, 36, 0.9));
-  padding: 5px; }
-  .header span {
-    padding: 5px; }
+  background: linear-gradient(#335d5d, #2d6363, #396868); }
+  .header span.left {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 40px; }
   .header button {
-    margin-right: 5px; }
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px; }
+  .header span.right {
+    background: white;
+    margin: 5px;
+    padding: 10px; }
+    .header span.right a:hover {
+      text-decoration: underline; }
 
 textarea {
   height: 40%; }
@@ -6898,13 +6907,13 @@ textarea {
   min-height: inherit; }
 
 .docbackground {
-  background: linear-gradient(rgba(7, 31, 36, 0.9), #171a17, rgba(7, 31, 36, 0.9)); }
+  background: linear-gradient(#335d5d, #2d6363, #396868); }
 
 #doccontent.header a {
   display: block; }
 
 footer {
-  background: linear-gradient(rgba(7, 31, 36, 0.9), #171a17, rgba(7, 31, 36, 0.9));
+  background: linear-gradient(#335d5d, #2d6363, #396868);
   min-height: 35px;
   position: fixed;
   width: 100%;

@@ -1,18 +1,18 @@
-$backgroundcolor: rgba(7,31,36,1);
-$shadebackground: linear-gradient(rgba(7,31,36,0.9), #171a17, rgba(7,31,36,0.9));
+$backgroundcolor: rgb(62,111,111);
+$shadebackground: linear-gradient(#335d5d,#2d6363,#396868);
 $contentpadding: 5px;
 section {
 	color: #f1f2f2;
 }
 .bkgImage{
-	background: rgb(62,111,111);
-	background: linear-gradient(#335d5d,#2d6363,#396868);
+	background: $backgroundcolor;
+	background: $shadebackground;
 	background: url('../assets/images/officedoc.jpg') center/cover;
 	position: relative;
 
 	.homescreen{
 	width: 50%;
-	background: rgba(55,99,99,0.8);
+	background: rgba(55,99,99,0.9);
 	padding-bottom: 15px;
 	border-radius: 10px;
 		h1.center-align{
@@ -24,24 +24,34 @@ section {
 			margin-right: auto;
 		}
 	}
+	#signupform div{
+		margin-bottom: 15px;
+	}
 
 	#mainoverlay{
 		position: absolute;
-		background: rgba(62,111,111, 0.5);
+		background: rgba(62,111,111, 0.7);
 		top: 0;
 		left: 0;
 	}
 }
 .header {
 	background: $shadebackground;
-	padding: $contentpadding;
-	
-	span{
-		padding: $contentpadding;
+	span.left{
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		font-size: 40px;
 	}
-
 	button{
-		margin-right: $contentpadding;
+		border-top-left-radius: 20px;
+		border-top-right-radius: 20px;
+	}
+	span.right{
+		background: white;
+		margin: 5px;
+		padding: 10px;
+		a:hover{
+			text-decoration: underline;
+		}
 	}
 }
 textarea{

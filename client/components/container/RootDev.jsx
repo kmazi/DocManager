@@ -9,6 +9,7 @@ import DevTools from '../presentation/DevTools';
 /**
  * The entry point of the redux application
  * @param {object} store - It contains the state of the application
+ * @param {object} history - It holds the browser history
  * @return {oject} The entire html to render to the browser
  */
 const Root = ({ store, history }) => (

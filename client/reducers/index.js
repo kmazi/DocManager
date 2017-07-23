@@ -8,7 +8,7 @@ const authenticateUser = (state = {
   signUpStatus: 'Sign Up',
   userName: 'Guest',
   errors: [],
-  isAuthenticated: false,
+  status: 'unsuccessful',
 }, action) => {
   switch (action.type) {
   case types.START_SIGNUP:
@@ -20,15 +20,17 @@ const authenticateUser = (state = {
       signUpStatus: 'Sign Up',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
-      isAuthenticated: true,
+      status: 'successful',
       errors: [],
     });
   case types.FAILED_SIGNUP:
     return Object.assign({}, state, {
       documents: [],
-      status: 'Sign Up',
+      signUpStatus: 'Sign Up',
       errors: action.errors,
+      status: 'unsuccessful',
     });
+
   case types.START_SIGNIN:
     return Object.assign({}, state, {
       signInStatus: 'Signing In...',
@@ -38,14 +40,15 @@ const authenticateUser = (state = {
       signInStatus: 'Sign In',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
-      isAuthenticated: true,
+      status: 'successful',
+      errors: [],
     });
   case types.FAILED_SIGNIN:
     return Object.assign({}, state, {
       documents: [],
       signInStatus: 'Sign In',
       errors: action.errors,
-      isAuthenticated: false,
+      status: 'unsuccessful',
     });
   default:
     return state;

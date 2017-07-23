@@ -56,9 +56,6 @@ const verifyToken = (req, res, next) => {
 const allowOnlyAdmin = (req, res, next) => {
   const userDetails = req.body.user;
   userRole.findById(userDetails.roleId).then((role) => {
-    console.log('.......................', role);
-    console.log('.......................roletype', role.roletype === 'Admin');
-    console.log('.......................username', userDetails.userName === 'touchstone');
     if (role.roletype === 'Admin' && userDetails.userName === 'touchstone') {
       next();
     } else {
@@ -86,13 +83,13 @@ const generalValidation = (value, formField) => {
   // check for null and empty fields
   if (value === null || value === '' || typeof value === 'undefined') {
     user.status = 'unsuccessful';
-    user.message.push(`Empty or undefined ${formField} field!`);
+    user.message.push(`\nEmpty or undefined ${formField} field!`);
     return user;
   }
   // check to see if script characters are included
   if (value.includes('<') || value.includes('>')) {
     user.status = 'unsuccessful';
-    user.message.push('Invalid input character(s)');
+    user.message.push('\nInvalid input character(s)');
   }
   return user;
 };
@@ -112,7 +109,7 @@ const validateEmail = (inputEmail, formField) => {
       /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g);
     if (!foundMatch) {
       email.status = 'unsuccessful';
-      email.message.push('Email has got wrong format');
+      email.message.push('\nEmail has got wrong format');
     }
   }
   return email;
@@ -121,6 +118,7 @@ const validateEmail = (inputEmail, formField) => {
 /**
  * Validate the user password input
  * @param {string} inputPassword - The input password to validate
+ * @param {string} formField - The formfield name to validate
  * @return {object} returns an object that contain validation status an
  * error messages if any
  */
@@ -130,7 +128,7 @@ const validatePassword = (inputPassword, formField) => {
   if (password.status === 'successful') {
     if (inputPassword.length < 6 || inputPassword.length > 20) {
       password.status = 'unsuccessful';
-      password.message.push('Password length must be between 6 and 20');
+      password.message.push('\nPassword length must be between 6 and 20');
     }
   }
   return password;
@@ -154,12 +152,12 @@ const signInValidation = (req, res, next) => {
     } else {
       err.status = 'unsuccessful';
       err.message = err.message.concat(...userNameValidation.message,
-        ...passwordValidation.message);
+        ...['\nWrong password']);
       res.status(400).send(err);
     }
   } else {
     err.status = 'unsuccessful';
-    err.message.push('Empty forms are not allowed!');
+    err.message.push('\nEmpty forms are not allowed!');
     res.status(400).send(err);
   }
 };
@@ -181,7 +179,13 @@ const signUpValidation = (req, res, next) => {
     if (userNameValidation.status === 'successful' &&
       passwordValidation.status === 'successful' &&
       emailValidation.status === 'successful') {
-      next();
+      if (req.body.roleId > 0 && req.body.roleId < 5) {
+        next();
+      } else {
+        err.status = 'unsuccessful';
+        err.message.push('\nInvalid role!');
+        res.status(400).send(err);
+      }
     } else {
       err.status = 'unsuccessful';
       err.message = err.message.concat(...userNameValidation.message,
@@ -191,7 +195,7 @@ const signUpValidation = (req, res, next) => {
     }
   } else {
     err.status = 'unsuccessful';
-    err.message.push('Empty fields are not allowed');
+    err.message.push('\nEmpty fields are not allowed');
     res.status(400).send(err);
   }
 };

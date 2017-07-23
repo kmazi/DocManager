@@ -1,6 +1,11 @@
 import React from 'react';
-import Authenticate from '../container/Authenticate';
 
+import Auth from '../container/Auth';
+
+/**
+ * Renders the home screen of the application
+ * @return {object} - Returns the html to render
+ */
 const home = () => (
   <div className="row homescreen">
     <h1 className="center-align">DocManager</h1>
@@ -8,7 +13,7 @@ const home = () => (
       Create, secure and access documents
       from anywhere in the world.
     </p>
-    <Authenticate />
+    <Auth />
   </div>
   );
 export default home;
