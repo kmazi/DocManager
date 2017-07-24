@@ -1,8 +1,15 @@
 $backgroundcolor: rgb(62,111,111);
-$shadebackground: linear-gradient(#335d5d,#2d6363,#396868);
+$shadebackground: linear-gradient(#335d5d,#2d6363,#396868,#335d5d);
+$authbackground: rgba(55,99,99,0.9);
+$btncolor: #26a69a;
+$btnhover: #2bbbad;
 $contentpadding: 5px;
+$docviewfontsize: 70px;
 section {
 	color: #f1f2f2;
+}
+.row{
+	margin-bottom: 0;
 }
 .bkgImage{
 	background: $backgroundcolor;
@@ -12,7 +19,7 @@ section {
 
 	.homescreen{
 	width: 50%;
-	background: rgba(55,99,99,0.9);
+	background: $authbackground;
 	padding-bottom: 15px;
 	border-radius: 10px;
 		h1.center-align{
@@ -41,8 +48,8 @@ section {
 		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 		font-size: 40px;
 	}
-	button{
-		border-top-left-radius: 20px;
+	button, a{
+		border-top-left-radius: 15px;
 		border-top-right-radius: 20px;
 	}
 	span.right{
@@ -54,6 +61,72 @@ section {
 		}
 	}
 }
+#doccontent{
+	min-height: inherit;
+	h5,h8{
+		width: 100%;
+		display: inline-block;
+	}
+	button{
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		margin-top: 5px;
+	}
+	strong{
+		padding: 3px;
+		display: inline-block;
+		background: $btncolor;
+		border-radius: 7px;
+	}
+	.header{
+		min-height: inherit;
+	}
+	#contentdisplay{
+		min-height: inherit;
+		div.container{
+			width: 90%;
+			background: $authbackground;
+			padding: 20px;
+		}
+	}
+	a{
+		display: block;
+		background: $btncolor;
+		margin: 4px 0;
+		padding: 4px;
+		color: inherit;
+	}
+	a:hover{
+		background: $btnhover;
+	}
+	a:focus{
+		background: #1d7d74;
+	}
+	#docview{
+		div{
+			background: $backgroundcolor;
+			padding: 5px;
+			margin: 5px;
+			h6{
+				font-weight: bold;
+			}
+			button{
+				background: $btncolor;
+			}
+			button:hover{
+				background: $btnhover;
+			}
+		}
+	}
+	p#status{
+		font-size: $docviewfontsize;
+		margin: 100px 60px;;
+	}
+	.docicon{
+		display: block;
+		font-size: $docviewfontsize;
+	}
+}
 textarea{
 	height: 40%;
 }
@@ -62,9 +135,6 @@ textarea{
 }
 .docbackground{
 	background: $shadebackground;
-}
-#doccontent.header a{
-	display: block;
 }
 footer {
 	background: $shadebackground;

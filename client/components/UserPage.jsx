@@ -6,24 +6,31 @@ import userRoutes from '../userRoutes';
 
 import { publicDocuments,
   roleDocuments,
-  allDocuments } from '../actions/documentActions';
+  allDocuments,
+  getUserDocuments } from '../actions/documentActions';
 
 const minHeight = {
-  minHeight: window.innerHeight - 153 ||
-  document.documentElement.clientHeight - 153
+  minHeight: window.innerHeight - 131 ||
+  document.documentElement.clientHeight - 131
 };
-const token = localStorage.getItem('docmanagertoken');
 const signOut = (event, history) => {
   event.preventDefault();
-  if (token) {
+  if (localStorage.getItem('docmanagertoken')) {
     localStorage.removeItem('docmanagertoken');
   }
   history.push('/');
 };
 
-const UserPage = ({ userName, history, isAuthentic,
-  getPublicDocuments, getRoleDocuments, getAllDocuments }) => (
-    <section className="row">
+const fetchUserDocs = (event, getUserDocs, userId, history) => {
+  event.preventDefault();
+  getUserDocs(userId, localStorage.getItem('docmanagertoken'));
+  history.push('/user/documents');
+};
+
+const UserPage = ({ userName, userId, history, isAuthentic,
+  getPublicDocuments, getRoleDocuments,
+  getUserDocs, getAllDocuments }) => (
+    <section className="row" style={minHeight}>
       <div id="docheader" className="header">
         <span className="left">DocManager</span>
         <span className="right">
@@ -32,7 +39,8 @@ const UserPage = ({ userName, history, isAuthentic,
             onClick={(event) => {
               signOut(event, history);
             }}
-          >Hi {userName}! Sign Out</a>
+          >Hi {userName}! Sign Out&nbsp;
+          <i className="fa fa-sign-out" aria-hidden="true" /></a>
         </span>
         <div className="row">
           <div className="col m10 offset-m2">
@@ -41,23 +49,26 @@ const UserPage = ({ userName, history, isAuthentic,
               className="btn"
               onClick={(event) => {
                 event.preventDefault();
-                getPublicDocuments(token, isAuthentic, history);
+                getPublicDocuments(localStorage.getItem('docmanagertoken'),
+                isAuthentic, history);
               }}
             >Public Documents&nbsp;
-            <i className="fa fa-file-text-o" aria-hidden="true" /></button>
+            <i className="fa fa-globe" aria-hidden="true" /></button>
             <button
               className="btn"
               onClick={(event) => {
                 event.preventDefault();
-                getRoleDocuments(token, isAuthentic, history);
+                getRoleDocuments(localStorage.getItem('docmanagertoken'),
+                isAuthentic, history);
               }}
             >Role Documents&nbsp;
-              <i className="fa fa-file-archive-o" aria-hidden="true" /></button>
+              <i className="fa fa-key" aria-hidden="true" /></button>
             <button
               className="btn"
               onClick={(event) => {
                 event.preventDefault();
-                getAllDocuments(token, isAuthentic, history);
+                getAllDocuments(localStorage.getItem('docmanagertoken'),
+                isAuthentic, history);
               }}
             >All Documents&nbsp;
             <i className="fa fa-file-archive-o" aria-hidden="true" /></button>
@@ -66,31 +77,38 @@ const UserPage = ({ userName, history, isAuthentic,
       </div>
 
       <div id="doccontent" className="row">
-        <div className="col m2 header" style={minHeight}>
-          <h5>Dashboard</h5>
-          <hr />
+        <div className="col m2 header" >
+          <h5 className="btn">Dashboard&nbsp;
+            <i className="fa fa-tasks" aria-hidden="true" />
+          </h5>
           <p>
-            Hi {userName} , you have created documents
+            Hi {userName} , Welcome to your document manager board.<br />
+            You have created <strong>10</strong> documents
           </p>
           <hr />
-          <Link to="/user/documents">My docs</Link><br />
-          <Link to="/user/documents/createdocument">Create docs</Link><br />
-          <Link to="/user/documents/users">View all users</Link>
-          <div>
-            <input type="text" placeholder="search own documents" />
-            <a>search</a>
-          </div>
+          <h8 className="center-align">My Documents&nbsp;
+            <i className="fa fa-tasks" aria-hidden="true" />
+          </h8><hr />
+          <a
+            className="center-align"
+            onClick={(event) => {
+              fetchUserDocs(event, getUserDocs, userId, history);
+            }}
+            href="/user/documents"
+          >
+          View&nbsp;
+            <i className="fa fa-lock" aria-hidden="true" />
+          </a>
+          <Link className="center-align" to="/user/documents/createdocument">
+          Create&nbsp;
+            <i className="fa fa-pencil-square-o" aria-hidden="true" />
+          </Link>
+          <Link className="center-align" to="/user/documents/users">
+          Profile&nbsp;
+          <i className="fa fa-user" aria-hidden="true" /></Link>
         </div>
-        <div id="dashboard" className="col m10">
-          <div className="row">
-            <div className="col s8">
-              <input type="text" placeholder="search my documents" />
-            </div>
-            <div className="col s2">
-              <i className="fa fa-search-plus small" aria-hidden="true">Search</i>
-            </div>
-          </div>
-          <div>
+        <div id="contentdisplay" className="col m10">
+          <div className="container">
             {userRoutes}
           </div>
         </div>
@@ -102,6 +120,7 @@ const UserPage = ({ userName, history, isAuthentic,
 
 UserPage.propTypes = {
   userName: propTypes.string.isRequired,
+  userId: propTypes.number.isRequired,
   isAuthentic: propTypes.bool.isRequired,
   history: propTypes.shape({
     push: propTypes.func.isRequired,
@@ -109,10 +128,13 @@ UserPage.propTypes = {
   getPublicDocuments: propTypes.func.isRequired,
   getRoleDocuments: propTypes.func.isRequired,
   getAllDocuments: propTypes.func.isRequired,
+  getUserDocs: propTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   userName: state.authenticateUser.userName,
+  userId: state.authenticateUser.userId,
+  isAuthentic: state.authenticateUser.status === 'successful',
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -121,6 +143,9 @@ const mapDispatchToProps = dispatch => ({
   },
   getRoleDocuments: (userToken, isAuthentic, history) => {
     dispatch(roleDocuments(userToken, isAuthentic, history));
+  },
+  getUserDocs: (id, tokenString) => {
+    dispatch(getUserDocuments(id, tokenString));
   },
   getAllDocuments: (userToken, isAuthentic, history) => {
     dispatch(allDocuments(userToken, isAuthentic, history));

@@ -20,7 +20,8 @@ const createToken = user => JwtToken.sign(user,
  * @return {null} Returns void
  */
 const verifyToken = (req, res, next) => {
-  const token = req.body.token || req.query.token || '';
+  const token = req.body.token || req.query.token ||
+  req.header.token || '';
   JwtToken.verify(token, process.env.SUPERSECRET, (err, verifiedToken) => {
     if (err) {
       res.status(400).send({
@@ -29,7 +30,9 @@ const verifyToken = (req, res, next) => {
       });
     } else {
       userModel.findOne({
-        where: { username: verifiedToken.userName }
+        where: {
+          username: verifiedToken.userName,
+          id: verifiedToken.userId }
       }).then((user) => {
         if (!user) {
           return res.status(400).send({

@@ -7,9 +7,11 @@ import SignUpForm from './SignupForm';
 
  /**
    * shows or hides the signin form
+   * @param {object} event - Contains information about the button clicked
    * @return {null} returns void
    */
-const showSignInForm = () => {
+const showSignInForm = (event) => {
+  event.preventDefault();
   const signInForm = $('#signinform');
   const signUpForm = $('#signupform');
   signUpForm.slideUp(400, () => {
@@ -19,9 +21,11 @@ const showSignInForm = () => {
 
 /**
    * shows or hides the signup form
+   * @param {object} event - Contains information about the button clicked
    * @return {null} returns void
    */
-const showSignUpForm = () => {
+const showSignUpForm = (event) => {
+  event.preventDefault();
   const signInForm = $('#signinform');
   const signUpForm = $('#signupform');
   signInForm.slideUp(400, () => {
@@ -34,21 +38,21 @@ const showSignUpForm = () => {
  * @return {object} Returns the authentication form to render
  */
 const Authenticate = ({ history, signInUser, signUserUp,
-  signInButtonText, signUpButtonText }) => (
+  signInButtonText, signUpButtonText, getUserDocuments }) => (
     <div className="container">
       <div id="authbuttons" className="row">
         <div className="col s6">
           <span
             className="a center-align waves-effect waves-light btn"
             href="/"
-            onClick={() => { showSignInForm(); }}
+            onClick={(event) => { showSignInForm(event); }}
           >SignIn</span>
         </div>
         <div className="col s6">
           <span
             className="a center-align waves-effect waves-light btn"
             href="/"
-            onClick={() => { showSignUpForm(); }}
+            onClick={(event) => { showSignUpForm(event); }}
           >SignUp</span>
         </div>
       </div>
@@ -58,12 +62,14 @@ const Authenticate = ({ history, signInUser, signUserUp,
           history={history}
           signInUser={signInUser}
           signInButtonText={signInButtonText}
+          getUserDocuments={getUserDocuments}
         />
 
         <SignUpForm
           signUserUp={signUserUp}
           history={history}
           signUpButtonText={signUpButtonText}
+          getUserDocuments={getUserDocuments}
         />
       </div>
     </div>
@@ -74,6 +80,7 @@ Authenticate.propTypes = {
   signUpButtonText: PropTypes.string.isRequired,
   signUserUp: PropTypes.func.isRequired,
   signInUser: PropTypes.func.isRequired,
+  getUserDocuments: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,

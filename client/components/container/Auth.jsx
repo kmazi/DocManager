@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import Authenticate from '../presentation/Authenticate';
 import { signInUser, signUserUp } from '../../actions/userActions';
+import { getUserDocuments } from '../../actions/documentActions';
 
 // Maps the application state to component properties
 const mapStateToProps = state => ({
@@ -11,4 +12,4 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps,
-  { signUserUp, signInUser })(withRouter(Authenticate));
+  { signUserUp, signInUser, getUserDocuments })(withRouter(Authenticate));

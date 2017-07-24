@@ -26,6 +26,16 @@ export const errorCreatingDocument = error => ({
   type: types.ERROR_CREATING_DOCUMENT,
   error
 });
+export const documentCreation = formValue => (dispatch) => {
+  dispatch(startCreatingDocument());
+  return axios.post('/api/v1/documents', formValue)
+    .then((response) => {
+      dispatch(doneCreatingDocument(response.data.status));
+    },
+    ({ response }) =>
+      dispatch(errorCreatingDocument(response.data))
+    );
+};
 /**
  * Starts creating documents
  * @param {object} documents - An array of documents from api
@@ -44,24 +54,20 @@ export const errorGetUserDocuments = error => ({
   type: types.ERROR_GET_USER_DOCUMENT,
   error,
 });// done fetching own documents
-
-export const getUserDocuments = (id, token) => dispatch =>
-  axios.get(`/api/v1/users/${id}/documents?token=${token}`)
+/**
+ *
+ * @param {number} id - The user ID used to fetch documents
+ * @param {string} token - The authentication token
+ * @return {object} Returns an object response from the server
+ */
+export const getUserDocuments = (id, token) => (dispatch) => {
+  dispatch(startGetUserDocuments());
+  return axios.get(`/api/v1/users/${id}/documents?token=${token}`)
     .then((response) => {
       dispatch(completeGetUserDocuments(response.data.documents));
     }, ({ response }) => {
       dispatch(errorGetUserDocuments(response.data));
     });
-
-export const documentCreation = formValue => (dispatch) => {
-  dispatch(startCreatingDocument());
-  return axios.post('/api/v1/documents', formValue)
-    .then((response) => {
-      dispatch(doneCreatingDocument(response.data.status));
-    },
-    ({ response }) =>
-      dispatch(errorCreatingDocument(response.data))
-    );
 };
 
 // fetching public document

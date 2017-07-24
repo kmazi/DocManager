@@ -34,6 +34,7 @@ const authenticateUser = (state = {
   case types.START_SIGNIN:
     return Object.assign({}, state, {
       signInStatus: 'Signing In...',
+      status: 'unsuccessful',
     });
   case types.SUCCESSFUL_SIGNIN:
     return Object.assign({}, state, {
@@ -87,6 +88,8 @@ const fetchDocuments = (state = {
   case types.START_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       isReady: false,
+      documents: [],
+      status: 'Loading my documents...',
     });
   case types.SUCCESS_GET_USER_DOCUMENT:
     return Object.assign({}, state, {

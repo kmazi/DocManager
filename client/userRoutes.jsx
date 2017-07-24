@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import DocumentView from './components/DocumentView';
+import DocumentView from './components/presentation//DocumentView';
 import UserView from './components/UserView';
 import CreateDocument from './components/CreateDocument';
 

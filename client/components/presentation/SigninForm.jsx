@@ -10,9 +10,11 @@ import Alert from 'sweetalert2';
    * triggered an event
    * @param {object} history - The browser and state history
    * @param {func} signInUser - Function that executes when signing the user in
+   * @param {func} getUserDocuments - Function that executes when
+   * fetching documents belonging to a particular user
    * @return {null} returns void
    */
-const signUserIn = (event, history, signInUser) => {
+const signUserIn = (event, history, signInUser, getUserDocuments) => {
   // prevent the default behaviour of the button
   event.preventDefault();
   // Get the input values
@@ -23,6 +25,7 @@ const signUserIn = (event, history, signInUser) => {
   signInUser(formData)
     .then((res) => {
       if (res.status === 'successful') {
+        getUserDocuments(res.userId, res.token);
         history.push('/user/documents');
       } else {
         Alert({
@@ -42,7 +45,7 @@ const signUserIn = (event, history, signInUser) => {
  * @return {object} Returns the signin form to render
  */
 const SigninForm = ({ history, signInUser,
-  signInButtonText }) => (
+  signInButtonText, getUserDocuments }) => (
     <div id="signinform" className="">
       <input type="text" className="forminput" placeholder="Username" />
       <input type="password" className="forminput" placeholder="Password" />
@@ -50,7 +53,7 @@ const SigninForm = ({ history, signInUser,
         id="signinbtn"
         className="center-align waves-effect waves-light btn"
         onClick={event =>
-          signUserIn(event, history, signInUser)}
+          signUserIn(event, history, signInUser, getUserDocuments)}
       >{signInButtonText}</button>
     </div>
 );
@@ -61,5 +64,6 @@ SigninForm.propTypes = {
   }).isRequired,
   signInUser: PropTypes.func.isRequired,
   signInButtonText: PropTypes.string.isRequired,
+  getUserDocuments: PropTypes.func.isRequired,
 };
 export default SigninForm;
