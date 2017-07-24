@@ -4,6 +4,7 @@ import index from '../models';
 import { createToken } from '../controller/middlewares/validation';
 
 const user = index.User;
+const role = index.Roles;
 /**
  * Signs up new users to access the application
  * @param {object} req - The request object
@@ -93,6 +94,47 @@ const signInUser = (req, res) => {
       message: 'Could not identify you!',
     });
   });
+};
+
+/**
+ * View specific user profile
+* @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const viewUserProfile = (req, res) => {
+  const id = req.params.id || 0;
+  if (id > 0) {
+    user.findById(id).then((userDetail) => {
+      if (userDetail) {
+        role.findById(userDetail.roleId).then((roleType) => {
+          if (roleType) {
+            res.status(200).send({
+              status: 'successful',
+              userName: userDetail.username,
+              userEmail: userDetail.email,
+              userRole: roleType.roletype,
+            });
+          } else {
+            res.status(400).send({
+              status: 'unsuccessful',
+              message: 'You belong to an inactive role!',
+            });
+          }
+        }).catch(() => {
+          res.status(400).send({
+            status: 'unsuccessful',
+            message: 'Could not find your role!',
+          });
+        });
+      }
+    }).catch(() => {
+      res.status(400).send({
+        status: 'unsuccessful',
+        message: 'Error due to invalid user!',
+      });
+    });
+  }
 };
 
 /**
@@ -191,4 +233,5 @@ const updateUser = (req, res) => {
   });
 };
 
-export { signUpUser, signInUser, getAllUsers, findUser, updateUser };
+export { signUpUser, signInUser, getAllUsers,
+  viewUserProfile, findUser, updateUser };
