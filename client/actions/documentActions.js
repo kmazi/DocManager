@@ -10,7 +10,8 @@ export const startCreatingDocument = () => ({
 });
 /**
  * Fires when a document was just created
- * @param {object} documents - An array of documents from api
+ * @param {object} status - A string indicating the stage
+ * of the document creation process
  * @returns {object} returns the type of data it dispatches
  */
 export const doneCreatingDocument = status => ({
@@ -31,9 +32,12 @@ export const documentCreation = formValue => (dispatch) => {
   return axios.post('/api/v1/documents', formValue)
     .then((response) => {
       dispatch(doneCreatingDocument(response.data.status));
+      return response.data;
     },
-    ({ response }) =>
-      dispatch(errorCreatingDocument(response.data))
+    ({ response }) => {
+      dispatch(errorCreatingDocument(response.data));
+      return response.data;
+    }
     );
 };
 /**
@@ -65,8 +69,10 @@ export const getUserDocuments = (id, token) => (dispatch) => {
   return axios.get(`/api/v1/users/${id}/documents?token=${token}`)
     .then((response) => {
       dispatch(completeGetUserDocuments(response.data.documents));
+      return response.data.status;
     }, ({ response }) => {
       dispatch(errorGetUserDocuments(response.data));
+      return response.data.status;
     });
 };
 
@@ -85,12 +91,11 @@ export const fetchingPublicDocumentsFailed = error => ({
   error,
 }); // done fetching public document
 
-export const publicDocuments = (token, isAuthentic, history) => (dispatch) => {
+export const publicDocuments = token => (dispatch) => {
   dispatch(fetchingPublicDocuments());
   return axios.get(`/api/v1/Public/documents?token=${token}`)
     .then((response) => {
       dispatch(fetchingPublicDocumentsComplete(response.data.documents));
-      history.push('/user/documents');
     },
     ({ response }) => {
       dispatch(fetchingPublicDocumentsFailed(response.data.message));
@@ -98,8 +103,9 @@ export const publicDocuments = (token, isAuthentic, history) => (dispatch) => {
 };
 
 // start fetching role documents
-export const fetchRoleDocuments = () => ({
+export const fetchRoleDocuments = roleType => ({
   type: types.START_FETCHING_ROLE_DOCUMENTS,
+  roleType: roleType || 'Loading...',
 });
 
 export const fetchRoleDocumentsComplete = documents => ({
@@ -112,11 +118,11 @@ export const fetchRoleDocumentsFailed = error => ({
   error,
 });
 // done fetching role documents
-export const roleDocuments = (token, isAuthentic, history) => (dispatch) => {
+export const roleDocuments = (token, roleType) => (dispatch) => {
   dispatch(fetchRoleDocuments());
-  return axios.get(`/api/v1/Role/documents?token=${token}`).then((response) => {
+  return axios.get(`/api/v1/${roleType}/documents?token=${token}`)
+  .then((response) => {
     dispatch(fetchRoleDocumentsComplete(response.data.documents));
-    history.push('/user/documents');
   },
     ({ response }) => {
       dispatch(fetchRoleDocumentsFailed(response.data.message));
@@ -138,11 +144,10 @@ export const fetchAllDocumentsFailed = error => ({
   error
 });// done fetching all documents
 
-export const allDocuments = (token, isAuthentic, history) => (dispatch) => {
+export const allDocuments = token => (dispatch) => {
   dispatch(fetchAllDocuments());
   return axios.get(`/api/v1/documents?token=${token}`).then((response) => {
     dispatch(fetchAllDocumentsComplete(response.data.documents));
-    history.push('/user/documents');
   },
     ({ response }) => {
       dispatch(fetchAllDocumentsFailed(response.data.message));

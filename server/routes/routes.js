@@ -11,7 +11,7 @@ import { signUpValidation,
 import { signUpUser,
          signInUser,
          getAllUsers,
-         findUser,
+         viewUserProfile,
          updateUser,
          deleteUser,
          findUsers } from '../controller/userOperation';
@@ -30,13 +30,13 @@ const routes = (router) => {
 
   router.use(verifyToken);
   // Update a specific user
-  router.put('/users/:id', signUpValidation, updateUser);
+  router.put('/users/:id', updateUser);
   // route to create role
   router.post('/role', allowOnlyAdmin, createRole);
+  // Find a specific user
+  router.get('/users/:userId', viewUserProfile);
   // route to get all users and paginate them
   router.get('/users', allowOnlyAdmin, getAllUsers);
-  // Find a specific user
-  router.get('/users/:id', allowOnlyAdmin, findUser);
   // Deletes a specific user
   router.delete('/users/:id', allowOnlyAdmin, deleteUser);
   // route to search for users

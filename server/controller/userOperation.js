@@ -30,14 +30,13 @@ const signUpUser = (req, res) => {
     }).spread((createdUser, isCreated) => {
       // send successful as response when the user is created
       if (isCreated) {
-        const token = createToken(userInfo);
         const userToken = {
           userName: createdUser.username,
           roleId: createdUser.roleId,
           userId: createdUser.id,
           userEmail: createdUser.email,
-          token,
         };
+        userToken.token = createToken(userToken);
         res.status(200).send({
           status: 'successful',
           ...userToken,
@@ -74,18 +73,23 @@ const signInUser = (req, res) => {
     bcrypt.compare(userInfo.password, userPassword, (err, isValid) => {
       // check if the password is correct then create a token
       if (isValid) {
-        const userDetail = {
-          userName: existingUser.username,
-          roleId: existingUser.roleId,
-          userId: existingUser.id,
-          userEmail: existingUser.email,
-        };
-        const token = createToken(userDetail);
-        res.status(200).send({
-          status: 'successful',
-          ...userDetail,
-          token,
-        });
+        role.findById(existingUser.roleId).then((userRole) => {
+          if (userRole) {
+            const userDetail = {
+              userName: existingUser.username,
+              roleId: existingUser.roleId,
+              userId: existingUser.id,
+              email: existingUser.email,
+              roleType: userRole.roletype,
+            };
+            const token = createToken(userDetail);
+            res.status(200).send({
+              status: 'successful',
+              ...userDetail,
+              token,
+            });
+          }
+        }).catch();
       } else {
         res.status(400).send({
           status: 'unsuccessful',
@@ -108,11 +112,15 @@ const signInUser = (req, res) => {
  * @return {null} Returns null
  */
 const viewUserProfile = (req, res) => {
-  const id = req.params.id || 0;
-  if (id > 0) {
+  const id = Number(req.params.userId);
+  if (Number.isInteger(id) && id > 0) {
     user.findById(id).then((userDetail) => {
-      if (userDetail) {
-        role.findById(userDetail.roleId).then((roleType) => {
+      if (userDetail && req.body.user.userId === id) {
+        role.findOne({
+          where: {
+            id: req.body.user.roleId,
+          }
+        }).then((roleType) => {
           if (roleType) {
             res.status(200).send({
               status: 'successful',
@@ -132,12 +140,22 @@ const viewUserProfile = (req, res) => {
             message: 'Could not find your role!',
           });
         });
+      } else {
+        res.status(400).send({
+          status: 'unsuccessful',
+          message: 'You cannot view another user\'s detail',
+        });
       }
     }).catch(() => {
       res.status(400).send({
         status: 'unsuccessful',
         message: 'Error due to invalid user!',
       });
+    });
+  } else {
+    res.status(400).send({
+      status: 'unsuccessful',
+      message: 'Invalid user ID',
     });
   }
 };
@@ -225,7 +243,7 @@ const findUsers = (req, res) => {
         username: {
           $iLike: `%${req.query.q}%`
         }
-     },
+      },
       attributes: ['id', 'username', 'email', 'roleId', 'createdAt'],
     }).then((users) => {
       res.send({
@@ -272,11 +290,10 @@ const updateUser = (req, res) => {
             status: 'unsuccessful',
           });
         }
-      }).catch((err) => {
+      }).catch(() => {
         res.send({
           status: 'unsuccessful',
           message: 'Could not find any user to update!',
-          err
         });
       });
     } else {
@@ -330,4 +347,5 @@ export { signUpUser,
   findUser,
   updateUser,
   deleteUser,
-  findUsers };
+  findUsers,
+  viewUserProfile };

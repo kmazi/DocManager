@@ -17,24 +17,40 @@ const signUp = (event, signUserUp, history, getUserDocuments) => {
   event.preventDefault();
   const userName = $('#signupform input[name=username]').val();
   const email = $('#signupform input[type=email]').val();
-  const password = $('#signupform input[type=password]').val();
-  const comfirmPassword = $('#signupform input[type=password]').val();
+  const password = $('#signupform input[name=password]').val();
+  const comfirmPassword = $('#signupform input[name=comfirmpassword]').val();
+  const roleValue = $('#signupform input[name=group1]:checked')
+    .attr('data-value');
   const roleId = $('#signupform input[name=group1]:checked').val();
-  const formData = { userName, email, password, comfirmPassword, roleId };
-  signUserUp(formData)
-    .then((res) => {
-      if (res.status === 'successful') {
-        history.push('/user/documents');
-        getUserDocuments(res.data.userId, res.data.token);
-      } else {
-        Alert({
-          title: 'Error Signing up',
-          text: res.message,
-          type: 'error',
-          confirmButtonText: 'ok'
-        });
-      }
+  const formData =
+    { userName, email, password, comfirmPassword, roleId, roleValue };
+  if (password === comfirmPassword) {
+    signUserUp(formData)
+      .then((res) => {
+        if (res.status === 'successful') {
+          getUserDocuments(res.userId, res.token)
+          .then((res) => {
+            if (res) {
+              history.push('/user/documents');
+            }
+          });
+        } else {
+          Alert({
+            title: 'Error Signing up',
+            text: res.message,
+            type: 'error',
+            confirmButtonText: 'ok'
+          });
+        }
+      });
+  } else {
+    Alert({
+      title: 'Password mispatch',
+      text: 'Ensure your password is spelt correctly',
+      type: 'error',
+      confirmButtonText: 'ok'
     });
+  }
 };
 /**
  * Renders form for signin up new user
@@ -80,24 +96,27 @@ const SignupForm = ({ signUserUp, history,
           className="with-gap"
           name="group1"
           type="radio"
+          data-value="Learning"
           id="Learning"
-          value="2"
+          value="3"
         />
         <label htmlFor="Learning">Learning</label>
         <input
           className="with-gap"
           name="group1"
           type="radio"
+          data-value="Fellow"
           id="Fellow"
-          value="1"
+          value="2"
         />
         <label htmlFor="Fellow">Fellow</label>
         <input
           className="with-gap"
           name="group1"
           type="radio"
+          data-value="DevOps"
+          value="4"
           id="DevOps"
-          value="3"
         />
         <label htmlFor="DevOps">DevOps</label><br />
       </div>
@@ -107,7 +126,7 @@ const SignupForm = ({ signUserUp, history,
         onClick={event => signUp(event, signUserUp, history, getUserDocuments)}
       >{signUpButtonText}</button>
     </div>
-);
+  );
 
 SignupForm.propTypes = {
   signUserUp: PropTypes.func.isRequired,

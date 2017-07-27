@@ -8,6 +8,7 @@ const authenticateUser = (state = {
   signUpStatus: 'Sign Up',
   userName: 'Guest',
   errors: [],
+  roleType: 'None',
   status: 'unsuccessful',
 }, action) => {
   switch (action.type) {
@@ -29,6 +30,10 @@ const authenticateUser = (state = {
       signUpStatus: 'Sign Up',
       errors: action.errors,
       status: 'unsuccessful',
+    });
+  case types.SET_USER_ROLE:
+    return Object.assign({}, state, {
+      roleType: action.userRole,
     });
 
   case types.START_SIGNIN:
@@ -144,7 +149,7 @@ const fetchDocuments = (state = {
 
   case types.START_FETCHING_ROLE_DOCUMENTS:
     return Object.assign({}, state, {
-      status: 'Loading role documents...',
+      status: action.roleType,
       isReady: false,
       documents: [],
     });

@@ -6952,8 +6952,14 @@ section {
     display: block;
     font-size: 70px; }
 
-textarea {
+#docform input, #docform textarea {
+  border-color: #26a69a; }
+
+#docform textarea {
   height: 40%; }
+
+#docform label {
+  color: white; }
 
 #doc-view-background {
   min-height: inherit; }

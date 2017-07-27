@@ -21,7 +21,7 @@ const createToken = user => JwtToken.sign(user,
  */
 const verifyToken = (req, res, next) => {
   const token = req.body.token || req.query.token ||
-  req.header.token || '';
+  req.headers.token || '';
   JwtToken.verify(token, process.env.SUPERSECRET, (err, verifiedToken) => {
     if (err) {
       res.status(400).send({
@@ -37,7 +37,7 @@ const verifyToken = (req, res, next) => {
         if (!user) {
           return res.status(400).send({
             status: 'unsuccessful',
-            message: 'Invalid user- you are not authenticated!',
+            message: 'Invalid user, you are not authenticated!',
           });
         }
         req.body.user = verifiedToken;

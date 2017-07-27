@@ -29,7 +29,7 @@ const fetchUserDocs = (event, getUserDocs, userId, history) => {
 
 const UserPage = ({ userName, userId, history, isAuthentic,
   getPublicDocuments, getRoleDocuments,
-  getUserDocs, getAllDocuments }) => (
+  getUserDocs, getAllDocuments, roleType }) => (
     <section className="row" style={minHeight}>
       <div id="docheader" className="header">
         <span className="left">DocManager</span>
@@ -49,8 +49,8 @@ const UserPage = ({ userName, userId, history, isAuthentic,
               className="btn"
               onClick={(event) => {
                 event.preventDefault();
-                getPublicDocuments(localStorage.getItem('docmanagertoken'),
-                isAuthentic, history);
+                getPublicDocuments(localStorage.getItem('docmanagertoken'));
+                history.push('/user/documents');
               }}
             >Public Documents&nbsp;
             <i className="fa fa-globe" aria-hidden="true" /></button>
@@ -59,16 +59,17 @@ const UserPage = ({ userName, userId, history, isAuthentic,
               onClick={(event) => {
                 event.preventDefault();
                 getRoleDocuments(localStorage.getItem('docmanagertoken'),
-                isAuthentic, history);
+                roleType);
+                history.push('/user/documents');
               }}
-            >Role Documents&nbsp;
+            >{roleType} Documents&nbsp;
               <i className="fa fa-key" aria-hidden="true" /></button>
             <button
               className="btn"
               onClick={(event) => {
                 event.preventDefault();
-                getAllDocuments(localStorage.getItem('docmanagertoken'),
-                isAuthentic, history);
+                getAllDocuments(localStorage.getItem('docmanagertoken'));
+                history.push('/user/documents');
               }}
             >All Documents&nbsp;
             <i className="fa fa-file-archive-o" aria-hidden="true" /></button>
@@ -122,6 +123,7 @@ UserPage.propTypes = {
   userName: propTypes.string.isRequired,
   userId: propTypes.number.isRequired,
   isAuthentic: propTypes.bool.isRequired,
+  roleType: propTypes.string.isRequired,
   history: propTypes.shape({
     push: propTypes.func.isRequired,
   }).isRequired,
@@ -134,21 +136,22 @@ UserPage.propTypes = {
 const mapStateToProps = state => ({
   userName: state.authenticateUser.userName,
   userId: state.authenticateUser.userId,
+  roleType: state.authenticateUser.roleType,
   isAuthentic: state.authenticateUser.status === 'successful',
 });
 
 const mapDispatchToProps = dispatch => ({
-  getPublicDocuments: (userToken, isAuthentic, history) => {
-    dispatch(publicDocuments(userToken, isAuthentic, history));
+  getPublicDocuments: (userToken) => {
+    dispatch(publicDocuments(userToken));
   },
-  getRoleDocuments: (userToken, isAuthentic, history) => {
-    dispatch(roleDocuments(userToken, isAuthentic, history));
+  getRoleDocuments: (userToken, roleType) => {
+    dispatch(roleDocuments(userToken, roleType));
   },
   getUserDocs: (id, tokenString) => {
     dispatch(getUserDocuments(id, tokenString));
   },
-  getAllDocuments: (userToken, isAuthentic, history) => {
-    dispatch(allDocuments(userToken, isAuthentic, history));
+  getAllDocuments: (userToken) => {
+    dispatch(allDocuments(userToken));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(UserPage);

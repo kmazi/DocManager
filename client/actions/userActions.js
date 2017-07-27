@@ -26,6 +26,10 @@ export const errorSignInUser = errors => ({
   type: types.FAILED_SIGNIN,
   errors,
 });
+export const setUserRole = userRole => ({
+  type: types.SET_USER_ROLE,
+  userRole,
+});
 /**
  * Dispatches an action to sign in a user
  * @param {object} user - Form data to send to the server
@@ -36,6 +40,7 @@ export const signInUser = user => (dispatch) => {
   return axios.post('/api/v1/users/login', user)
     .then((response) => {
       localStorage.setItem('docmanagertoken', response.data.token);
+      dispatch(setUserRole(response.data.roleType));
       dispatch(finishSignInUser(response.data));
       return response.data;
     },
@@ -77,6 +82,7 @@ export const errorSignUpUser = errors => ({
  * @return {func} returns a function that will be executed to signin a user
  */
 export const signUserUp = user => (dispatch) => {
+  dispatch(setUserRole(user.roleValue));
   dispatch(startSignUpUser());
   return axios.post('/api/v1/users', user)
     .then((response) => {

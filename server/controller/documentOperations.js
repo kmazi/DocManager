@@ -9,14 +9,10 @@ const document = index.Document;
  * and false otherwise
  */
 const createDocument = (req, res) => {
-  const title = typeof req.body.title === 'undefined' ?
-    '' : req.body.title;
-  const body = typeof req.body.body === 'undefined' ?
-    '' : req.body.body;
-  const userId = typeof req.body.userId === 'undefined' ?
-    '' : req.body.userId;
-  const access = typeof req.body.access === 'undefined' ?
-    '' : req.body.access;
+  const title = req.body.title || '';
+  const body = req.body.body || '';
+  const userId = req.body.userId || '';
+  const access = req.body.access || '';
   // Don't create document if fields are empty
   if (title === '' || body === '' || access === '' || userId === '') {
     res.status(400).send({
@@ -53,7 +49,7 @@ const createDocument = (req, res) => {
 };
 const getAccessLevelDocuments = (req, res) => {
   const searchParams = req.query;
-  const access = { access: req.params.access || 'Public' };
+  const access = { access: req.params.access || '' };
   let params;
   // check it limit and offset where passed
   if (searchParams.offset && searchParams.limit) {
@@ -160,10 +156,10 @@ const getUserDocuments = (req, res) => {
  * @return {null} it returns no value
  */
 const findDocument = (req, res) => {
-  const documentId = req.params.id;
-  if (documentId > 0 && Number.isInteger(Number(req.params.id))) {
+  const documentId = Number(req.params.id);
+  if (Number.isInteger(documentId) && documentId > 0) {
     document.findById(documentId).then((foundDocument) => {
-      if (foundDocument === null) {
+      if (!foundDocument) {
         res.send({
           status: 'unsuccessful',
           message: 'Could not find the document!',

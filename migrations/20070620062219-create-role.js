@@ -8,7 +8,8 @@ module.exports = {
       type: Sequelize.INTEGER
     },
     roletype: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      unique: true
     },
     createdAt: {
       allowNull: false,

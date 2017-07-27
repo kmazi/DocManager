@@ -127,8 +127,19 @@ section {
 		font-size: $docviewfontsize;
 	}
 }
-textarea{
-	height: 40%;
+#docform{
+	input, textarea{
+	border-color: $btncolor;
+	}
+	textarea{
+		height: 40%;
+	}
+	label{
+		color: white;
+	}
+	// textarea:focus{
+	// 	border: 1px solid #26a69a !important;
+	// }
 }
 #doc-view-background{
 	min-height: inherit
