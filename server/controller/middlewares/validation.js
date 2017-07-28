@@ -101,6 +101,7 @@ const generalValidation = (value, formField) => {
 /**
  * Validate the user email input
  * @param {string} inputEmail - The input email to validate
+ * @param {string} formField - The input email to validate
  * @return {object} returns an object that contain validation status an
  * error messages if any
  */

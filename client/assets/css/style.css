@@ -6876,7 +6876,7 @@ section {
     border-radius: 10px; }
     .bkgImage .homescreen h1.center-align {
       font-size: 90px;
-      margin-top: 100px; }
+      margin-top: 0; }
     .bkgImage .homescreen #gettingstarted {
       margin-left: 40%;
       margin-right: auto; }
@@ -6902,6 +6902,9 @@ section {
     padding: 10px; }
     .header span.right a:hover {
       text-decoration: underline; }
+
+input[type=text]:not(.browser-default):disabled {
+  color: white; }
 
 #doccontent {
   min-height: inherit; }

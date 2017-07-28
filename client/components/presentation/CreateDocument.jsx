@@ -18,7 +18,8 @@ const createDocument = (event, documentCreation, userId, history) => {
         type: 'success',
         confirmButtonText: 'ok'
       });
-      history.push('/user/documents');
+      document.getElementById('form').reset();
+      // history.push('/user/documents');
     } else {
       Alert({
         title: res.status,
@@ -31,10 +32,11 @@ const createDocument = (event, documentCreation, userId, history) => {
 };
 
 const CreateDocument = ({ documentCreation, userId, history, roleType }) => (
-  <div id="docform">
-    <input type="text" placeholder="title" name="title" />
-    <textarea name="body" id="" cols="100" rows="10" placeholder="content" />
-    Access level:
+  <form id="form" action="">
+    <div id="docform">
+      <input type="text" placeholder="title" name="title" />
+      <textarea name="body" id="" cols="100" rows="10" placeholder="content" />
+      Access level:
     <p>
       <input
         className="with-gap"
@@ -45,36 +47,37 @@ const CreateDocument = ({ documentCreation, userId, history, roleType }) => (
       />
       <label htmlFor="public">Public</label>
     </p>
-    <p>
-      <input
-        className="with-gap"
-        name="group1"
-        value={roleType}
-        type="radio"
-        id="role"
-      />
-      <label htmlFor="role">{roleType}</label>
-    </p>
-    <p>
-      <input
-        className="with-gap"
-        name="group1"
-        type="radio"
-        value="Private"
-        id="private"
-      />
-      <label htmlFor="private">Private</label>
-    </p>
-    <button
-      className="btn waves-effect waves-light"
-      type="submit"
-      name="action"
-      onClick={(event) => {
-        createDocument(event, documentCreation, userId, history);
-      }}
-    >create
+      <p>
+        <input
+          className="with-gap"
+          name="group1"
+          value={roleType}
+          type="radio"
+          id="role"
+        />
+        <label htmlFor="role">{roleType}</label>
+      </p>
+      <p>
+        <input
+          className="with-gap"
+          name="group1"
+          type="radio"
+          value="Private"
+          id="private"
+        />
+        <label htmlFor="private">Private</label>
+      </p>
+      <button
+        className="btn waves-effect waves-light"
+        type="submit"
+        name="action"
+        onClick={(event) => {
+          createDocument(event, documentCreation, userId, history);
+        }}
+      >create
     </button>
-  </div>
+    </div>
+  </form>
 );
 
 CreateDocument.propTypes = {

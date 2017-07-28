@@ -6,7 +6,9 @@ const authenticateUser = (state = {
   userId: 0,
   signInStatus: 'Sign In',
   signUpStatus: 'Sign Up',
+  signUpDate: '',
   userName: 'Guest',
+  userEmail: '',
   errors: [],
   roleType: 'None',
   status: 'unsuccessful',
@@ -21,6 +23,9 @@ const authenticateUser = (state = {
       signUpStatus: 'Sign Up',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
+      userEmail: action.userDetail.email,
+      roleType: action.userDetail.roleType,
+      createdAt: action.userDetail.createdAt,
       status: 'successful',
       errors: [],
     });
@@ -46,6 +51,9 @@ const authenticateUser = (state = {
       signInStatus: 'Sign In',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
+      userEmail: action.userDetail.email,
+      createdAt: action.userDetail.createdAt,
+      roleType: action.userDetail.roleType,
       status: 'successful',
       errors: [],
     });
@@ -78,6 +86,50 @@ const createDoc = (state = {
     return Object.assign({}, state, {
       status: 'Unsuccessful',
       errors: action.errors.message,
+    });
+  default:
+    return state;
+  }
+};
+
+const readDocument = (state = {
+  status: 0,
+  delStatus: 0,
+  error: '',
+  message: '',
+  document: {},
+}, action) => {
+  switch (action.type) {
+  case types.START_READING_DOCUMENT:
+    return Object.assign({}, state, {
+      status: action.docId,
+      document: '',
+    });
+  case types.DONE_READING_DOCUMENT:
+    return Object.assign({}, state, {
+      status: 0,
+      document: action.document,
+    });
+  case types.ERROR_READING_DOCUMENT:
+    return Object.assign({}, state, {
+      status: 0,
+      document: {},
+      error: action.error
+    });
+  case types.START_DELETING_DOCUMENT:
+    return Object.assign({}, state, {
+      delStatus: action.docId,
+      message: '',
+    });
+  case types.DONE_DELETING_DOCUMENT:
+    return Object.assign({}, state, {
+      delStatus: 0,
+      message: action.message,
+    });
+  case types.ERROR_DELETING_DOCUMENT:
+    return Object.assign({}, state, {
+      delStatus: 0,
+      error: action.error
     });
   default:
     return state;
@@ -175,6 +227,7 @@ const rootReducer = combineReducers({
   authenticateUser,
   createDoc,
   fetchDocuments,
+  readDocument,
   routing
 });
 

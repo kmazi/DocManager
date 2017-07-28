@@ -158,26 +158,48 @@ const getUserDocuments = (req, res) => {
 const findDocument = (req, res) => {
   const documentId = Number(req.params.id);
   if (Number.isInteger(documentId) && documentId > 0) {
+    // foundDocument.userId !== req.body.user.userId && foundDocument
     document.findById(documentId).then((foundDocument) => {
-      if (!foundDocument) {
-        res.send({
-          status: 'unsuccessful',
-          message: 'Could not find the document!',
+      if (foundDocument) {
+        let doc = {};
+        switch (foundDocument.access) {
+        case 'Private':
+          if (foundDocument.userId === req.body.user.userId) {
+            doc = foundDocument;
+          }
+          break;
+        case 'Public':
+          doc = foundDocument;
+          break;
+        case req.body.user.roleType:
+          if (foundDocument.access === req.body.user.roleType) {
+            doc = foundDocument;
+          }
+          break;
+        default:
+          return res.status(400).send({
+            status: 'unsuccessful',
+            message: 'Access denied',
+          });
+        }
+        res.status(200).send({
+          status: 'successful',
+          document: doc,
         });
       } else {
-        res.send({
-          status: 'successful',
-          document: foundDocument,
+        res.status(400).send({
+          status: 'unsuccessful',
+          message: 'Could not find any document!',
         });
       }
     }).catch(() => {
-      res.send({
+      res.status(400).send({
         status: 'unsuccessful',
         message: 'Could not find any document!',
       });
     });
   } else {
-    res.send({
+    res.status(400).send({
       status: 'unsuccessful',
       message: 'Invalid search parameter!',
     });
@@ -191,38 +213,38 @@ const findDocument = (req, res) => {
  * @return {null} Returns null
  */
 const deleteDocument = (req, res) => {
-  const documentId = req.params.id;
-  if (documentId > 0 && Number.isInteger(Number(req.params.id))) {
+  const documentId = Number(req.params.id);
+  const response = {};
+  if (Number.isInteger(documentId) && documentId > 0) {
     document.findById(documentId).then((knownDocument) => {
-      if (knownDocument === null) {
-        res.send({
-          status: 'unsuccessful',
-          message: 'Could not find any document!',
+      if (!knownDocument) {
+        response.status = 'unsuccessful';
+        response.message = 'Could not find any document!';
+        return res.send(response);
+      } else if (knownDocument.userId === req.body.user.userId) {
+        knownDocument.destroy().then(() => {
+          response.status = 'successful';
+          response.message = `"${knownDocument.title}" has been deleted!`;
+          return res.send(response);
+        }).catch(() => {
+          response.status = 'unsuccessful';
+          response.message = 'Could not delete the document!';
+          return res.send(response);
         });
       } else {
-        knownDocument.destroy().then(() => {
-          res.send({
-            status: 'successful',
-            message: `"${knownDocument.title}" has been deleted!`,
-          });
-        }).catch(() => {
-          res.send({
-            status: 'unsuccessful',
-            message: 'Could not delete the document!',
-          });
-        });
+        response.status = 'unsuccessful';
+        response.message = 'Access denied!';
+        return res.send(response);
       }
     }).catch(() => {
-      res.send({
-        status: 'unsuccessful',
-        message: 'No document found!',
-      });
+      response.status = 'unsuccessful';
+      response.message = 'No document found!';
+      return res.send(response);
     });
   } else {
-    res.send({
-      status: 'unsuccessful',
-      message: 'No document found!',
-    });
+    response.status = 'unsuccessful';
+    response.message = 'Invalid user id!';
+    return res.send(response);
   }
 };
 

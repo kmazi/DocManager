@@ -153,3 +153,52 @@ export const allDocuments = token => (dispatch) => {
       dispatch(fetchAllDocumentsFailed(response.data.message));
     });
 };
+export const readADocument = docId => ({
+  type: types.START_READING_DOCUMENT,
+  docId,
+});
+export const readDocumentComplete = document => ({
+  type: types.DONE_READING_DOCUMENT,
+  document,
+});
+export const readDocumentFailed = error => ({
+  type: types.ERROR_READING_DOCUMENT,
+  error,
+});
+export const readDocument = (id, userToken) => (dispatch) => {
+  dispatch(readADocument(id));
+  return axios.get(`/api/v1/documents/${id}?token=${userToken}`)
+  .then((response) => {
+    dispatch(readDocumentComplete(response.data.document));
+    return response.data;
+  },
+    ({ response }) => {
+      dispatch(readDocumentFailed(response.data.message));
+      return response.data;
+    });
+};
+
+export const deleteDocumentStart = docId => ({
+  type: types.START_DELETING_DOCUMENT,
+  docId,
+});
+export const deleteDocumentComplete = message => ({
+  type: types.DONE_DELETING_DOCUMENT,
+  message,
+});
+export const deleteDocumentFailed = error => ({
+  type: types.ERROR_DELETING_DOCUMENT,
+  error,
+});
+export const deleteDocument = (id, userToken) => (dispatch) => {
+  dispatch(deleteDocumentStart(id));
+  return axios.delete(`/api/v1/documents/${id}?token=${userToken}`)
+  .then((response) => {
+    dispatch(deleteDocumentComplete(response.data.message));
+    return response.data;
+  },
+    ({ response }) => {
+      dispatch(deleteDocumentFailed(response.data.message));
+      return response.data;
+    });
+};

@@ -27,7 +27,7 @@ const fetchUserDocs = (event, getUserDocs, userId, history) => {
   history.push('/user/documents');
 };
 
-const UserPage = ({ userName, userId, history, isAuthentic,
+const UserPage = ({ userName, userId, history,
   getPublicDocuments, getRoleDocuments,
   getUserDocs, getAllDocuments, roleType }) => (
     <section className="row" style={minHeight}>
@@ -103,10 +103,16 @@ const UserPage = ({ userName, userId, history, isAuthentic,
           <Link className="center-align" to="/user/documents/createdocument">
           Create&nbsp;
             <i className="fa fa-pencil-square-o" aria-hidden="true" />
-          </Link>
+          </Link><hr />
+          <h8 className="center-align">User Info&nbsp;
+            <i className="fa fa-tasks" aria-hidden="true" />
+          </h8><hr />
           <Link className="center-align" to="/user/documents/users">
           Profile&nbsp;
           <i className="fa fa-user" aria-hidden="true" /></Link>
+          <Link className="center-align" to="/user/documents/users/all">
+          Manage Users&nbsp;
+          <i className="fa fa-users" aria-hidden="true" /></Link>
         </div>
         <div id="contentdisplay" className="col m10">
           <div className="container">
@@ -122,7 +128,6 @@ const UserPage = ({ userName, userId, history, isAuthentic,
 UserPage.propTypes = {
   userName: propTypes.string.isRequired,
   userId: propTypes.number.isRequired,
-  isAuthentic: propTypes.bool.isRequired,
   roleType: propTypes.string.isRequired,
   history: propTypes.shape({
     push: propTypes.func.isRequired,
@@ -137,7 +142,6 @@ const mapStateToProps = state => ({
   userName: state.authenticateUser.userName,
   userId: state.authenticateUser.userId,
   roleType: state.authenticateUser.roleType,
-  isAuthentic: state.authenticateUser.status === 'successful',
 });
 
 const mapDispatchToProps = dispatch => ({

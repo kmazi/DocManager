@@ -1,12 +1,19 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 
 import DocumentPreview from './DocumentPreview';
 
-const DocumentView = ({ documents, shouldDisplay, documentStatus }) => {
+const DocumentView = ({ documents, shouldDisplay, read, deleteId,
+  documentStatus, readDocument, history, deleteDocument }) => {
   const finalRender = (shouldDisplay) ?
-    <DocumentPreview userDocuments={documents} /> :
+    (<DocumentPreview
+      userDocuments={documents}
+      read={read}
+      deleteId={deleteId}
+      readDocument={readDocument}
+      history={history}
+      deleteDocument={deleteDocument}
+    />) :
     <p id="status" className="center-align">{documentStatus}</p>;
   /**
  * Renders the html elements on the browser
@@ -19,17 +26,17 @@ const DocumentView = ({ documents, shouldDisplay, documentStatus }) => {
     </div>);
 };
 
-const mapStateToProps = state => ({
-  id: state.authenticateUser.userId,
-  documents: state.fetchDocuments.documents,
-  shouldDisplay: state.fetchDocuments.isReady,
-  documentStatus: state.fetchDocuments.status,
-});
-
 DocumentView.propTypes = {
   documentStatus: propTypes.string.isRequired,
-  documents: propTypes.array.isRequired,
+  documents: propTypes.arrayOf(propTypes.shape()).isRequired,
+  history: propTypes.shape({
+    push: propTypes.func.isRequired,
+  }).isRequired,
+  readDocument: propTypes.func.isRequired,
+  deleteDocument: propTypes.func.isRequired,
+  read: propTypes.number.isRequired,
+  deleteId: propTypes.number.isRequired,
   shouldDisplay: propTypes.bool.isRequired,
 };
 
-export default connect(mapStateToProps)(DocumentView);
+export default DocumentView;

@@ -30,17 +30,23 @@ const signUpUser = (req, res) => {
     }).spread((createdUser, isCreated) => {
       // send successful as response when the user is created
       if (isCreated) {
-        const userToken = {
-          userName: createdUser.username,
-          roleId: createdUser.roleId,
-          userId: createdUser.id,
-          userEmail: createdUser.email,
-        };
-        userToken.token = createToken(userToken);
-        res.status(200).send({
-          status: 'successful',
-          ...userToken,
-        });
+        role.findById(createdUser.roleId).then((userRole) => {
+          if (userRole) {
+            const userDetail = {
+              userName: createdUser.username,
+              userId: createdUser.id,
+              email: createdUser.email,
+              roleType: userRole.roletype,
+              createdAt: createdUser.createdAt,
+            };
+            const token = createToken(userDetail);
+            res.status(200).send({
+              status: 'successful',
+              ...userDetail,
+              token,
+            });
+          }
+        }).catch();
       } else {
         res.status(400).send({
           status: 'unsuccessful',
@@ -77,10 +83,10 @@ const signInUser = (req, res) => {
           if (userRole) {
             const userDetail = {
               userName: existingUser.username,
-              roleId: existingUser.roleId,
               userId: existingUser.id,
               email: existingUser.email,
               roleType: userRole.roletype,
+              createdAt: existingUser.createdAt,
             };
             const token = createToken(userDetail);
             res.status(200).send({
