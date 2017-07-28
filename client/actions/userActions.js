@@ -1,41 +1,97 @@
-import $ from 'jquery';
+import axios from 'axios';
 import * as types from './types';
 
+/**
+ * Dispatches an action when signin starts
+ * @return {object} returns an object containing action type
+ */
 export const startSignInUser = () => ({
-  type: types.STARTSIGNIN,
+  type: types.START_SIGNIN,
 });
-
-export const finishSignInUser = userDocs => ({
-  type: types.SUCCESSFULSIGNIN,
-  userDocs,
+/**
+ * Dispatches an action when signin completes successfully
+ * @param {object} userDetail - User information from signin process
+ * @return {object} returns an object containing user details and action type
+ */
+export const finishSignInUser = userDetail => ({
+  type: types.SUCCESSFUL_SIGNIN,
+  userDetail,
 });
-
+/**
+ * Dispatches an action when signin error occurs
+ * @param {object} errors - Errors from signin process
+ * @return {object} returns an object containing errors and action type
+ */
 export const errorSignInUser = errors => ({
-  type: types.FAILEDSIGNIN,
+  type: types.FAILED_SIGNIN,
+  errors,
+});
+export const setUserRole = userRole => ({
+  type: types.SET_USER_ROLE,
+  userRole,
+});
+/**
+ * Dispatches an action to sign in a user
+ * @param {object} user - Form data to send to the server
+ * @return {func} returns a function that will be executed to signin a user
+ */
+export const signInUser = user => (dispatch) => {
+  dispatch(startSignInUser());
+  return axios.post('/api/v1/users/login', user)
+    .then((response) => {
+      localStorage.setItem('docmanagertoken', response.data.token);
+      dispatch(setUserRole(response.data.roleType));
+      dispatch(finishSignInUser(response.data));
+      return response.data;
+    },
+     ({ response }) => {
+       dispatch(errorSignInUser(response.data.message));
+       return response.data;
+     }
+    );
+};
+/**
+ * Dispatches an action when signin starts
+ * @return {object} returns an object containing action type
+ */
+export const startSignUpUser = () => ({
+  type: types.START_SIGNUP,
+});
+/**
+ * Dispatches an action when signup completes successfully
+ * @param {object} userDetail - User information from signup process
+ * @return {object} returns an object containing user details and action type
+ */
+export const finishSignUpUser = userDetail => ({
+  type: types.SUCCESSFUL_SIGNUP,
+  userDetail,
+});
+/**
+ * Dispatches an action when signup error occurs
+ * @param {object} errors - Errors from signin process
+ * @return {object} returns an object containing errors and action type
+ */
+export const errorSignUpUser = errors => ({
+  type: types.FAILED_SIGNUP,
   errors,
 });
 
-export const signInUser = user => (dispatch) => {
-  // Notify the user that signin process has started
-  dispatch(startSignInUser());
-  // make api calls via jquery ajax
-  $.ajax('/users', {
-    data: user,
-    dataType: 'json',
-    success: (userDocs) => {
-      if (userDocs.status === 'successful') {
-        dispatch(finishSignInUser(userDocs));
-      }
-      if (userDocs.status === 'unsuccessful') {
-        dispatch(finishSignInUser(userDocs));
-      }
+/**
+ * Dispatches an action to sign in a user
+ * @param {object} user - Form data to send to the server
+ * @return {func} returns a function that will be executed to signin a user
+ */
+export const signUserUp = user => (dispatch) => {
+  dispatch(setUserRole(user.roleValue));
+  dispatch(startSignUpUser());
+  return axios.post('/api/v1/users', user)
+    .then((response) => {
+      localStorage.setItem('docmanagertoken', response.data.token);
+      dispatch(finishSignUpUser(response.data));
+      return response.data;
     },
-    error: (jqXHR, status) => {
-      dispatch(errorSignInUser(status));
-    }
-  });
+    ({ response }) => {
+      dispatch(errorSignUpUser(response.data.message));
+      return response.data;
+    });
 };
-
-export const signUpUSer = () => ({
-  type: types.SIGNUP,
-});

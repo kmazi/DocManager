@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
-import queryString from 'querystring';
 import index from '../models';
 import { createToken } from '../controller/middlewares/validation';
 
 const user = index.User;
+const role = index.Roles;
 /**
  * Signs up new users to access the application
  * @param {object} req - The request object
@@ -30,24 +30,34 @@ const signUpUser = (req, res) => {
     }).spread((createdUser, isCreated) => {
       // send successful as response when the user is created
       if (isCreated) {
-        const token = createToken(userInfo);
-        const query = queryString.stringify({
-          status: 'successful',
-          userName: createdUser.username,
-          token
-        });
-        res.redirect(`/users/${createdUser.id}/documents?${query}`);
+        role.findById(createdUser.roleId).then((userRole) => {
+          if (userRole) {
+            const userDetail = {
+              userName: createdUser.username,
+              userId: createdUser.id,
+              email: createdUser.email,
+              roleType: userRole.roletype,
+              createdAt: createdUser.createdAt,
+            };
+            const token = createToken(userDetail);
+            res.status(200).send({
+              status: 'successful',
+              ...userDetail,
+              token,
+            });
+          }
+        }).catch();
       } else {
-        res.send({
+        res.status(400).send({
           status: 'unsuccessful',
           message: 'User already exist',
         });
       }
     }).catch(() => {
-      res.send({
+      res.status(500).send({
         status: 'unsuccessful',
         message:
-        'An error just occured on the server while trying to sign you up'
+        'Server error just occured!'
       });
     });
   });
@@ -59,7 +69,7 @@ const signUpUser = (req, res) => {
  * @return {null} Returns null
  */
 const signInUser = (req, res) => {
-  const userInfo = req.query;
+  const userInfo = req.body;
   user.find({
     where: {
       username: userInfo.userName,
@@ -69,30 +79,91 @@ const signInUser = (req, res) => {
     bcrypt.compare(userInfo.password, userPassword, (err, isValid) => {
       // check if the password is correct then create a token
       if (isValid) {
-        const userDetail = {
-          userName: existingUser.username,
-          roleId: existingUser.roleId,
-          userEmail: existingUser.email,
-        };
-        const token = createToken(userDetail);
-        const query = queryString.stringify({
-          userName: existingUser.username,
-          token
-        });
-        res.redirect(`/users/${existingUser.id}/documents?${query}`);
+        role.findById(existingUser.roleId).then((userRole) => {
+          if (userRole) {
+            const userDetail = {
+              userName: existingUser.username,
+              userId: existingUser.id,
+              email: existingUser.email,
+              roleType: userRole.roletype,
+              createdAt: existingUser.createdAt,
+            };
+            const token = createToken(userDetail);
+            res.status(200).send({
+              status: 'successful',
+              ...userDetail,
+              token,
+            });
+          }
+        }).catch();
       } else {
-        res.send({
+        res.status(400).send({
           status: 'unsuccessful',
-          message: 'Wrong username or password',
+          message: ['Wrong password!'],
         });
       }
     });
   }).catch(() => {
-    res.send({
+    res.status(400).send({
       status: 'unsuccessful',
-      message: 'Could not identify you!',
+      message: ['Wrong username!'],
     });
   });
+};
+
+/**
+ * View specific user profile
+* @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const viewUserProfile = (req, res) => {
+  const id = Number(req.params.userId);
+  if (Number.isInteger(id) && id > 0) {
+    user.findById(id).then((userDetail) => {
+      if (userDetail && req.body.user.userId === id) {
+        role.findOne({
+          where: {
+            id: req.body.user.roleId,
+          }
+        }).then((roleType) => {
+          if (roleType) {
+            res.status(200).send({
+              status: 'successful',
+              userName: userDetail.username,
+              userEmail: userDetail.email,
+              userRole: roleType.roletype,
+            });
+          } else {
+            res.status(400).send({
+              status: 'unsuccessful',
+              message: 'You belong to an inactive role!',
+            });
+          }
+        }).catch(() => {
+          res.status(400).send({
+            status: 'unsuccessful',
+            message: 'Could not find your role!',
+          });
+        });
+      } else {
+        res.status(400).send({
+          status: 'unsuccessful',
+          message: 'You cannot view another user\'s detail',
+        });
+      }
+    }).catch(() => {
+      res.status(400).send({
+        status: 'unsuccessful',
+        message: 'Error due to invalid user!',
+      });
+    });
+  } else {
+    res.status(400).send({
+      status: 'unsuccessful',
+      message: 'Invalid user ID',
+    });
+  }
 };
 
 /**
@@ -167,16 +238,18 @@ const findUser = (req, res) => {
  * @return {null} Returns null
  */
 const findUsers = (req, res) => {
-  if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
+  if (!req.query.q) {
     res.send({
       status: 'unsuccessful',
       message: 'No user detail to search for!'
     });
   } else {
     user.findAndCountAll({
-      where: { username: {
-        $iLike: req.query.q
-      } },
+      where: {
+        username: {
+          $iLike: `%${req.query.q}%`
+        }
+      },
       attributes: ['id', 'username', 'email', 'roleId', 'createdAt'],
     }).then((users) => {
       res.send({
@@ -223,11 +296,10 @@ const updateUser = (req, res) => {
             status: 'unsuccessful',
           });
         }
-      }).catch((err) => {
+      }).catch(() => {
         res.send({
           status: 'unsuccessful',
           message: 'Could not find any user to update!',
-          err
         });
       });
     } else {
@@ -281,4 +353,5 @@ export { signUpUser,
   findUser,
   updateUser,
   deleteUser,
-  findUsers };
+  findUsers,
+  viewUserProfile };
