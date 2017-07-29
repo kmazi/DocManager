@@ -11,8 +11,8 @@ export default (
   <Switch>
     <Route exact path="/user/documents" component={ViewDocument} />
     <Route path="/user/documents/createdocument" component={WriteDocument} />
-    <Route path="/user/documents/users" component={UserView} />
     <Route path="/user/documents/users/all" component={AllUsersView} />
+    <Route path="/user/documents/users" component={UserView} />
     <Route path="/user/documents/read" component={ReadDocument} />
   </Switch>
 );

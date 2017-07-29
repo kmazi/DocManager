@@ -8,6 +8,7 @@ import { publicDocuments,
   roleDocuments,
   allDocuments,
   getUserDocuments } from '../actions/documentActions';
+import { fetchAllUsers } from '../actions/userActions';
 
 const minHeight = {
   minHeight: window.innerHeight - 131 ||
@@ -28,7 +29,7 @@ const fetchUserDocs = (event, getUserDocs, userId, history) => {
 };
 
 const UserPage = ({ userName, userId, history,
-  getPublicDocuments, getRoleDocuments,
+  getPublicDocuments, getRoleDocuments, getAllUsers,
   getUserDocs, getAllDocuments, roleType }) => (
     <section className="row" style={minHeight}>
       <div id="docheader" className="header">
@@ -100,20 +101,33 @@ const UserPage = ({ userName, userId, history,
           View&nbsp;
             <i className="fa fa-lock" aria-hidden="true" />
           </a>
+
           <Link className="center-align" to="/user/documents/createdocument">
           Create&nbsp;
             <i className="fa fa-pencil-square-o" aria-hidden="true" />
           </Link><hr />
+
           <h8 className="center-align">User Info&nbsp;
             <i className="fa fa-tasks" aria-hidden="true" />
           </h8><hr />
+
           <Link className="center-align" to="/user/documents/users">
           Profile&nbsp;
           <i className="fa fa-user" aria-hidden="true" /></Link>
-          <Link className="center-align" to="/user/documents/users/all">
+
+          <a
+            className="center-align"
+            href="/user/documents/users/all"
+            onClick={(event) => {
+              event.preventDefault();
+              getAllUsers(localStorage.getItem('docmanagertoken'));
+              history.push('/user/documents/users/all');
+            }}
+          >
           Manage Users&nbsp;
-          <i className="fa fa-users" aria-hidden="true" /></Link>
+          <i className="fa fa-users" aria-hidden="true" /></a>
         </div>
+
         <div id="contentdisplay" className="col m10">
           <div className="container">
             {userRoutes}
@@ -136,6 +150,7 @@ UserPage.propTypes = {
   getRoleDocuments: propTypes.func.isRequired,
   getAllDocuments: propTypes.func.isRequired,
   getUserDocs: propTypes.func.isRequired,
+  getAllUsers: propTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -147,6 +162,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getPublicDocuments: (userToken) => {
     dispatch(publicDocuments(userToken));
+  },
+  getAllUsers: (token) => {
+    dispatch(fetchAllUsers(token));
   },
   getRoleDocuments: (userToken, roleType) => {
     dispatch(roleDocuments(userToken, roleType));

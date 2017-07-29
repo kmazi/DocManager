@@ -26,6 +26,11 @@ export const errorSignInUser = errors => ({
   type: types.FAILED_SIGNIN,
   errors,
 });
+/**
+ * Dispatches an action when getting user role
+ * @param {object} userRole - Role the current user belongs to
+ * @return {object} returns an object containing user role and action type
+ */
 export const setUserRole = userRole => ({
   type: types.SET_USER_ROLE,
   userRole,
@@ -93,5 +98,50 @@ export const signUserUp = user => (dispatch) => {
     ({ response }) => {
       dispatch(errorSignUpUser(response.data.message));
       return response.data;
+    });
+};
+/**
+ * Dispatches an action that indicates that the system is fetching users
+ * @return {object} returns an object containing
+ * details about the dispatched action
+ */
+export const startGettingUsers = () => ({
+  type: types.START_GETTING_ALL_USERS,
+});
+/**
+ * Dispatches an action that indicates that the system has fetched all users
+ * @param {object} users - The array of users from the database
+ * @return {object} returns an object containing
+ * details about the dispatched action
+ */
+export const finishGettingUsers = (users, responseStatus) => ({
+  type: types.FINISH_GETTING_ALL_USERS,
+  users,
+  responseStatus,
+});
+/**
+ * Dispatches an action that indicates that the system is fetching users
+ * @param {string} error - The error message
+ * @return {object} returns an object containing
+ * details about the dispatched action
+ */
+export const errorGettingUsers = (error, responseStatus) => ({
+  type: types.ERROR_GETTING_ALL_USERS,
+  error,
+  responseStatus,
+});
+/**
+ * Dispatches an action to get all users
+ * @param {object} token - user token for identification
+ * @return {func} returns a function that will be executed to signin a user
+ */
+export const fetchAllUsers = token => (dispatch) => {
+  dispatch(startGettingUsers());
+  return axios.get(`/api/v1/users?token=${token}`)
+    .then((response) => {
+      dispatch(finishGettingUsers(response.data.users, response.data.status));
+    },
+    ({ response }) => {
+      dispatch(errorGettingUsers(response.data.message, response.data.status));
     });
 };

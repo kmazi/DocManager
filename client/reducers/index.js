@@ -223,11 +223,39 @@ const fetchDocuments = (state = {
   }
 };
 
+const fetchAllUsers = (state = {
+  status: '',
+  responseStatus: '',
+  users: [],
+}, action) => {
+  switch (action.type) {
+  case types.START_GETTING_ALL_USERS:
+    return Object.assign({}, state, {
+      status: 'Fetching all users...',
+      responseStatus: '',
+    });
+  case types.ERROR_GETTING_ALL_USERS:
+    return Object.assign({}, state, {
+      status: action.error,
+      responseStatus: action.responseStatus,
+    });
+  case types.FINISH_GETTING_ALL_USERS:
+    return Object.assign({}, state, {
+      users: action.users,
+      status: '',
+      responseStatus: action.responseStatus,
+    });
+  default:
+    return state;
+  }
+};
+
 const rootReducer = combineReducers({
   authenticateUser,
   createDoc,
   fetchDocuments,
   readDocument,
+  fetchAllUsers,
   routing
 });
 

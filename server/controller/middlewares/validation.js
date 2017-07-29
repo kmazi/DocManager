@@ -57,22 +57,16 @@ const verifyToken = (req, res, next) => {
  * @return {null} Returns void
  */
 const allowOnlyAdmin = (req, res, next) => {
-  const userDetails = req.body.user;
-  userRole.findById(userDetails.roleId).then((role) => {
-    if (role.roletype === 'Admin' && userDetails.userName === 'touchstone') {
-      next();
-    } else {
-      res.status(400).send({
-        status: 'unsuccessful',
-        message: 'Access denied!'
-      });
-    }
-  }).catch(() => {
+  const userDetails = req.body.user || {};
+  if (userDetails.roleType === 'Admin' &&
+    userDetails.userName === 'touchstone') {
+    next();
+  } else {
     res.status(400).send({
       status: 'unsuccessful',
       message: 'Access denied!'
     });
-  });
+  }
 };
 /**
  * Middleware functionality to check for null or empty form fields

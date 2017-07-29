@@ -6888,6 +6888,9 @@ section {
     top: 0;
     left: 0; }
 
+.table span {
+  color: silver; }
+
 .header {
   background: linear-gradient(#335d5d, #2d6363, #396868, #335d5d); }
   .header span.left {
