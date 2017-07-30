@@ -2,7 +2,7 @@ import request from 'request';
 import index from '../../server/models';
 
 const routeUrl = 'http://localhost:1844/api/v1';
-describe('signUpUser(): ', () => {
+fdescribe('signUpUser(): ', () => {
   let userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
@@ -48,8 +48,9 @@ describe('signUpUser(): ', () => {
     request(requestObject, (req, res, body) => {
       expect(body.status).toBe('successful');
       expect(body.userName).toBe('jackson');
-      expect(body.userEmail).toBe('jackson@gmail.com');
-      expect(body.roleId).toBe(2);
+      expect(body.email).toBe('jackson@gmail.com');
+      expect(body.roleType).toBe('Fellow');
+      expect(res.statusCode).toBe(200);
       expect(body.token).not.toBeNull();
       done();
     });
@@ -59,6 +60,7 @@ describe('signUpUser(): ', () => {
     request(requestObject, () => {
       request(requestObject, (req, res, body) => {
         expect(body.status).toBe('unsuccessful');
+        expect(res.statusCode).toBe(400);
         expect(body.message).toBe('User already exist');
         done();
       });
@@ -84,8 +86,6 @@ describe('signUpUser(): ', () => {
     };
     request(requestObject, (req, res, body) => {
       expect(body.status).not.toBe('successful');
-      expect(body.message
-        .includes('Server error just occured!')).toBe(true);
       done();
     });
   });

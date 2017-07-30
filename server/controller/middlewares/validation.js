@@ -91,7 +91,6 @@ const generalValidation = (value, formField) => {
   return user;
 };
 
-
 /**
  * Validate the user email input
  * @param {string} inputEmail - The input email to validate
@@ -177,7 +176,7 @@ const signUpValidation = (req, res, next) => {
     if (userNameValidation.status === 'successful' &&
       passwordValidation.status === 'successful' &&
       emailValidation.status === 'successful') {
-      if (req.body.roleId > 0 && req.body.roleId < 5) {
+      if (req.body.roleId > 1 && req.body.roleId < 5) {
         next();
       } else {
         err.status = 'unsuccessful';

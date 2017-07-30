@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import index from '../models';
-import { createToken } from '../controller/middlewares/validation';
+import { createToken, validateEmail, validatePassword } from '../controller/middlewares/validation';
 
 const user = index.User;
 const role = index.Roles;
@@ -203,8 +203,8 @@ const getAllUsers = (req, res) => {
  * @return {null} Returns null
  */
 const findUser = (req, res) => {
-  const userId = req.params.id;
-  if (userId > 0 && Number.isInteger(Number(req.params.id))) {
+  const userId = Number(req.params.id);
+  if (Number.isInteger(userId) && userId > 0) {
     user.findById(userId).then((knownUser) => {
       if (knownUser === null) {
         res.send({
@@ -256,11 +256,10 @@ const findUsers = (req, res) => {
         status: 'successful',
         users
       });
-    }).catch((err) => {
+    }).catch(() => {
       res.send({
         status: 'unsuccessful',
         message: 'Unable to get user(s)',
-        err
       });
     });
   }
@@ -273,16 +272,27 @@ const findUsers = (req, res) => {
  * @return {null} Returns null
  */
 const updateUser = (req, res) => {
-  const userId = req.params.id;
+  const userId = Number(req.params.id);
   const saltRound = 10;
+  const userDetail = {};
+  if (req.body.userName) {
+    userDetail.usename = req.body.userName;
+  }
+  if (req.body.roleId && req.body.roleId > 0 && req.body.roleId < 5) {
+    userDetail.roleId = req.body.roleId;
+  }
+  if (req.body.email &&
+    validateEmail(req.body.email, 'email').status === 'successful') {
+    userDetail.email = req.body.email;
+  }
   bcrypt.hash(req.body.password, saltRound, (err, hash) => {
-    if (userId > 0 && Number.isInteger(Number(req.params.id))) {
-      user.update({
-        usename: req.body.userName,
-        roleId: req.body.roleId,
-        email: req.body.email,
-        password: hash,
-      }, {
+    if (req.body.password &&
+      validatePassword(req.body.password, 'password').status === 'successful') {
+      userDetail.password = hash;
+    }
+    if (Number.isInteger(userId) && userId > 0 &&
+      userId === req.body.user.userId) {
+      user.update(userDetail, {
         where: {
           id: userId,
         }

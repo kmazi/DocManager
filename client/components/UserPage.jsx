@@ -69,7 +69,8 @@ const UserPage = ({ userName, userId, history,
               className="btn"
               onClick={(event) => {
                 event.preventDefault();
-                getAllDocuments(localStorage.getItem('docmanagertoken'));
+                getAllDocuments(localStorage.getItem('docmanagertoken'),
+                roleType);
                 history.push('/user/documents');
               }}
             >All Documents&nbsp;
@@ -172,8 +173,8 @@ const mapDispatchToProps = dispatch => ({
   getUserDocs: (id, tokenString) => {
     dispatch(getUserDocuments(id, tokenString));
   },
-  getAllDocuments: (userToken) => {
-    dispatch(allDocuments(userToken));
+  getAllDocuments: (userToken, roletype) => {
+    dispatch(allDocuments(userToken, roletype));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(UserPage);

@@ -144,9 +144,11 @@ export const fetchAllDocumentsFailed = error => ({
   error
 });// done fetching all documents
 
-export const allDocuments = token => (dispatch) => {
+export const allDocuments = (token, roletype) => (dispatch) => {
+  const url = roletype !== 'Admin' ? `/api/v1/All/documents?token=${token}`
+  : `/api/v1/documents?token=${token}`;
   dispatch(fetchAllDocuments());
-  return axios.get(`/api/v1/documents?token=${token}`).then((response) => {
+  return axios.get(url).then((response) => {
     dispatch(fetchAllDocumentsComplete(response.data.documents));
   },
     ({ response }) => {
