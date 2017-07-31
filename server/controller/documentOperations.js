@@ -311,7 +311,52 @@ const findDocument = (req, res) => {
  * @return {null} Returns null
  */
 const updateDocument = (req, res) => {
-
+  const documentId = Number(req.params.id);
+  const userDocument = {};
+  if (req.body.title) {
+    userDocument.title = req.body.title;
+  }
+  if (req.body.body) {
+    userDocument.body = req.body.body;
+  }
+  if (req.body.access) {
+    userDocument.access = req.body.access;
+  }
+  document.findById(documentId).then((foundDocument) => {
+    if (foundDocument.userId === req.body.user.userId
+    || req.body.user.roleType === 'Admin') {
+      document.update(userDocument, {
+        where: {
+          id: documentId,
+        }
+      }).then(() => {
+        if (Object.keys(userDocument).length !== 0) {
+          res.status(200).send({
+            status: 'successful',
+          });
+        } else {
+          res.status(400).send({
+            status: 'unsuccessful',
+          });
+        }
+      }).catch(() => {
+        res.status(400).send({
+          status: 'unsuccessful',
+          message: 'Could not find any document to update!',
+        });
+      });
+    } else {
+      res.status(400).send({
+        status: 'unsuccessful',
+        message: 'Restricted document!',
+      });
+    }
+  }).catch(() => {
+    res.status(400).send({
+      status: 'unsuccessful',
+      message: 'Could not find any document to update!',
+    });
+  });
 };
 /**
  * Searches through documents for a given title
