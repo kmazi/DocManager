@@ -1,15 +1,22 @@
 import React from 'react';
+import $ from 'jquery';
 
 const Search = () => (
-  <div className="row">
-    <div className="col s8">
+  <div className="searchcontainer">
+    <div className="">
       <input type="text" placeholder="search my documents" />
-    </div>
-    <div className="col s2">
-      <i
-        className="fa fa-search-plus small"
-        aria-hidden="true"
-      />
+      <button
+        className="right"
+        onClick={(event) => {
+          event.preventDefault();
+          const searchText = $('.searchcontainer input').val();
+          search(searchText, localStorage.getItem('docmanagertoken'));
+        }}
+      >
+        <i
+          className="fa fa-search-plus small"
+          aria-hidden="true"
+        /></button>
     </div>
   </div>
 );

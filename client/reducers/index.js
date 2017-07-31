@@ -4,16 +4,35 @@ import * as types from '../actions/types';
 
 const authenticateUser = (state = {
   userId: 0,
+  updateStatus: 'Update Profile',
+  disabled: true,
   signInStatus: 'Sign In',
   signUpStatus: 'Sign Up',
   signUpDate: '',
   userName: 'Guest',
   userEmail: '',
+  updateEmail: '',
   errors: [],
   roleType: 'None',
   status: 'unsuccessful',
 }, action) => {
   switch (action.type) {
+  case types.START_UPDATING_USER:
+    return Object.assign({}, state, {
+      updateStatus: 'Updating...',
+    });
+  case types.UPDATE_EMAIL:
+    return Object.assign({}, state, {
+      updateEmail: action.email,
+    });
+  case types.DONE_UPDATING_USER:
+    return Object.assign({}, state, {
+      updateStatus: 'Update Profile',
+    });
+  case types.ERROR_UPDATING_USER:
+    return Object.assign({}, state, {
+      updateStatus: 'Updating Profile',
+    });
   case types.START_SIGNUP:
     return Object.assign({}, state, {
       signUpStatus: 'Signing Up...',
@@ -24,6 +43,7 @@ const authenticateUser = (state = {
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
       userEmail: action.userDetail.email,
+      updateEmail: action.userDetail.email,
       roleType: action.userDetail.roleType,
       createdAt: action.userDetail.createdAt,
       status: 'successful',
@@ -52,6 +72,7 @@ const authenticateUser = (state = {
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
       userEmail: action.userDetail.email,
+      updateEmail: action.userDetail.email,
       createdAt: action.userDetail.createdAt,
       roleType: action.userDetail.roleType,
       status: 'successful',

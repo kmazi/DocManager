@@ -80,7 +80,9 @@ const DocumentPreview = ({ userDocuments, readDocument,
   return (
     <div className="row">
       <Search />
-      {docs}
+      <div>
+        {docs}
+      </div>
     </div>);
 };
 

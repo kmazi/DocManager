@@ -274,6 +274,7 @@ const updateUser = (req, res) => {
         } else {
           res.status(400).send({
             status: 'unsuccessful',
+            message: 'update failed!',
           });
         }
       }).catch(() => {

@@ -6891,6 +6891,19 @@ section {
 .table span {
   color: silver; }
 
+#userview h5 {
+  display: "block"; }
+
+#userview div.row {
+  padding: 5px 10px; }
+
+#userview button {
+  background: #26a69a;
+  margin-left: 10px; }
+
+#userview button:hover {
+  background: #2bbbad; }
+
 .header {
   background: linear-gradient(#335d5d, #2d6363, #396868, #335d5d); }
   .header span.left {
@@ -6943,6 +6956,8 @@ input[type=text]:not(.browser-default):disabled {
     background: #1d7d74; }
   #doccontent #docview div {
     background: #3e6f6f;
+    border-style: solid;
+    border-width: thin;
     padding: 5px;
     margin: 5px; }
     #doccontent #docview div h6 {
@@ -6957,6 +6972,13 @@ input[type=text]:not(.browser-default):disabled {
   #doccontent .docicon {
     display: block;
     font-size: 70px; }
+
+.searchcontainer {
+  position: relative; }
+  .searchcontainer button {
+    background: #26a69a; }
+  .searchcontainer button:hover {
+    background: #2bbbad; }
 
 #docform input, #docform textarea {
   border-color: #26a69a; }

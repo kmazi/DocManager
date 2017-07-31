@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import ViewDocument from './components/container/ViewDocument';
-import UserView from './components/UserView';
+import UserView from './components/container/UserView';
 import AllUsersView from './components/AllUsersView';
 import WriteDocument from './components/container/WriteDocument';
 import ReadDocument from './components/ReadDocument';
