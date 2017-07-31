@@ -17,6 +17,6 @@ const middleware = routerMiddleware(history);
 export const configureStore = initialState => createStore(
   rootReducer,
   initialState,
-  applyMiddleware(middleware, thunkMiddleware),
+  applyMiddleware(middleware, thunkMiddleware)
 );
 
