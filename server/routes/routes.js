@@ -2,12 +2,8 @@ import { createDocument,
          getAllDocuments,
          findDocument,
          deleteDocument,
-<<<<<<< HEAD
-         getAccessLevelDocuments,
-=======
          getUserDocuments,
          searchForDocument,
->>>>>>> feature/#148641165/search-users
          updateDocument } from '../controller/documentOperations';
 import { signUpValidation,
          signInValidation,
@@ -53,14 +49,8 @@ const routes = (router) => {
   // route to search for documents
   router.get('/search/documents', searchForDocument);
   // route to get access required documents
-<<<<<<< HEAD
-  router.get('/:access/documents', getAccessLevelDocuments);
-  // route to update documents
-  router.put('/documents/:id', updateDocument);
-=======
   // router.get('/:access/documents', getAccessLevelDocuments);
   router.get('/:access/documents', getUserDocuments);
->>>>>>> feature/#148641165/search-users
   // route to get all documents
   router.get('/documents', allowOnlyAdmin, getAllDocuments);
   // route to create a new document
