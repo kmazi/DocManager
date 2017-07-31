@@ -2,7 +2,6 @@ import JwtToken from 'jsonwebtoken';
 import index from '../../models';
 
 const userModel = index.User;
-const userRole = index.Roles;
 /**
  * Creates a web token for the user
  * @param {object} user - The user object to create token for
@@ -39,6 +38,11 @@ const verifyToken = (req, res, next) => {
             status: 'unsuccessful',
             message: 'Invalid user, you are not authenticated!',
           });
+        } else if (!user.isactive) {
+          return res.status(400).send({
+            status: 'unsuccessful',
+            message: 'Inactive user!',
+          });
         }
         req.body.user = verifiedToken;
         next();
@@ -58,8 +62,26 @@ const verifyToken = (req, res, next) => {
  */
 const allowOnlyAdmin = (req, res, next) => {
   const userDetails = req.body.user || {};
+  if (userDetails.roleType === 'Admin') {
+    next();
+  } else {
+    res.status(400).send({
+      status: 'unsuccessful',
+      message: 'Access denied!'
+    });
+  }
+};
+/**
+ * Allows only super admin to access the next functionality
+ * @param {object} req - The request object
+ * @param {object} res - The response object
+ * @param {object} next - Function used to access the next route
+ * @return {null} Returns void
+ */
+const allowOnlySuperAdmin = (req, res, next) => {
+  const userDetails = req.body.user || {};
   if (userDetails.roleType === 'Admin' &&
-    userDetails.userName === 'touchstone') {
+    userDetails.userName === 'SuperAdmin') {
     next();
   } else {
     res.status(400).send({
@@ -175,7 +197,8 @@ const signUpValidation = (req, res, next) => {
     const emailValidation = validateEmail(req.body.email, 'email');
     if (userNameValidation.status === 'successful' &&
       passwordValidation.status === 'successful' &&
-      emailValidation.status === 'successful') {
+      emailValidation.status === 'successful' &&
+      typeof req.body.isactive === 'boolean') {
       if (req.body.roleId > 1 && req.body.roleId < 5) {
         next();
       } else {
@@ -188,6 +211,9 @@ const signUpValidation = (req, res, next) => {
       err.message = err.message.concat(...userNameValidation.message,
         ...passwordValidation.message,
         ...emailValidation.message);
+      if (err.message.length === 0) {
+        err.message[0] = 'Set "isactive" property';
+      }
       res.status(400).send(err);
     }
   } else {
@@ -199,5 +225,6 @@ const signUpValidation = (req, res, next) => {
 
 export {
   signUpValidation, signInValidation, generalValidation, validateEmail,
-  validatePassword, createToken, verifyToken, allowOnlyAdmin
+  validatePassword, createToken, verifyToken, allowOnlyAdmin,
+  allowOnlySuperAdmin
 };

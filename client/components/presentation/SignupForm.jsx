@@ -22,8 +22,9 @@ const signUp = (event, signUserUp, history, getUserDocuments) => {
   const roleValue = $('#signupform input[name=group1]:checked')
     .attr('data-value');
   const roleId = $('#signupform input[name=group1]:checked').val();
+  const isactive = true;
   const formData =
-    { userName, email, password, comfirmPassword, roleId, roleValue };
+    { userName, email, password, comfirmPassword, roleId, roleValue, isactive };
   if (password === comfirmPassword) {
     signUserUp(formData)
       .then((res) => {

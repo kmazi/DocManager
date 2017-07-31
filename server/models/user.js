@@ -15,8 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false },
     password: { type: DataTypes.STRING,
       allowNull: false },
+    isactive: { type: DataTypes.BOOLEAN,
+      allowNull: false },
     roleId: { type: DataTypes.INTEGER,
-      allowNull: false }
+      allowNull: false },
   }, {
     classMethods: {
       associate: (models) => {

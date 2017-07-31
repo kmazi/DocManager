@@ -106,7 +106,7 @@ const getAllDocuments = (req, res) => {
     } else {
       res.status(400).send({
         status: 'unsuccessful',
-        message: 'No documents found!',
+        message: 'No document found!',
       });
     }
   }).catch(() => {
@@ -185,7 +185,7 @@ const getUserDocuments = (req, res) => {
         ));
         response.status = 'successful';
         response.message = '';
-        response.count = finalDocuments.length;
+        response.count = foundDocuments.count;
         response.documents = finalDocuments;
         res.status(200);
         return res.send(response);
@@ -277,7 +277,7 @@ const findDocument = (req, res) => {
           } else {
             return res.status(400).send({
               status: 'unsuccessful',
-              message: 'Access denied',
+              message: 'Access denied!',
             });
           }
         }
@@ -304,7 +304,15 @@ const findDocument = (req, res) => {
     });
   }
 };
+/**
+ * Update a particular document
+ * @param {object} req - The request object from express server
+ * @param {object} res - The response object from express server
+ * @return {null} Returns null
+ */
+const updateDocument = (req, res) => {
 
+};
 /**
  * Searches through documents for a given title
  * @param {object} req - The request object from express server
@@ -319,7 +327,7 @@ const searchForDocument = (req, res) => {
   if (searchParams.offset && searchParams.limit) {
     params = { offset: searchParams.offset, limit: searchParams.limit };
   }
-  let searchQuery = {};
+  let searchQuery;
   const titleSearchQuery = {
     title: {
       $iLike: `%${req.query.q}%` }
@@ -329,14 +337,24 @@ const searchForDocument = (req, res) => {
     searchQuery = { userId: req.body.user.userId, ...titleSearchQuery };
     break;
   case 'Public':
+    searchQuery = { access, ...titleSearchQuery };
+    break;
   case 'Admin':
   case 'Learning':
   case 'Devops':
   case 'Fellow':
-    searchQuery = { access, ...titleSearchQuery };
+    if (req.body.user.roleType === access) {
+      searchQuery = { access };
+    } else {
+      searchQuery = null;
+    }
+    break;
+  case 'All':
     break;
   default:
-    searchQuery = null;
+    if (req.body.user.roleType !== 'Admin') {
+      searchQuery = null;
+    }
     break;
   }
   if (!req.query.q) {
@@ -345,6 +363,7 @@ const searchForDocument = (req, res) => {
       message: 'No document title to search for!'
     });
   } else {
+    console.log('here is the query', searchQuery);
     document.findAndCountAll({
       where: { ...searchQuery },
       attributes: ['id', 'title', 'body', 'access', 'createdAt'],
@@ -373,37 +392,33 @@ const deleteDocument = (req, res) => {
   const documentId = Number(req.params.id);
   const response = {};
   response.status = 'unsuccessful';
-  if (Number.isInteger(documentId) && documentId > 0) {
-    document.findById(documentId).then((knownDocument) => {
-      if (!knownDocument) {
-        response.status = 'unsuccessful';
-        response.message = 'Could not find document!';
-        return res.status(400).send(response);
-      } else if (knownDocument.userId === req.body.user.userId) {
-        knownDocument.destroy().then(() => {
-          response.status = 'successful';
-          response.message = `"${knownDocument.title}" has been deleted!`;
-          return res.status(200).send(response);
-        }).catch(() => {
-          response.status = 'unsuccessful';
-          response.message = 'Could not delete the document!';
-          return res.status(400).send(response);
-        });
-      } else {
-        response.status = 'unsuccessful';
-        response.message = 'Access denied!';
-        return res.send(response);
-      }
-    }).catch(() => {
+  document.findById(documentId).then((knownDocument) => {
+    if (!knownDocument) {
       response.status = 'unsuccessful';
-      response.message = 'No document found!';
+      response.message = 'Could not find document!';
       return res.status(400).send(response);
-    });
-  } else {
-    response.message = 'Invalid user id!';
+    } else if (knownDocument.userId === req.body.user.userId) {
+      knownDocument.destroy().then(() => {
+        response.status = 'successful';
+        response.message = `"${knownDocument.title}" has been deleted!`;
+        return res.status(200).send(response);
+      }).catch(() => {
+        response.status = 'unsuccessful';
+        response.message = 'Could not delete the document!';
+        return res.status(400).send(response);
+      });
+    } else {
+      response.status = 'unsuccessful';
+      response.message = 'Access denied!';
+      return res.send(response);
+    }
+  }).catch(() => {
+    response.status = 'unsuccessful';
+    response.message = 'No document found!';
     return res.status(400).send(response);
-  }
+  });
 };
 
 export { createDocument, getAllDocuments, findDocument,
-  deleteDocument, getUserDocuments, searchForDocument };
+  deleteDocument, getUserDocuments, searchForDocument,
+  updateDocument };

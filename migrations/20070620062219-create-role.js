@@ -9,7 +9,7 @@ module.exports = {
     },
     roletype: {
       type: Sequelize.STRING,
-      unique: true
+      allowNull: false,
     },
     createdAt: {
       allowNull: false,

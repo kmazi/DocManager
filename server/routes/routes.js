@@ -3,11 +3,13 @@ import { createDocument,
          findDocument,
          deleteDocument,
          getUserDocuments,
-         searchForDocument } from '../controller/documentOperations';
+         searchForDocument,
+         updateDocument } from '../controller/documentOperations';
 import { signUpValidation,
          signInValidation,
          verifyToken,
-         allowOnlyAdmin } from '../controller/middlewares/validation';
+         allowOnlyAdmin,
+         allowOnlySuperAdmin } from '../controller/middlewares/validation';
 import { signUpUser,
          signInUser,
          getAllUsers,
@@ -32,7 +34,7 @@ const routes = (router) => {
   // Update a specific user
   router.put('/users/:id', updateUser);
   // route to create role
-  router.post('/role', allowOnlyAdmin, createRole);
+  router.post('/role', allowOnlySuperAdmin, createRole);
   // Find a specific user
   router.get('/users/:userId', viewUserProfile);
   // route to get all users and paginate them
@@ -44,6 +46,8 @@ const routes = (router) => {
   // route to fetch documents belonging to a user
   // router.get('/users/:id/documents', getUserDocuments);
   router.get('/users/:id/documents', getUserDocuments);
+  // route to search for documents
+  router.get('/search/documents', searchForDocument);
   // route to get access required documents
   // router.get('/:access/documents', getAccessLevelDocuments);
   router.get('/:access/documents', getUserDocuments);
@@ -53,8 +57,9 @@ const routes = (router) => {
   router.post('/documents', createDocument);
   // route to find a specific document
   router.get('/documents/:id', findDocument);
-  // route to search for documents
-  router.get('/search/documents', searchForDocument);
+  // route to update a specific document
+  router.put('/documents/:id', updateDocument);
+
   // route to delete a specific document
   router.delete('/documents/:id', deleteDocument);
 };
