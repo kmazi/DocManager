@@ -7,7 +7,8 @@
 module.exports = (sequelize, DataTypes) => {
   const Document = sequelize.define('Document', {
     title: { type: DataTypes.STRING,
-      allowNull: false },
+      allowNull: false,
+      unique: true, },
     body: { type: DataTypes.TEXT,
       allowNull: false },
     access: { type: DataTypes.STRING,

@@ -10,7 +10,8 @@ export const startCreatingDocument = () => ({
 });
 /**
  * Fires when a document was just created
- * @param {object} documents - An array of documents from api
+ * @param {object} status - A string indicating the stage
+ * of the document creation process
  * @returns {object} returns the type of data it dispatches
  */
 export const doneCreatingDocument = status => ({
@@ -26,6 +27,19 @@ export const errorCreatingDocument = error => ({
   type: types.ERROR_CREATING_DOCUMENT,
   error
 });
+export const documentCreation = formValue => (dispatch) => {
+  dispatch(startCreatingDocument());
+  return axios.post('/api/v1/documents', formValue)
+    .then((response) => {
+      dispatch(doneCreatingDocument(response.data.status));
+      return response.data;
+    },
+    ({ response }) => {
+      dispatch(errorCreatingDocument(response.data));
+      return response.data;
+    }
+    );
+};
 /**
  * Starts creating documents
  * @param {object} documents - An array of documents from api
@@ -44,24 +58,22 @@ export const errorGetUserDocuments = error => ({
   type: types.ERROR_GET_USER_DOCUMENT,
   error,
 });// done fetching own documents
-
-export const getUserDocuments = (id, token) => dispatch =>
-  axios.get(`/api/v1/users/${id}/documents?token=${token}`)
+/**
+ *
+ * @param {number} id - The user ID used to fetch documents
+ * @param {string} token - The authentication token
+ * @return {object} Returns an object response from the server
+ */
+export const getUserDocuments = (id, token) => (dispatch) => {
+  dispatch(startGetUserDocuments());
+  return axios.get(`/api/v1/users/${id}/documents?token=${token}`)
     .then((response) => {
       dispatch(completeGetUserDocuments(response.data.documents));
+      return response.data.status;
     }, ({ response }) => {
       dispatch(errorGetUserDocuments(response.data));
+      return response.data.status;
     });
-
-export const documentCreation = formValue => (dispatch) => {
-  dispatch(startCreatingDocument());
-  return axios.post('/api/v1/documents', formValue)
-    .then((response) => {
-      dispatch(doneCreatingDocument(response.data.status));
-    },
-    ({ response }) =>
-      dispatch(errorCreatingDocument(response.data))
-    );
 };
 
 // fetching public document
@@ -79,12 +91,11 @@ export const fetchingPublicDocumentsFailed = error => ({
   error,
 }); // done fetching public document
 
-export const publicDocuments = (token, isAuthentic, history) => (dispatch) => {
+export const publicDocuments = token => (dispatch) => {
   dispatch(fetchingPublicDocuments());
   return axios.get(`/api/v1/Public/documents?token=${token}`)
     .then((response) => {
       dispatch(fetchingPublicDocumentsComplete(response.data.documents));
-      history.push('/user/documents');
     },
     ({ response }) => {
       dispatch(fetchingPublicDocumentsFailed(response.data.message));
@@ -92,8 +103,9 @@ export const publicDocuments = (token, isAuthentic, history) => (dispatch) => {
 };
 
 // start fetching role documents
-export const fetchRoleDocuments = () => ({
+export const fetchRoleDocuments = roleType => ({
   type: types.START_FETCHING_ROLE_DOCUMENTS,
+  roleType: roleType || 'Loading...',
 });
 
 export const fetchRoleDocumentsComplete = documents => ({
@@ -106,11 +118,11 @@ export const fetchRoleDocumentsFailed = error => ({
   error,
 });
 // done fetching role documents
-export const roleDocuments = (token, isAuthentic, history) => (dispatch) => {
+export const roleDocuments = (token, roleType) => (dispatch) => {
   dispatch(fetchRoleDocuments());
-  return axios.get(`/api/v1/Role/documents?token=${token}`).then((response) => {
+  return axios.get(`/api/v1/${roleType}/documents?token=${token}`)
+  .then((response) => {
     dispatch(fetchRoleDocumentsComplete(response.data.documents));
-    history.push('/user/documents');
   },
     ({ response }) => {
       dispatch(fetchRoleDocumentsFailed(response.data.message));
@@ -132,13 +144,63 @@ export const fetchAllDocumentsFailed = error => ({
   error
 });// done fetching all documents
 
-export const allDocuments = (token, isAuthentic, history) => (dispatch) => {
+export const allDocuments = (token, roletype) => (dispatch) => {
+  const url = roletype !== 'Admin' ? `/api/v1/All/documents?token=${token}`
+  : `/api/v1/documents?token=${token}`;
   dispatch(fetchAllDocuments());
-  return axios.get(`/api/v1/documents?token=${token}`).then((response) => {
+  return axios.get(url).then((response) => {
     dispatch(fetchAllDocumentsComplete(response.data.documents));
-    history.push('/user/documents');
   },
     ({ response }) => {
       dispatch(fetchAllDocumentsFailed(response.data.message));
+    });
+};
+export const readADocument = docId => ({
+  type: types.START_READING_DOCUMENT,
+  docId,
+});
+export const readDocumentComplete = document => ({
+  type: types.DONE_READING_DOCUMENT,
+  document,
+});
+export const readDocumentFailed = error => ({
+  type: types.ERROR_READING_DOCUMENT,
+  error,
+});
+export const readDocument = (id, userToken) => (dispatch) => {
+  dispatch(readADocument(id));
+  return axios.get(`/api/v1/documents/${id}?token=${userToken}`)
+  .then((response) => {
+    dispatch(readDocumentComplete(response.data.document));
+    return response.data;
+  },
+    ({ response }) => {
+      dispatch(readDocumentFailed(response.data.message));
+      return response.data;
+    });
+};
+
+export const deleteDocumentStart = docId => ({
+  type: types.START_DELETING_DOCUMENT,
+  docId,
+});
+export const deleteDocumentComplete = message => ({
+  type: types.DONE_DELETING_DOCUMENT,
+  message,
+});
+export const deleteDocumentFailed = error => ({
+  type: types.ERROR_DELETING_DOCUMENT,
+  error,
+});
+export const deleteDocument = (id, userToken) => (dispatch) => {
+  dispatch(deleteDocumentStart(id));
+  return axios.delete(`/api/v1/documents/${id}?token=${userToken}`)
+  .then((response) => {
+    dispatch(deleteDocumentComplete(response.data.message));
+    return response.data;
+  },
+    ({ response }) => {
+      dispatch(deleteDocumentFailed(response.data.message));
+      return response.data;
     });
 };
