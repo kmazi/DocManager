@@ -204,3 +204,7 @@ export const deleteDocument = (id, userToken) => (dispatch) => {
       return response.data;
     });
 };
+
+export const searchDocuments = () => (dispatch) => {
+
+};

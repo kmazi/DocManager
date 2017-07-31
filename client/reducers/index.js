@@ -161,6 +161,7 @@ const fetchDocuments = (state = {
   isReady: false,
   status: 'Loading my documents...',
   documents: [],
+  documentaccess: 'Private',
 }, action) => {
   switch (action.type) {
   case types.START_GET_USER_DOCUMENT:

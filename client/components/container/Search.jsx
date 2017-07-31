@@ -1,23 +1,12 @@
-import React from 'react';
-import $ from 'jquery';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const Search = () => (
-  <div className="searchcontainer">
-    <div className="">
-      <input type="text" placeholder="search my documents" />
-      <button
-        className="right"
-        onClick={(event) => {
-          event.preventDefault();
-          const searchText = $('.searchcontainer input').val();
-          search(searchText, localStorage.getItem('docmanagertoken'));
-        }}
-      >
-        <i
-          className="fa fa-search-plus small"
-          aria-hidden="true"
-        /></button>
-    </div>
-  </div>
-);
-export default Search;
+import { searchDocuments } from '../../actions/documentActions';
+import Search from '../presentation/Search';
+
+const mapStateToProps = state => ({
+  searchAccess: state.fetchDocuments.documentaccess,
+});
+
+export default
+connect(mapStateToProps, { searchDocuments })(withRouter(Search));
