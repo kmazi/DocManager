@@ -2,7 +2,6 @@ import JwtToken from 'jsonwebtoken';
 import index from '../../models';
 
 const userModel = index.User;
-const userRole = index.Roles;
 /**
  * Creates a web token for the user
  * @param {object} user - The user object to create token for
@@ -20,7 +19,8 @@ const createToken = user => JwtToken.sign(user,
  * @return {null} Returns void
  */
 const verifyToken = (req, res, next) => {
-  const token = req.body.token || req.query.token || '';
+  const token = req.body.token || req.query.token ||
+  req.headers.token || '';
   JwtToken.verify(token, process.env.SUPERSECRET, (err, verifiedToken) => {
     if (err) {
       res.status(400).send({
@@ -29,12 +29,19 @@ const verifyToken = (req, res, next) => {
       });
     } else {
       userModel.findOne({
-        where: { username: verifiedToken.userName }
+        where: {
+          username: verifiedToken.userName,
+          id: verifiedToken.userId }
       }).then((user) => {
         if (!user) {
           return res.status(400).send({
             status: 'unsuccessful',
-            message: 'Invalid user- you are not authenticated!',
+            message: 'Invalid user, you are not authenticated!',
+          });
+        } else if (!user.isactive) {
+          return res.status(400).send({
+            status: 'unsuccessful',
+            message: 'Inactive user!',
           });
         }
         req.body.user = verifiedToken;
@@ -54,25 +61,34 @@ const verifyToken = (req, res, next) => {
  * @return {null} Returns void
  */
 const allowOnlyAdmin = (req, res, next) => {
-  const userDetails = req.body.user;
-  userRole.findById(userDetails.roleId).then((role) => {
-    console.log('.......................', role);
-    console.log('.......................roletype', role.roletype === 'Admin');
-    console.log('.......................username', userDetails.userName === 'touchstone');
-    if (role.roletype === 'Admin' && userDetails.userName === 'touchstone') {
-      next();
-    } else {
-      res.status(400).send({
-        status: 'unsuccessful',
-        message: 'Access denied!'
-      });
-    }
-  }).catch(() => {
+  const userDetails = req.body.user || {};
+  if (userDetails.roleType === 'Admin') {
+    next();
+  } else {
     res.status(400).send({
       status: 'unsuccessful',
       message: 'Access denied!'
     });
-  });
+  }
+};
+/**
+ * Allows only super admin to access the next functionality
+ * @param {object} req - The request object
+ * @param {object} res - The response object
+ * @param {object} next - Function used to access the next route
+ * @return {null} Returns void
+ */
+const allowOnlySuperAdmin = (req, res, next) => {
+  const userDetails = req.body.user || {};
+  if (userDetails.roleType === 'Admin' &&
+    userDetails.userName === 'SuperAdmin') {
+    next();
+  } else {
+    res.status(400).send({
+      status: 'unsuccessful',
+      message: 'Access denied!'
+    });
+  }
 };
 /**
  * Middleware functionality to check for null or empty form fields
@@ -86,21 +102,21 @@ const generalValidation = (value, formField) => {
   // check for null and empty fields
   if (value === null || value === '' || typeof value === 'undefined') {
     user.status = 'unsuccessful';
-    user.message.push(`Empty or undefined ${formField} field!`);
+    user.message.push(`\nEmpty or undefined ${formField} field!`);
     return user;
   }
   // check to see if script characters are included
   if (value.includes('<') || value.includes('>')) {
     user.status = 'unsuccessful';
-    user.message.push('Invalid input character(s)');
+    user.message.push('\nInvalid input character(s)');
   }
   return user;
 };
 
-
 /**
  * Validate the user email input
  * @param {string} inputEmail - The input email to validate
+ * @param {string} formField - The input email to validate
  * @return {object} returns an object that contain validation status an
  * error messages if any
  */
@@ -112,7 +128,7 @@ const validateEmail = (inputEmail, formField) => {
       /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g);
     if (!foundMatch) {
       email.status = 'unsuccessful';
-      email.message.push('Email has got wrong format');
+      email.message.push('\nEmail has got wrong format');
     }
   }
   return email;
@@ -121,6 +137,7 @@ const validateEmail = (inputEmail, formField) => {
 /**
  * Validate the user password input
  * @param {string} inputPassword - The input password to validate
+ * @param {string} formField - The formfield name to validate
  * @return {object} returns an object that contain validation status an
  * error messages if any
  */
@@ -130,7 +147,7 @@ const validatePassword = (inputPassword, formField) => {
   if (password.status === 'successful') {
     if (inputPassword.length < 6 || inputPassword.length > 20) {
       password.status = 'unsuccessful';
-      password.message.push('Password length must be between 6 and 20');
+      password.message.push('\nPassword length must be between 6 and 20');
     }
   }
   return password;
@@ -154,12 +171,12 @@ const signInValidation = (req, res, next) => {
     } else {
       err.status = 'unsuccessful';
       err.message = err.message.concat(...userNameValidation.message,
-        ...passwordValidation.message);
+        ...['\nWrong password']);
       res.status(400).send(err);
     }
   } else {
     err.status = 'unsuccessful';
-    err.message.push('Empty forms are not allowed!');
+    err.message.push('\nEmpty forms are not allowed!');
     res.status(400).send(err);
   }
 };
@@ -180,23 +197,34 @@ const signUpValidation = (req, res, next) => {
     const emailValidation = validateEmail(req.body.email, 'email');
     if (userNameValidation.status === 'successful' &&
       passwordValidation.status === 'successful' &&
-      emailValidation.status === 'successful') {
-      next();
+      emailValidation.status === 'successful' &&
+      typeof req.body.isactive === 'boolean') {
+      if (req.body.roleId > 1 && req.body.roleId < 5) {
+        next();
+      } else {
+        err.status = 'unsuccessful';
+        err.message.push('\nInvalid role!');
+        res.status(400).send(err);
+      }
     } else {
       err.status = 'unsuccessful';
       err.message = err.message.concat(...userNameValidation.message,
         ...passwordValidation.message,
         ...emailValidation.message);
+      if (err.message.length === 0) {
+        err.message[0] = 'Set "isactive" property';
+      }
       res.status(400).send(err);
     }
   } else {
     err.status = 'unsuccessful';
-    err.message.push('Empty fields are not allowed');
+    err.message.push('\nEmpty fields are not allowed');
     res.status(400).send(err);
   }
 };
 
 export {
   signUpValidation, signInValidation, generalValidation, validateEmail,
-  validatePassword, createToken, verifyToken, allowOnlyAdmin
+  validatePassword, createToken, verifyToken, allowOnlyAdmin,
+  allowOnlySuperAdmin
 };

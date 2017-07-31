@@ -4,13 +4,35 @@ import * as types from '../actions/types';
 
 const authenticateUser = (state = {
   userId: 0,
+  updateStatus: 'Update Profile',
+  disabled: true,
   signInStatus: 'Sign In',
   signUpStatus: 'Sign Up',
+  signUpDate: '',
   userName: 'Guest',
+  userEmail: '',
+  updateEmail: '',
   errors: [],
-  isAuthenticated: false,
+  roleType: 'None',
+  status: 'unsuccessful',
 }, action) => {
   switch (action.type) {
+  case types.START_UPDATING_USER:
+    return Object.assign({}, state, {
+      updateStatus: 'Updating...',
+    });
+  case types.UPDATE_EMAIL:
+    return Object.assign({}, state, {
+      updateEmail: action.email,
+    });
+  case types.DONE_UPDATING_USER:
+    return Object.assign({}, state, {
+      updateStatus: 'Update Profile',
+    });
+  case types.ERROR_UPDATING_USER:
+    return Object.assign({}, state, {
+      updateStatus: 'Updating Profile',
+    });
   case types.START_SIGNUP:
     return Object.assign({}, state, {
       signUpStatus: 'Signing Up...',
@@ -20,32 +42,48 @@ const authenticateUser = (state = {
       signUpStatus: 'Sign Up',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
-      isAuthenticated: true,
+      userEmail: action.userDetail.email,
+      updateEmail: action.userDetail.email,
+      roleType: action.userDetail.roleType,
+      createdAt: action.userDetail.createdAt,
+      status: 'successful',
       errors: [],
     });
   case types.FAILED_SIGNUP:
     return Object.assign({}, state, {
       documents: [],
-      status: 'Sign Up',
+      signUpStatus: 'Sign Up',
       errors: action.errors,
+      status: 'unsuccessful',
     });
+  case types.SET_USER_ROLE:
+    return Object.assign({}, state, {
+      roleType: action.userRole,
+    });
+
   case types.START_SIGNIN:
     return Object.assign({}, state, {
       signInStatus: 'Signing In...',
+      status: 'unsuccessful',
     });
   case types.SUCCESSFUL_SIGNIN:
     return Object.assign({}, state, {
       signInStatus: 'Sign In',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
-      isAuthenticated: true,
+      userEmail: action.userDetail.email,
+      updateEmail: action.userDetail.email,
+      createdAt: action.userDetail.createdAt,
+      roleType: action.userDetail.roleType,
+      status: 'successful',
+      errors: [],
     });
   case types.FAILED_SIGNIN:
     return Object.assign({}, state, {
       documents: [],
       signInStatus: 'Sign In',
       errors: action.errors,
-      isAuthenticated: false,
+      status: 'unsuccessful',
     });
   default:
     return state;
@@ -75,15 +113,62 @@ const createDoc = (state = {
   }
 };
 
+const readDocument = (state = {
+  status: 0,
+  delStatus: 0,
+  error: '',
+  message: '',
+  document: {},
+}, action) => {
+  switch (action.type) {
+  case types.START_READING_DOCUMENT:
+    return Object.assign({}, state, {
+      status: action.docId,
+      document: '',
+    });
+  case types.DONE_READING_DOCUMENT:
+    return Object.assign({}, state, {
+      status: 0,
+      document: action.document,
+    });
+  case types.ERROR_READING_DOCUMENT:
+    return Object.assign({}, state, {
+      status: 0,
+      document: {},
+      error: action.error
+    });
+  case types.START_DELETING_DOCUMENT:
+    return Object.assign({}, state, {
+      delStatus: action.docId,
+      message: '',
+    });
+  case types.DONE_DELETING_DOCUMENT:
+    return Object.assign({}, state, {
+      delStatus: 0,
+      message: action.message,
+    });
+  case types.ERROR_DELETING_DOCUMENT:
+    return Object.assign({}, state, {
+      delStatus: 0,
+      error: action.error
+    });
+  default:
+    return state;
+  }
+};
+
 const fetchDocuments = (state = {
   isReady: false,
   status: 'Loading my documents...',
   documents: [],
+  documentaccess: 'Private',
 }, action) => {
   switch (action.type) {
   case types.START_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       isReady: false,
+      documents: [],
+      status: 'Loading my documents...',
     });
   case types.SUCCESS_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
@@ -138,7 +223,7 @@ const fetchDocuments = (state = {
 
   case types.START_FETCHING_ROLE_DOCUMENTS:
     return Object.assign({}, state, {
-      status: 'Loading role documents...',
+      status: action.roleType,
       isReady: false,
       documents: [],
     });
@@ -160,10 +245,39 @@ const fetchDocuments = (state = {
   }
 };
 
+const fetchAllUsers = (state = {
+  status: '',
+  responseStatus: '',
+  users: [],
+}, action) => {
+  switch (action.type) {
+  case types.START_GETTING_ALL_USERS:
+    return Object.assign({}, state, {
+      status: 'Fetching all users...',
+      responseStatus: '',
+    });
+  case types.ERROR_GETTING_ALL_USERS:
+    return Object.assign({}, state, {
+      status: action.error,
+      responseStatus: action.responseStatus,
+    });
+  case types.FINISH_GETTING_ALL_USERS:
+    return Object.assign({}, state, {
+      users: action.users,
+      status: '',
+      responseStatus: action.responseStatus,
+    });
+  default:
+    return state;
+  }
+};
+
 const rootReducer = combineReducers({
   authenticateUser,
   createDoc,
   fetchDocuments,
+  readDocument,
+  fetchAllUsers,
   routing
 });
 

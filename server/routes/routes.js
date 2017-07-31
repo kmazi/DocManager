@@ -1,17 +1,19 @@
 import { createDocument,
          getAllDocuments,
          findDocument,
-         getUserDocuments,
          deleteDocument,
-         getAccessLevelDocuments } from '../controller/documentOperations';
+         getUserDocuments,
+         searchForDocument,
+         updateDocument } from '../controller/documentOperations';
 import { signUpValidation,
          signInValidation,
          verifyToken,
-         allowOnlyAdmin } from '../controller/middlewares/validation';
+         allowOnlyAdmin,
+         allowOnlySuperAdmin } from '../controller/middlewares/validation';
 import { signUpUser,
          signInUser,
          getAllUsers,
-         findUser,
+         viewUserProfile,
          updateUser,
          deleteUser,
          findUsers } from '../controller/userOperation';
@@ -30,27 +32,34 @@ const routes = (router) => {
 
   router.use(verifyToken);
   // Update a specific user
-  router.put('/users/:id', signUpValidation, updateUser);
+  router.put('/users/:id', updateUser);
   // route to create role
-  router.post('/role', allowOnlyAdmin, createRole);
+  router.post('/role', allowOnlySuperAdmin, createRole);
+  // Find a specific user
+  router.get('/users/:userId', viewUserProfile);
   // route to get all users and paginate them
   router.get('/users', allowOnlyAdmin, getAllUsers);
-  // Find a specific user
-  router.get('/users/:id', allowOnlyAdmin, findUser);
   // Deletes a specific user
   router.delete('/users/:id', allowOnlyAdmin, deleteUser);
   // route to search for users
   router.get('/search/users', allowOnlyAdmin, findUsers);
   // route to fetch documents belonging to a user
+  // router.get('/users/:id/documents', getUserDocuments);
   router.get('/users/:id/documents', getUserDocuments);
+  // route to search for documents
+  router.get('/search/documents', searchForDocument);
   // route to get access required documents
-  router.get('/:access/documents', getAccessLevelDocuments);
+  // router.get('/:access/documents', getAccessLevelDocuments);
+  router.get('/:access/documents', getUserDocuments);
   // route to get all documents
   router.get('/documents', allowOnlyAdmin, getAllDocuments);
   // route to create a new document
   router.post('/documents', createDocument);
   // route to find a specific document
   router.get('/documents/:id', findDocument);
+  // route to update a specific document
+  router.put('/documents/:id', updateDocument);
+
   // route to delete a specific document
   router.delete('/documents/:id', deleteDocument);
 };

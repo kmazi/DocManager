@@ -32,7 +32,7 @@ const createDocumentObj = {
   json: userDocument,
 };
 
-fdescribe('createDocument()', () => {
+describe('createDocument()', () => {
   // beforeEach((done) => {
   //   createUserObj.url = userUrl;
   //   request(createUserObj, (req, res, body) => {
