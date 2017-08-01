@@ -348,7 +348,8 @@ const searchForDocument = (req, res) => {
     title: {
       $iLike: `%${req.query.q}%` }
   };
-  const searchQuery = { $or:
+  const searchQuery = req.body.user.roleType === 'Admin' ?
+  titleSearchQuery : { $or:
   [{ userId: req.body.user.userId, ...titleSearchQuery },
     { access: req.body.user.roleType, ...titleSearchQuery },
     { access: 'Public', ...titleSearchQuery }] };
