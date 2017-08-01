@@ -164,6 +164,14 @@ const fetchDocuments = (state = {
   documentaccess: 'Private',
 }, action) => {
   switch (action.type) {
+  case types.DONE_SEARCHING_DOCUMENTS:
+    return Object.assign({}, state, {
+      documents: action.documents,
+    });
+  case types.ERROR_SEARCHING_DOCUMENTS:
+    return Object.assign({}, state, {
+      status: action.error,
+    });
   case types.START_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       isReady: false,

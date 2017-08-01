@@ -3,7 +3,16 @@ import PropTypes from 'prop-types';
 import $ from 'jquery';
 import Alert from 'sweetalert2';
 
-const createDocument = (event, documentCreation, userId, history) => {
+/**
+ *
+ * @param {object} event - contains information
+ * about the element raising the event
+ * @param {*} documentCreation - a function that handles
+ * the event to create documents
+ * @param {*} userId - the user Id creating the document
+ * @return {null} returns null
+ */
+const createDocument = (event, documentCreation, userId) => {
   event.preventDefault();
   const title = $('#docform input[name=title]').val();
   const body = $('#docform textarea[name=body]').val();
@@ -19,7 +28,6 @@ const createDocument = (event, documentCreation, userId, history) => {
         confirmButtonText: 'ok'
       });
       document.getElementById('form').reset();
-      // history.push('/user/documents');
     } else {
       Alert({
         title: res.status,
@@ -31,7 +39,12 @@ const createDocument = (event, documentCreation, userId, history) => {
   });
 };
 
-const CreateDocument = ({ documentCreation, userId, history, roleType }) => (
+/**
+ * Component that renders the form to create a document
+ * @param {object} an object containing properties for creating a document
+ * @return {object} returns the html to render
+ */
+const CreateDocument = ({ documentCreation, userId, roleType }) => (
   <form id="form" action="">
     <div id="docform">
       <input type="text" placeholder="title" name="title" />
@@ -72,7 +85,7 @@ const CreateDocument = ({ documentCreation, userId, history, roleType }) => (
         type="submit"
         name="action"
         onClick={(event) => {
-          createDocument(event, documentCreation, userId, history);
+          createDocument(event, documentCreation, userId);
         }}
       >create
     </button>
@@ -84,9 +97,6 @@ CreateDocument.propTypes = {
   documentCreation: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
   roleType: PropTypes.string.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
 };
 
 export default CreateDocument;

@@ -154,12 +154,6 @@ input[type=text]:not(.browser-default):disabled{
 }
 .searchcontainer{
 	position: relative;
-	button{
-		background: $btncolor;
-	}
-	button:hover{
-		background: $btnhover;
-	}
 }
 #docform{
 	input, textarea{

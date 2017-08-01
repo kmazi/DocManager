@@ -6975,10 +6975,6 @@ input[type=text]:not(.browser-default):disabled {
 
 .searchcontainer {
   position: relative; }
-  .searchcontainer button {
-    background: #26a69a; }
-  .searchcontainer button:hover {
-    background: #2bbbad; }
 
 #docform input, #docform textarea {
   border-color: #26a69a; }

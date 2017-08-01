@@ -205,6 +205,42 @@ export const deleteDocument = (id, userToken) => (dispatch) => {
     });
 };
 
-export const searchDocuments = () => (dispatch) => {
+/**
+ * Dispatches an action when searching is successful
+ * @param {string} documents - The documents that matches the search parameter
+ * @return {object} contains the type of action dispatched
+ * as well as the documents matching the search parameter
+ */
+export const doneSearchingDocuments = documents => ({
+  type: types.DONE_SEARCHING_DOCUMENTS,
+  documents,
+});
 
+/**
+ * Dispatches an action when searching fails
+ * @param {string} error - The error message after searching documents failed
+ * @return {object} contains the type of action dispatched
+ * as well as the error message
+ */
+export const errorSearchingDocuments = error => ({
+  type: types.ERROR_SEARCHING_DOCUMENTS,
+  error,
+});
+
+/**
+ * Dispatches actions that handles events that search through documents
+ * @param {string} searchText - The search parameter
+ * @return {object} returns a promise
+ */
+export const searchDocuments = searchText => (dispatch) => {
+  const userToken = localStorage.getItem('docmanagertoken');
+  return axios
+  .get(`/api/v1/search/documents?q=${searchText}&token=${userToken}`)
+  .then((response) => {
+    dispatch(doneSearchingDocuments(response.data.documents));
+  },
+    ({ response }) => {
+      dispatch(errorSearchingDocuments(response.data.message));
+      return response.data;
+    });
 };

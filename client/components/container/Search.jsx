@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 import { searchDocuments } from '../../actions/documentActions';
 import Search from '../presentation/Search';
 
-const mapStateToProps = state => ({
-  searchAccess: state.fetchDocuments.documentaccess,
-});
+const mapStateToProps = () => ({
 
+});
 export default
 connect(mapStateToProps, { searchDocuments })(withRouter(Search));
