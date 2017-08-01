@@ -231,7 +231,7 @@ const findDocument = (req, res) => {
           }
           break;
         case 'Public':
-          doc = foundDocument;
+          doc = req.body.user.userId ? foundDocument : {};
           break;
         case req.body.user.roleType:
           if (foundDocument.access === req.body.user.roleType) {
