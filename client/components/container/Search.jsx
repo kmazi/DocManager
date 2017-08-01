@@ -1,16 +1,11 @@
-import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const Search = () => (
-  <div className="row">
-    <div className="col s8">
-      <input type="text" placeholder="search my documents" />
-    </div>
-    <div className="col s2">
-      <i
-        className="fa fa-search-plus small"
-        aria-hidden="true"
-      />
-    </div>
-  </div>
-);
-export default Search;
+import { searchDocuments } from '../../actions/documentActions';
+import Search from '../presentation/Search';
+
+const mapStateToProps = () => ({
+
+});
+export default
+connect(mapStateToProps, { searchDocuments })(withRouter(Search));

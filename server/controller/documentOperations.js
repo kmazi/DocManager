@@ -47,39 +47,6 @@ const createDocument = (req, res) => {
     });
   }
 };
-// const getAccessLevelDocuments = (req, res) => {
-//   const searchParams = req.query;
-//   const access = { access: req.params.access || '' };
-//   let params;
-//   // check it limit and offset where passed
-//   if (searchParams.offset && searchParams.limit) {
-//     params = { offset: searchParams.offset,
-//       limit: searchParams.limit };
-//   }
-//   document.findAndCountAll({
-//     where: { ...access },
-//     attributes: ['id', 'title', 'body', 'access', 'createdAt'],
-//     ...params
-//   }).then((documents) => {
-//     if (documents.count > 0) {
-//       res.status(200).send({
-//         status: 'successful',
-//         count: documents.count,
-//         documents: documents.rows,
-//       });
-//     } else {
-//       res.status(400).send({
-//         status: 'unsuccessful',
-//         message: 'No documents found!',
-//       });
-//     }
-//   }).catch(() => {
-//     res.status(400).send({
-//       status: 'unsuccessful',
-//       message: 'Could not fetch all documents!',
-//     });
-//   });
-// };
 /**
  * function to fetch all documents from the database
  * @param {object} req - an object that contains the request body
@@ -366,65 +333,47 @@ const updateDocument = (req, res) => {
  */
 const searchForDocument = (req, res) => {
   const searchParams = req.query;
-  const access = req.query.access;
   let params;
   // check it limit and offset where passed
   if (searchParams.offset && searchParams.limit) {
     params = { offset: searchParams.offset, limit: searchParams.limit };
   }
-  let searchQuery;
+  if (!req.query.q) {
+    return res.send({
+      status: 'unsuccessful',
+      message: 'No document title to search for!'
+    });
+  }
   const titleSearchQuery = {
     title: {
       $iLike: `%${req.query.q}%` }
   };
-  switch (access) {
-  case 'Private':
-    searchQuery = { userId: req.body.user.userId, ...titleSearchQuery };
-    break;
-  case 'Public':
-    searchQuery = { access, ...titleSearchQuery };
-    break;
-  case 'Admin':
-  case 'Learning':
-  case 'Devops':
-  case 'Fellow':
-    if (req.body.user.roleType === access) {
-      searchQuery = { access };
-    } else {
-      searchQuery = null;
-    }
-    break;
-  case 'All':
-    break;
-  default:
-    if (req.body.user.roleType !== 'Admin') {
-      searchQuery = null;
-    }
-    break;
-  }
-  if (!req.query.q) {
-    res.send({
-      status: 'unsuccessful',
-      message: 'No document title to search for!'
-    });
-  } else {
-    console.log('here is the query', searchQuery);
-    document.findAndCountAll({
-      where: { ...searchQuery },
-      attributes: ['id', 'title', 'body', 'access', 'createdAt'],
-      ...params
-    }).then((documents) => {
-      res.send({
+  const searchQuery = { $or:
+  [{ userId: req.body.user.userId, ...titleSearchQuery },
+    { access: req.body.user.roleType, ...titleSearchQuery },
+    { access: 'Public', ...titleSearchQuery }] };
+  document.findAndCountAll({
+    where: { ...searchQuery },
+    attributes: ['id', 'title', 'body', 'access', 'createdAt'],
+    ...params
+  }).then((documents) => {
+    if (documents.count > 0) {
+      res.status(200).send({
         status: 'successful',
-        documents
+        documents: documents.rows,
       });
-    }).catch(() => {
-      res.send({
+    } else {
+      res.status(400).send({
         status: 'unsuccessful',
-        message: 'Unable to get document(s)',
+        message: 'No match found!',
       });
+    }
+  }).catch(() => {
+    res.status(400).send({
+      status: 'unsuccessful',
+      message: 'Unable to get document(s)',
     });
-  }
+  });
 };
 
 /**

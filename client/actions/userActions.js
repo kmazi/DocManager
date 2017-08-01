@@ -49,10 +49,10 @@ export const signInUser = user => (dispatch) => {
       dispatch(finishSignInUser(response.data));
       return response.data;
     },
-     ({ response }) => {
-       dispatch(errorSignInUser(response.data.message));
-       return response.data;
-     }
+    ({ response }) => {
+      dispatch(errorSignInUser(response.data.message));
+      return response.data;
+    }
     );
 };
 /**
@@ -144,4 +144,32 @@ export const fetchAllUsers = token => (dispatch) => {
     ({ response }) => {
       dispatch(errorGettingUsers(response.data.message, response.data.status));
     });
+};
+export const updatingUser = () => ({
+  type: types.START_UPDATING_USER,
+});
+export const doneUpdatingUser = status => ({
+  type: types.DONE_UPDATING_USER,
+  status,
+});
+export const errorUpdatingUser = error => ({
+  type: types.ERROR_UPDATING_USER,
+  error,
+});
+export const editUserDetail = (userDetail, userId, token) => (dispatch) => {
+  dispatch(updatingUser());
+  return axios.put(`/api/v1/users/${userId}?token=${token}`, userDetail)
+    .then((response) => {
+      dispatch(doneUpdatingUser(response.data.status));
+    },
+    ({ response }) => {
+      dispatch(errorUpdatingUser(response.data.status, response.data.message));
+    });
+};
+export const setEmailInputValue = inputValue => ({
+  type: types.UPDATE_EMAIL,
+  email: inputValue,
+});
+export const changeInputValue = inputValue => (dispatch) => {
+  dispatch(setEmailInputValue(inputValue));
 };

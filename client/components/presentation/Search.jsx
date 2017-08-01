@@ -1,0 +1,25 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import $ from 'jquery';
+
+const Search = ({ searchDocuments }) => (
+  <div className="searchcontainer">
+    <div className="">
+      <input
+        type="text"
+        onChange={(event) => {
+          event.preventDefault();
+          const searchText = $('.searchcontainer input').val();
+          searchDocuments(searchText);
+        }}
+        placeholder="search all documents"
+      />
+    </div>
+  </div>
+);
+
+Search.propTypes = {
+  searchDocuments: PropTypes.func.isRequired,
+};
+
+export default Search;

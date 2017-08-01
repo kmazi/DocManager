@@ -47,6 +47,21 @@ section {
 		color: silver;
 	}
 }
+#userview{
+	h5{
+		display: "block";
+	}
+	div.row{
+		padding: 5px 10px;
+	}
+	button{
+		background: $btncolor;
+		margin-left: 10px;
+	}
+	button:hover{
+		background: $btnhover;
+	}
+}
 .header {
 	background: $shadebackground;
 	span.left{
@@ -113,6 +128,8 @@ input[type=text]:not(.browser-default):disabled{
 	#docview{
 		div{
 			background: $backgroundcolor;
+			border-style: solid;
+			border-width: thin;
 			padding: 5px;
 			margin: 5px;
 			h6{
@@ -134,6 +151,9 @@ input[type=text]:not(.browser-default):disabled{
 		display: block;
 		font-size: $docviewfontsize;
 	}
+}
+.searchcontainer{
+	position: relative;
 }
 #docform{
 	input, textarea{
