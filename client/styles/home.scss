@@ -130,10 +130,16 @@ input[type=text]:not(.browser-default):disabled{
 			background: $backgroundcolor;
 			border-style: solid;
 			border-width: thin;
+			max-height: 190px;
 			padding: 5px;
 			margin: 5px;
 			h6{
 				font-weight: bold;
+				height: 25px;
+			 	white-space: nowrap; 
+				width: 12em; 
+				overflow: hidden;
+				text-overflow: ellipsis; 
 			}
 			button{
 				background: $btncolor;

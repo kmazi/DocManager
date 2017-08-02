@@ -24,7 +24,7 @@ const signOut = (event, history) => {
 
 const fetchUserDocs = (event, getUserDocs, userId, history) => {
   event.preventDefault();
-  getUserDocs(userId, localStorage.getItem('docmanagertoken'));
+  getUserDocs(userId);
   history.push('/user/documents');
 };
 
@@ -46,35 +46,35 @@ const UserPage = ({ userName, userId, history,
         <div className="row">
           <div className="col m10 offset-m2">
             <button
-              name="public"
               className="btn"
               onClick={(event) => {
                 event.preventDefault();
-                getPublicDocuments(localStorage.getItem('docmanagertoken'));
-                history.push('/user/documents');
-              }}
-            >Public Documents&nbsp;
-            <i className="fa fa-globe" aria-hidden="true" /></button>
-            <button
-              className="btn"
-              onClick={(event) => {
-                event.preventDefault();
-                getRoleDocuments(localStorage.getItem('docmanagertoken'),
-                roleType);
-                history.push('/user/documents');
-              }}
-            >{roleType} Documents&nbsp;
-              <i className="fa fa-key" aria-hidden="true" /></button>
-            <button
-              className="btn"
-              onClick={(event) => {
-                event.preventDefault();
-                getAllDocuments(localStorage.getItem('docmanagertoken'),
-                roleType);
+                getAllDocuments(roleType);
                 history.push('/user/documents');
               }}
             >All Documents&nbsp;
             <i className="fa fa-file-archive-o" aria-hidden="true" /></button>
+
+            <button
+              name="public"
+              className="btn"
+              onClick={(event) => {
+                event.preventDefault();
+                getPublicDocuments();
+                history.push('/user/documents');
+              }}
+            >Public Documents&nbsp;
+            <i className="fa fa-globe" aria-hidden="true" /></button>
+
+            <button
+              className="btn"
+              onClick={(event) => {
+                event.preventDefault();
+                getRoleDocuments(roleType);
+                history.push('/user/documents');
+              }}
+            >{roleType} Documents&nbsp;
+              <i className="fa fa-key" aria-hidden="true" /></button>
           </div>
         </div>
       </div>
@@ -121,7 +121,7 @@ const UserPage = ({ userName, userId, history,
             href="/user/documents/users/all"
             onClick={(event) => {
               event.preventDefault();
-              getAllUsers(localStorage.getItem('docmanagertoken'));
+              getAllUsers();
               history.push('/user/documents/users/all');
             }}
           >
@@ -161,20 +161,20 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getPublicDocuments: (userToken) => {
-    dispatch(publicDocuments(userToken));
+  getPublicDocuments: () => {
+    dispatch(publicDocuments());
   },
-  getAllUsers: (token) => {
-    dispatch(fetchAllUsers(token));
+  getAllUsers: () => {
+    dispatch(fetchAllUsers());
   },
-  getRoleDocuments: (userToken, roleType) => {
-    dispatch(roleDocuments(userToken, roleType));
+  getRoleDocuments: (roleType) => {
+    dispatch(roleDocuments(roleType));
   },
   getUserDocs: (id, tokenString) => {
     dispatch(getUserDocuments(id, tokenString));
   },
-  getAllDocuments: (userToken, roletype) => {
-    dispatch(allDocuments(userToken, roletype));
+  getAllDocuments: (roletype) => {
+    dispatch(allDocuments(roletype));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(UserPage);

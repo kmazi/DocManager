@@ -1,11 +1,13 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import Alert from 'sweetalert2';
+import $ from 'jquery';
+import Pagination from 'react-js-pagination';
 
 import Search from '../container/Search';
 
 const deleteDocById = (deleteDocument, docId) => {
-  deleteDocument(docId, localStorage.getItem('docmanagertoken'))
+  deleteDocument(docId)
     .then((res) => {
       if (res.status === 'successful') {
         Alert({
@@ -24,12 +26,19 @@ const deleteDocById = (deleteDocument, docId) => {
       }
     });
 };
+
+const getDocument = (pageNumber, paginateDocument, documentAccess) => {
+  const offSet = (pageNumber - 1) * 8;
+  const searchText = $('.searchcontainer input').val();
+  paginateDocument(pageNumber, offSet, documentAccess, searchText);
+};
 /**
  * Template to render documents from store
  * @return {object} returns html object to render
  */
 const DocumentPreview = ({ userDocuments, readDocument,
-  read, deleteId, history, deleteDocument }) => {
+  read, deleteId, history, deleteDocument, paginateDocument,
+  documentAccess, currentPage, documentsCount }) => {
   const docs = userDocuments.map(document => (<div
     id="docview"
     key={document.id}
@@ -80,8 +89,19 @@ const DocumentPreview = ({ userDocuments, readDocument,
   return (
     <div className="row">
       <Search />
-      <div>
+      <div className="row">
         {docs}
+      </div>
+      <div className="row">
+        <Pagination
+          activePage={currentPage}
+          itemsCountPerPage={8}
+          totalItemsCount={documentsCount}
+          pageRangeDisplayed={5}
+          onChange={(pageNumber) => {
+            getDocument(pageNumber, paginateDocument, documentAccess);
+          }}
+        />
       </div>
     </div>);
 };

@@ -67,9 +67,8 @@ module.exports = {
       {
         test: /\.(jpe?g|jpg|png|gif|svg)$/i,
         loaders: [
-          'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-          'image-webpack-loader?' +
-          'bypassOnDebug&optimizationLevel=7&interlaced=false'
+          'file-loader?name=/client/assets/images/[name].[ext]',
+          'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
         ]
       }
     ],

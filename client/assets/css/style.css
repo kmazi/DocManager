@@ -6958,10 +6958,16 @@ input[type=text]:not(.browser-default):disabled {
     background: #3e6f6f;
     border-style: solid;
     border-width: thin;
+    max-height: 190px;
     padding: 5px;
     margin: 5px; }
     #doccontent #docview div h6 {
-      font-weight: bold; }
+      font-weight: bold;
+      height: 25px;
+      white-space: nowrap;
+      width: 12em;
+      overflow: hidden;
+      text-overflow: ellipsis; }
     #doccontent #docview div button {
       background: #26a69a; }
     #doccontent #docview div button:hover {

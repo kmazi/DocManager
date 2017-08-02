@@ -161,16 +161,25 @@ const fetchDocuments = (state = {
   isReady: false,
   status: 'Loading my documents...',
   documents: [],
+  documentType: '',
+  documentCounter: 0,
+  currentPage: 1,
   documentaccess: 'Private',
 }, action) => {
   switch (action.type) {
   case types.DONE_SEARCHING_DOCUMENTS:
     return Object.assign({}, state, {
       documents: action.documents,
+      isReady: true,
+      documentaccess: '',
+      currentPage: action.pageNumber,
+      documentCounter: action.count,
     });
   case types.ERROR_SEARCHING_DOCUMENTS:
     return Object.assign({}, state, {
       status: action.error,
+      isReady: false,
+      documentCounter: 0,
     });
   case types.START_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
@@ -181,12 +190,14 @@ const fetchDocuments = (state = {
   case types.SUCCESS_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       isReady: true,
+      documentType: 'Private',
       documents: action.documents,
     });
   case types.ERROR_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       status: action.error.message,
       isReady: false,
+      documentCounter: 0,
     });
 
   case types.START_FETCHING_PUBLIC_DOCUMENTS:
@@ -199,6 +210,7 @@ const fetchDocuments = (state = {
   case types.DONE_FETCHING_PUBLIC_DOCUMENTS:
     return Object.assign({}, state, {
       isReady: true,
+      documentType: 'Public',
       documents: action.documents,
     });
 
@@ -207,6 +219,7 @@ const fetchDocuments = (state = {
       status: action.error,
       isReady: false,
       documents: [],
+      documentCounter: 0,
     });
 
   case types.START_FETCHING_ALL_DOCUMENTS:
@@ -219,6 +232,7 @@ const fetchDocuments = (state = {
   case types.DONE_FETCHING_ALL_DOCUMENTS:
     return Object.assign({}, state, {
       isReady: true,
+      documentType: 'All',
       documents: action.documents,
     });
 
@@ -227,6 +241,7 @@ const fetchDocuments = (state = {
       status: action.error,
       documents: [],
       isReady: false,
+      documentCounter: 0,
     });
 
   case types.START_FETCHING_ROLE_DOCUMENTS:
@@ -239,6 +254,7 @@ const fetchDocuments = (state = {
   case types.DONE_FETCHING_ROLE_DOCUMENTS:
     return Object.assign({}, state, {
       isReady: true,
+      documentType: 'Role',
       documents: action.documents,
     });
 
@@ -246,7 +262,8 @@ const fetchDocuments = (state = {
     return Object.assign({}, state, {
       isReady: false,
       documents: [],
-      status: action.error
+      status: action.error,
+      documentCounter: 0,
     });
   default:
     return state;

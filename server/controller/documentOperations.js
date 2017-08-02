@@ -178,39 +178,7 @@ const getUserDocuments = (req, res) => {
     });
   }
 };
-/**
- * function to fetch all documents belonging to a user from the database
- * @param {object} req - an object that contains the request body
- * @param {object} res - an object that contains the response body
- * @return {null} it returns no value
- */
-// const getUserDocuments = (req, res) => {
-//   const userId =
-//     (req.params.id > 0 && Number.isInteger(Number(req.params.id))) ?
-//       req.params.id : 0;
-//   document.findAndCountAll({
-//     where: {
-//       userId,
-//     },
-//   }).then((documents) => {
-//     if (documents.count > 0) {
-//       res.status(200).send({
-//         status: 'successful',
-//         documents: documents.rows,
-//       });
-//     } else {
-//       res.status(400).send({
-//         status: 'unsuccessful',
-//         message: 'No document was found',
-//       });
-//     }
-//   }).catch(() => {
-//     res.status(400).send({
-//       status: 'unsuccessful',
-//       message: 'Could not fetch all your documents!',
-//     });
-//   });
-// };
+
 /**
  * function to fetch a specific document from the database
  * @param {object} req - an object that contains the request body
@@ -338,21 +306,23 @@ const searchForDocument = (req, res) => {
   if (searchParams.offset && searchParams.limit) {
     params = { offset: searchParams.offset, limit: searchParams.limit };
   }
-  if (!req.query.q) {
-    return res.send({
-      status: 'unsuccessful',
-      message: 'No document title to search for!'
-    });
-  }
   const titleSearchQuery = {
     title: {
       $iLike: `%${req.query.q}%` }
   };
-  const searchQuery = req.body.user.roleType === 'Admin' ?
+  let searchQuery = req.body.user.roleType === 'Admin' ?
   titleSearchQuery : { $or:
   [{ userId: req.body.user.userId, ...titleSearchQuery },
     { access: req.body.user.roleType, ...titleSearchQuery },
     { access: 'Public', ...titleSearchQuery }] };
+
+  if (!req.query.q) {
+    searchQuery = req.body.user.roleType === 'Admin' ?
+    {} : { $or:
+    [{ userId: req.body.user.userId },
+    { access: req.body.user.roleType },
+    { access: 'Public' }] };
+  }
   document.findAndCountAll({
     where: { ...searchQuery },
     attributes: ['id', 'title', 'body', 'access', 'createdAt'],
@@ -361,6 +331,7 @@ const searchForDocument = (req, res) => {
     if (documents.count > 0) {
       res.status(200).send({
         status: 'successful',
+        count: documents.count,
         documents: documents.rows,
       });
     } else {

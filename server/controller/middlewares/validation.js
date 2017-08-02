@@ -7,8 +7,13 @@ const userModel = index.User;
  * @param {object} user - The user object to create token for
  * @return {string} returns the jsonwebtoken created
  */
-const createToken = user => JwtToken.sign(user,
+const createToken = (user) => {
+  if (!user) {
+    return 'No payload to create token';
+  }
+  return JwtToken.sign(user,
   process.env.SUPERSECRET);
+};
 
 /**
  * Verifies that the submitted token is authentic before granting access
@@ -36,9 +41,10 @@ const verifyToken = (req, res, next) => {
         if (!user) {
           return res.status(400).send({
             status: 'unsuccessful',
-            message: 'Invalid user, you are not authenticated!',
+            message: 'No user found!',
           });
-        } else if (!user.isactive) {
+        }
+        if (!user.isactive) {
           return res.status(400).send({
             status: 'unsuccessful',
             message: 'Inactive user!',

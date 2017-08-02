@@ -32,7 +32,9 @@ describe('signUpUser(): ', () => {
         userFound.destroy();
       }
       done();
-    }).catch();
+    }).catch(() => {
+      done();
+    });
   });
 
   beforeEach(() => {
@@ -47,17 +49,16 @@ describe('signUpUser(): ', () => {
 
   it(`should Add user info to database when all form fields
   are correctly filled`, (done) => {
-      request(requestObject, (req, res, body) => {
-        console.log('..............', body);
-        expect(body.status).toBe('successful');
-        expect(body.userName).toBe('jackson');
-        expect(body.email).toBe('jackson@gmail.com');
-        expect(body.roleType).toBe('Fellow');
-        expect(res.statusCode).toBe(200);
-        expect(body.token).not.toBeNull();
-        done();
-      });
+    request(requestObject, (req, res, body) => {
+      expect(body.status).toBe('successful');
+      expect(body.userName).toBe('jackson');
+      expect(body.email).toBe('jackson@gmail.com');
+      expect(body.roleType).toBe('Fellow');
+      expect(res.statusCode).toBe(200);
+      expect(body.token).not.toBeNull();
+      done();
     });
+  });
 
   it('should not create user that already exist', (done) => {
     request(requestObject, () => {
@@ -137,15 +138,15 @@ describe('signInUser()', () => {
 
   it(`should return status as successful when
   the user is successfully authenticated`, (done) => {
-      requestObject.url = `${routeUrl}/users/login`;
-      request(requestObject, (req, res, body) => {
-        expect(body.status).toBe('successful');
-        expect(body.userName).toBe('jackson');
-        expect(body.email).toBe('jackson@gmail.com');
-        expect(body.roleType).toBe('Fellow');
-        done();
-      });
+    requestObject.url = `${routeUrl}/users/login`;
+    request(requestObject, (req, res, body) => {
+      expect(body.status).toBe('successful');
+      expect(body.userName).toBe('jackson');
+      expect(body.email).toBe('jackson@gmail.com');
+      expect(body.roleType).toBe('Fellow');
+      done();
     });
+  });
 
   it('should throw error when user dont exist in the database', (done) => {
     requestObject.url = `${routeUrl}/users/login`;
@@ -314,10 +315,7 @@ describe('updateUser()', () => {
     json: userDetail,
   };
   beforeEach((done) => {
-    console.log('user details just before initializing test...............', userDetail);
-    console.log('Request object just before each test...............', requestObject);
     request(requestObject, (req, res, body) => {
-      console.log('Body..............', body);
       userDetail = {
         userName: 'jackson',
         email: 'jackson@gmail.com',
@@ -332,7 +330,6 @@ describe('updateUser()', () => {
         method: 'POST',
         json: userDetail,
       };
-      console.log('user details just before each test...............', userDetail);
       done();
     });
   });
@@ -424,6 +421,147 @@ describe('updateUser()', () => {
       expect(res.statusCode).toBe(400);
       expect(body.message).not.toBeNull();
       done();
+    });
+  });
+});
+
+describe('deleteUser()', () => {
+  let userDetail = {
+    userName: 'jackson',
+    email: 'jackson@gmail.com',
+    password: 'testing1',
+    roleId: 2,
+    isactive: true,
+  };
+  let requestObject = {
+    url: `${routeUrl}/users`,
+    method: 'POST',
+    json: userDetail,
+  };
+  beforeEach((done) => {
+    request(requestObject, (req, res, body) => {
+      userDetail = {
+        userName: 'jackson',
+        email: 'jackson@gmail.com',
+        password: 'testing1',
+        roleId: 2,
+        isactive: true,
+        userId: body.userId,
+        token: body.token,
+      };
+      requestObject = {
+        url: `${routeUrl}/users`,
+        method: 'POST',
+        json: userDetail,
+      };
+      done();
+    });
+  });
+
+  afterEach((done) => {
+    userDetail.userName = 'jackson';
+    userDetail.password = 'testing1';
+    userDetail.roleId = 2;
+    const user = index.User;
+    user.findOne({
+      where: {
+        username: userDetail.userName,
+      }
+    }).then((userFound) => {
+      if (userFound) {
+        userFound.destroy();
+      }
+      requestObject = {
+        url: `${routeUrl}/users`,
+        method: 'POST',
+        json: userDetail,
+      };
+      done();
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('should not deactivate a user when not logged in as admin', (done) => {
+    requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
+    requestObject.method = 'DELETE';
+    request(requestObject, (req, res, body) => {
+      expect(body.status).toBe('unsuccessful');
+      expect(body.message).toBe('Access denied!');
+      expect(res.statusCode).toBe(400);
+      done();
+    });
+  });
+
+  it(`should return error message when an unauthenticated 
+    user tries to deactivate a user`, (done) => {
+    requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
+    requestObject.method = 'DELETE';
+    requestObject.json.token = 'sjdhsoeodufls.sklfseiflesifl.dsldfielsilejfs';
+    request(requestObject, (req, res, body) => {
+      expect(body.status).toBe('unsuccessful');
+      expect(body.message).toBe('You are not authenticated!');
+      expect(res.statusCode).toBe(400);
+      done();
+    });
+  });
+
+  it(`should return error message when an admin enters 
+  an invalid user id to deactivate`, (done) => {
+    requestObject.url = `${routeUrl}/users/login`;
+    requestObject.method = 'POST';
+    requestObject.json.userName = 'touchstone';
+    requestObject.json.password = 'testing1';
+    request(requestObject, (req, res, body) => {
+      requestObject.url = `${routeUrl}/users/8a`;
+      requestObject.method = 'DELETE';
+      requestObject.json.token = body.token;
+      request(requestObject, (req, res, resBody) => {
+        expect(resBody.status).toBe('unsuccessful');
+        expect(res.statusCode).toBe(500);
+        expect(resBody.message).toBe('Invalid user ID!');
+        done();
+      });
+    });
+  });
+
+  it(`should allow admin to successfully deactivate
+    a user`, (done) => {
+    requestObject.url = `${routeUrl}/users/login`;
+    requestObject.method = 'POST';
+    requestObject.json.userName = 'touchstone';
+    requestObject.json.password = 'testing1';
+    request(requestObject, (req, res, body) => {
+      requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
+      requestObject.method = 'DELETE';
+      requestObject.json.token = body.token;
+      request(requestObject, (req, res, resBody) => {
+        expect(resBody.status).toBe('successful');
+        expect(res.statusCode).toBe(200);
+        expect(resBody.message)
+        .toBe('jackson has been successfull deactivated!');
+        done();
+      });
+    });
+  });
+
+  it(`should throw correct error message when
+    admin enters a user ID that isnt in the database`, (done) => {
+    requestObject.url = `${routeUrl}/users/login`;
+    requestObject.method = 'POST';
+    requestObject.json.userName = 'touchstone';
+    requestObject.json.password = 'testing1';
+    request(requestObject, (req, res, body) => {
+      requestObject.url = `${routeUrl}/users/1500`;
+      requestObject.method = 'DELETE';
+      requestObject.json.token = body.token;
+      request(requestObject, (req, res, resBody) => {
+        expect(resBody.status).toBe('unsuccessful');
+        expect(res.statusCode).toBe(400);
+        expect(resBody.message)
+        .toBe('Could not find any user!');
+        done();
+      });
     });
   });
 });

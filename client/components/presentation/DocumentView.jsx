@@ -4,7 +4,8 @@ import propTypes from 'prop-types';
 import DocumentPreview from './DocumentPreview';
 
 const DocumentView = ({ documents, shouldDisplay, read, deleteId,
-  documentStatus, readDocument, history, deleteDocument }) => {
+  documentStatus, readDocument, history, deleteDocument, paginateDocument,
+  documentAccess, currentPage, documentsCount }) => {
   const finalRender = (shouldDisplay) ?
     (<DocumentPreview
       userDocuments={documents}
@@ -13,6 +14,10 @@ const DocumentView = ({ documents, shouldDisplay, read, deleteId,
       readDocument={readDocument}
       history={history}
       deleteDocument={deleteDocument}
+      paginateDocument={paginateDocument}
+      documentAccess={documentAccess}
+      currentPage={currentPage}
+      documentsCount={documentsCount}
     />) :
     <p id="status" className="center-align">{documentStatus}</p>;
   /**

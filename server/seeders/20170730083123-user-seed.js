@@ -19,6 +19,14 @@ module.exports = {
       isactive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
+    }, {
+      username: 'touchstone',
+      password: '$2a$10$yXmuEDVPsRWPKMMfTM1ZUOqXVnNSQIaMhglytLGNLeDq7FaPXqtzW',
+      roleId: 1,
+      email: 'touchstone@gmail.com',
+      isactive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }]);
   },
 
