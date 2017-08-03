@@ -81,7 +81,7 @@ const UserPage = ({ userName, userId, history,
 
       <div id="doccontent" className="row">
         <div className="col m2 header" >
-          <h5 className="btn">Dashboard&nbsp;
+          <h5 className="btn">Dashboard&nbsp;&nbsp;
             <i className="fa fa-tasks" aria-hidden="true" />
           </h5><hr />
 
@@ -92,17 +92,17 @@ const UserPage = ({ userName, userId, history,
             }}
             href="/user/documents"
           >
-          My Documents&nbsp;
+          My Documents&nbsp;&nbsp;
             <i className="fa fa-lock" aria-hidden="true" />
           </a>
 
           <Link className="center-align btn" to="/user/documents/createdocument">
-          Create document&nbsp;
+          Create document&nbsp;&nbsp;
             <i className="fa fa-pencil-square-o" aria-hidden="true" />
           </Link><hr />
 
           <Link className="center-align btn" to="/user/documents/users">
-          My Profile&nbsp;
+          My Profile&nbsp;&nbsp;
           <i className="fa fa-user" aria-hidden="true" /></Link>
 
           <a
@@ -115,12 +115,12 @@ const UserPage = ({ userName, userId, history,
               history.push('/user/documents/users/all');
             }}
           >
-          Manage Users&nbsp;
+          Manage Users&nbsp;&nbsp;
           <i className="fa fa-users" aria-hidden="true" /></a>
         </div>
 
         <div id="contentdisplay" className="col m10">
-          <div className="container">
+          <div className="container" style={minHeight}>
             {userRoutes}
           </div>
         </div>

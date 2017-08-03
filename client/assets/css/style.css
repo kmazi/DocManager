@@ -6866,7 +6866,8 @@ section {
 
 input[type=text]:not(.browser-default):focus:not([readonly]),
 input[type=password]:not(.browser-default):focus:not([readonly]) {
-  border-bottom: 1px solid whitesmoke; }
+  border-bottom: 1px solid whitesmoke;
+  box-shadow: 0 1px 0 0 whitesmoke; }
 
 .btn, button {
   background: #2e71b4; }
@@ -6908,11 +6909,12 @@ button {
     top: 0;
     left: 0; }
 
-#userview h5 {
-  display: "block"; }
-
-#userview div.row {
-  padding: 5px 10px; }
+#userview {
+  color: #2c3a46; }
+  #userview h5 {
+    display: "block"; }
+  #userview div.row {
+    padding: 5px 10px; }
 
 .header {
   background: #0288d1; }

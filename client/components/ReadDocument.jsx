@@ -2,11 +2,12 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import parser from 'html-react-parser';
 
 const ReadDocument = ({ title, body, author, modifiedDate, history }) => (
   <div className="row">
     <p>{title}</p>
-    <p>{body}</p>
+    {parser(body)}
     <div>
       <span>Author: {author}</span><br />
       <span>Modified: {modifiedDate}</span>
