@@ -6,6 +6,7 @@ import UserView from './components/container/UserView';
 import AllUsersView from './components/AllUsersView';
 import WriteDocument from './components/container/WriteDocument';
 import ReadDocument from './components/ReadDocument';
+import ErrorPage from './components/presentation/ErrorPage';
 
 export default (
   <Switch>
@@ -14,5 +15,6 @@ export default (
     <Route path="/user/documents/users/all" component={AllUsersView} />
     <Route path="/user/documents/users" component={UserView} />
     <Route path="/user/documents/read" component={ReadDocument} />
+    <Route path="/user/*" component={ErrorPage} />
   </Switch>
 );

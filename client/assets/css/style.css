@@ -6971,6 +6971,13 @@ input[type=text]:not(.browser-default):disabled {
       width: 12em;
       overflow: hidden;
       text-overflow: ellipsis; }
+  #doccontent #errorpage {
+    font-weight: bold;
+    font-size: 3em;
+    color: gray;
+    width: 50%;
+    margin: 70px auto;
+    font-family: "Lobster", cursive, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
   #doccontent p#status {
     font-size: 70px;
     margin: 100px 60px; }

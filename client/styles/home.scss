@@ -144,6 +144,14 @@ input[type=text]:not(.browser-default):disabled{
 			}
 		}
 	}
+	#errorpage{
+		font-weight: bold;
+		font-size: 3em;
+		color: gray;
+		width: 50%;
+		margin: 70px auto;
+		font-family: $italicstylefont;
+	}
 	p#status{
 		font-size: $docviewfontsize;
 		margin: 100px 60px;;
