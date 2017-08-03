@@ -163,7 +163,7 @@ const fetchDocuments = (state = {
   documentType: '',
   documentCounter: 0,
   currentPage: 1,
-  documentaccess: 'Private',
+  documentaccess: 'All',
 }, action) => {
   switch (action.type) {
   case types.DONE_SEARCHING_DOCUMENTS:
@@ -177,7 +177,6 @@ const fetchDocuments = (state = {
   case types.ERROR_SEARCHING_DOCUMENTS:
     return Object.assign({}, state, {
       status: action.error,
-      isReady: false,
       documentCounter: 0,
     });
   case types.START_GET_USER_DOCUMENT:
@@ -191,6 +190,7 @@ const fetchDocuments = (state = {
       isReady: true,
       documentType: 'Private',
       documents: action.documents,
+      documentCounter: action.count,
     });
   case types.ERROR_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
@@ -211,6 +211,7 @@ const fetchDocuments = (state = {
       isReady: true,
       documentType: 'Public',
       documents: action.documents,
+      documentCounter: action.count,
     });
 
   case types.ERROR_FETCHING_PUBLIC_DOCUMENTS:
@@ -233,6 +234,7 @@ const fetchDocuments = (state = {
       isReady: true,
       documentType: 'All',
       documents: action.documents,
+      documentCounter: action.count,
     });
 
   case types.ERROR_FETCHING_ALL_DOCUMENTS:
@@ -255,6 +257,7 @@ const fetchDocuments = (state = {
       isReady: true,
       documentType: 'Role',
       documents: action.documents,
+      documentCounter: action.count,
     });
 
   case types.ERROR_FETCHING_ROLE_DOCUMENTS:

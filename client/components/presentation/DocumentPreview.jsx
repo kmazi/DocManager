@@ -6,6 +6,12 @@ import Pagination from 'react-js-pagination';
 
 import Search from '../container/Search';
 
+/**
+ * Deletes a document from the database
+ * @param {func} deleteDocument - Function that fires when deleting a document
+ * @param {number} docId - The ID of the document to delete
+ * @return {null} returns void
+ */
 const deleteDocById = (deleteDocument, docId) => {
   deleteDocument(docId)
     .then((res) => {
@@ -27,10 +33,20 @@ const deleteDocById = (deleteDocument, docId) => {
     });
 };
 
-const getDocument = (pageNumber, paginateDocument, documentAccess) => {
+/**
+ * Fetches a particular document from the database
+ * @param {number} pageNumber - The current page number
+ * @param {func} paginateDocument - The function that gets
+ * executed when paginating documents
+ * @param {string} documentAccess - The access level of the document
+ * @return {null} returns void
+ */
+const getDocument = (pageNumber, paginateDocument,
+  documentAccess, roleType, userId) => {
   const offSet = (pageNumber - 1) * 8;
   const searchText = $('.searchcontainer input').val();
-  paginateDocument(pageNumber, offSet, documentAccess, searchText);
+  paginateDocument(pageNumber, offSet, documentAccess, searchText,
+    roleType, userId);
 };
 /**
  * Template to render documents from store
@@ -38,7 +54,8 @@ const getDocument = (pageNumber, paginateDocument, documentAccess) => {
  */
 const DocumentPreview = ({ userDocuments, readDocument,
   read, deleteId, history, deleteDocument, paginateDocument,
-  documentAccess, currentPage, documentsCount }) => {
+  documentAccess, currentPage, documentsCount,
+  roleType, userId }) => {
   const docs = userDocuments.map(document => (<div
     id="docview"
     key={document.id}
@@ -92,14 +109,15 @@ const DocumentPreview = ({ userDocuments, readDocument,
       <div className="row">
         {docs}
       </div>
-      <div className="row">
+      <div className={documentsCount > 8 ? 'row' : 'row hide'}>
         <Pagination
           activePage={currentPage}
           itemsCountPerPage={8}
           totalItemsCount={documentsCount}
           pageRangeDisplayed={5}
           onChange={(pageNumber) => {
-            getDocument(pageNumber, paginateDocument, documentAccess);
+            getDocument(pageNumber, paginateDocument, documentAccess,
+            roleType, userId);
           }}
         />
       </div>
@@ -113,9 +131,15 @@ DocumentPreview.propTypes = {
       id: propTypes.number.isRequired,
     })
   ).isRequired,
+  roleType: propTypes.string.isRequired,
+  userId: propTypes.number.isRequired,
+  paginateDocument: propTypes.func.isRequired,
   readDocument: propTypes.func.isRequired,
   deleteDocument: propTypes.func.isRequired,
+  documentsCount: propTypes.number.isRequired,
+  documentAccess: propTypes.string.isRequired,
   read: propTypes.number.isRequired,
+  currentPage: propTypes.number.isRequired,
   deleteId: propTypes.number.isRequired,
   history: propTypes.shape({
     push: propTypes.func.isRequired,
