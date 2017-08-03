@@ -23,7 +23,7 @@ input[type=password]:not(.browser-default):focus:not([readonly]){
 .btn, button{
 	background: $btncolor;
 }
-.btn:hover, button{
+.btn:hover, button:hover{
 	background: #79aeea;
 }
 .btn:focus{
@@ -142,6 +142,9 @@ input[type=text]:not(.browser-default):disabled{
 				overflow: hidden;
 				text-overflow: ellipsis; 
 			}
+			button{
+				border: thin solid whitesmoke;
+			}
 		}
 	}
 	p#status{
@@ -155,6 +158,9 @@ input[type=text]:not(.browser-default):disabled{
 }
 .searchcontainer{
 	position: relative;
+	input{
+		color: $textcolor;
+	}
 }
 #docform{
 	color: $textcolor;

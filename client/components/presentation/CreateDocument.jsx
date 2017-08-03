@@ -74,7 +74,8 @@ const CreateDocument = ({ documentCreation, userId, roleType }) => (
         }}
         onChange={handleEditorChange}
       /><br />
-      Access level:
+      <div>
+        Access level:
       <input
         className="with-gap"
         name="group1"
@@ -82,32 +83,33 @@ const CreateDocument = ({ documentCreation, userId, roleType }) => (
         id="public"
         value="Public"
       />
-      <label htmlFor="public">Public</label>
-      <input
-        className="with-gap"
-        name="group1"
-        value={roleType}
-        type="radio"
-        id="role"
-      />
-      <label htmlFor="role">{roleType}</label>
-      <input
-        className="with-gap"
-        name="group1"
-        type="radio"
-        value="Private"
-        id="private"
-      />
-      <label htmlFor="private">Private</label>
-      <button
-        className="btn waves-effect waves-light"
-        type="submit"
-        name="action"
-        onClick={(event) => {
-          createDocument(event, documentCreation, userId);
-        }}
-      >create
+        <label htmlFor="public">Public</label>
+        <input
+          className="with-gap"
+          name="group1"
+          value={roleType}
+          type="radio"
+          id="role"
+        />
+        <label htmlFor="role">{roleType}</label>
+        <input
+          className="with-gap"
+          name="group1"
+          type="radio"
+          value="Private"
+          id="private"
+        />
+        <label htmlFor="private">Private</label>
+        <button
+          className="btn waves-effect waves-light right"
+          type="submit"
+          name="action"
+          onClick={(event) => {
+            createDocument(event, documentCreation, userId);
+          }}
+        >create
     </button>
+      </div>
     </div>
   </form>
 );
