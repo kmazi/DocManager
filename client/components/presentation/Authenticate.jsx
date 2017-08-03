@@ -38,7 +38,7 @@ const showSignUpForm = (event) => {
  * @return {object} Returns the authentication form to render
  */
 const Authenticate = ({ history, signInUser, signUserUp,
-  submitButton, getUserDocuments }) => (
+  submitButton, roleType, allDocuments }) => (
     <div className="container">
       <div id="authbuttons" className="row">
         <div className="col s6">
@@ -62,7 +62,8 @@ const Authenticate = ({ history, signInUser, signUserUp,
           history={history}
           signInUser={signInUser}
           signInButtonText={submitButton}
-          getUserDocuments={getUserDocuments}
+          roleType={roleType}
+          allDocuments={allDocuments}
           submitButton={submitButton}
         />
 
@@ -70,7 +71,8 @@ const Authenticate = ({ history, signInUser, signUserUp,
           signUserUp={signUserUp}
           history={history}
           signUpButtonText={submitButton}
-          getUserDocuments={getUserDocuments}
+          allDocuments={allDocuments}
+          roleType={roleType}
           submitButton={submitButton}
         />
       </div>
@@ -79,9 +81,10 @@ const Authenticate = ({ history, signInUser, signUserUp,
 
 Authenticate.propTypes = {
   submitButton: PropTypes.string.isRequired,
+  roleType: PropTypes.string.isRequired,
   signUserUp: PropTypes.func.isRequired,
   signInUser: PropTypes.func.isRequired,
-  getUserDocuments: PropTypes.func.isRequired,
+  allDocuments: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,

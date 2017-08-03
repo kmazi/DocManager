@@ -242,7 +242,8 @@ export const fetchAllDocumentsFailed = error => ({
  */
 export const allDocuments = roletype => (dispatch) => {
   const token = localStorage.getItem('docmanagertoken');
-  const url = roletype !== 'Admin' ? `/api/v1/All/documents?&offset=0&limit=8&token=${token}`
+  const url = roletype !== 'Admin' ?
+  `/api/v1/All/documents?&offset=0&limit=8&token=${token}`
   : `/api/v1/documents?&offset=0&limit=8&token=${token}`;
   dispatch(fetchAllDocuments());
   return axios.get(url).then((response) => {

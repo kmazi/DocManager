@@ -6874,6 +6874,10 @@ input[type=password]:not(.browser-default):focus:not([readonly]) {
 .btn:hover, button {
   background: #79aeea; }
 
+.btn:focus {
+  background: #eceff1;
+  color: #2c3a46; }
+
 .row {
   margin-bottom: 0; }
 

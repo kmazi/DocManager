@@ -25,6 +25,10 @@ input[type=password]:not(.browser-default):focus:not([readonly]){
 .btn:hover, button{
 	background: #79aeea;
 }
+.btn:focus{
+	background: $docpreviewbkg;
+	color: $textcolor;
+}
 .row{
 	margin-bottom: 0;
 }
