@@ -6872,7 +6872,7 @@ input[type=password]:not(.browser-default):focus:not([readonly]) {
 .btn, button {
   background: #2e71b4; }
 
-.btn:hover, button {
+.btn:hover, button:hover {
   background: #79aeea; }
 
 .btn:focus {
@@ -6971,6 +6971,8 @@ input[type=text]:not(.browser-default):disabled {
       width: 12em;
       overflow: hidden;
       text-overflow: ellipsis; }
+    #doccontent #docview div button {
+      border: thin solid whitesmoke; }
   #doccontent p#status {
     font-size: 70px;
     margin: 100px 60px; }
@@ -6980,6 +6982,8 @@ input[type=text]:not(.browser-default):disabled {
 
 .searchcontainer {
   position: relative; }
+  .searchcontainer input {
+    color: #2c3a46; }
 
 #docform {
   color: #2c3a46; }

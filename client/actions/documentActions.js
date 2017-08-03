@@ -61,12 +61,14 @@ export const startGetUserDocuments = () => ({
 /**
  * Starts creating documents
  * @param {object} documents - An array of documents from api
+ * @param {number} count - The total number of documents matched
  * @returns {object} returns the an object containing the
  *  type of action it dispatches
  */
-export const completeGetUserDocuments = documents => ({
+export const completeGetUserDocuments = (documents, count) => ({
   type: types.SUCCESS_GET_USER_DOCUMENT,
   documents,
+  count,
 });
 
 /**
@@ -91,7 +93,8 @@ export const getUserDocuments = id => (dispatch) => {
   dispatch(startGetUserDocuments());
   return axios.get(`/api/v1/users/${id}/documents?&offset=0&limit=8&token=${token}`)
     .then((response) => {
-      dispatch(completeGetUserDocuments(response.data.documents));
+      dispatch(completeGetUserDocuments(response.data.documents,
+      response.data.count));
       return response.data.status;
     }, ({ response }) => {
       dispatch(errorGetUserDocuments(response.data));
@@ -112,12 +115,14 @@ export const fetchingPublicDocuments = () => ({
 /**
  * Creates an action object when fetching public documents completes
  * @param {object} documents - An array of documents from api
+ * @param {number} count - The total number of documents matched
  * @returns {object} returns the an object containing the
  *  type of action it dispatches
  */
-export const fetchingPublicDocumentsComplete = documents => ({
+export const fetchingPublicDocumentsComplete = (documents, count) => ({
   type: types.DONE_FETCHING_PUBLIC_DOCUMENTS,
   documents,
+  count,
 });
 
 /**
@@ -141,7 +146,8 @@ export const publicDocuments = () => (dispatch) => {
   dispatch(fetchingPublicDocuments());
   return axios.get(`/api/v1/Public/documents?&offset=0&limit=8&token=${token}`)
     .then((response) => {
-      dispatch(fetchingPublicDocumentsComplete(response.data.documents));
+      dispatch(fetchingPublicDocumentsComplete(response.data.documents,
+      response.data.count));
     },
     ({ response }) => {
       dispatch(fetchingPublicDocumentsFailed(response.data.message));
@@ -164,12 +170,14 @@ export const fetchRoleDocuments = roleType => ({
  * Create an action object when fetching role base a documents starts
  * @param {string} documents - The role based documents fetched from
  * the database
+ * @param {number} count - The total number of documents matched
  * @return {object} returns an object containing
  *  the action type and the error message
  */
-export const fetchRoleDocumentsComplete = documents => ({
+export const fetchRoleDocumentsComplete = (documents, count) => ({
   type: types.DONE_FETCHING_ROLE_DOCUMENTS,
   documents,
+  count,
 });
 
 /**
@@ -195,7 +203,8 @@ export const roleDocuments = roleType => (dispatch) => {
   dispatch(fetchRoleDocuments());
   return axios.get(`/api/v1/${roleType}/documents?&offset=0&limit=8&token=${token}`)
   .then((response) => {
-    dispatch(fetchRoleDocumentsComplete(response.data.documents));
+    dispatch(fetchRoleDocumentsComplete(response.data.documents,
+    response.data.count));
   },
     ({ response }) => {
       dispatch(fetchRoleDocumentsFailed(response.data.message));
@@ -215,12 +224,14 @@ export const fetchAllDocuments = () => ({
 /**
  * Create an action object when getting all document completes
  * @param {string} documents - The documents from the server
+ * @param {number} count - The total number of documents matched
  * @return {object} returns an object containing
  *  the action type and the documents
  */
-export const fetchAllDocumentsComplete = documents => ({
+export const fetchAllDocumentsComplete = (documents, count) => ({
   type: types.DONE_FETCHING_ALL_DOCUMENTS,
   documents,
+  count,
 });
 
 /**
@@ -247,7 +258,8 @@ export const allDocuments = roletype => (dispatch) => {
   : `/api/v1/documents?&offset=0&limit=8&token=${token}`;
   dispatch(fetchAllDocuments());
   return axios.get(url).then((response) => {
-    dispatch(fetchAllDocumentsComplete(response.data.documents));
+    dispatch(fetchAllDocumentsComplete(response.data.documents,
+    response.data.count));
   },
     ({ response }) => {
       dispatch(fetchAllDocumentsFailed(response.data.message));
@@ -407,24 +419,36 @@ export const searchDocuments = searchText => (dispatch) => {
     });
 };
 
+/**
+ * Paginates the documents from the database
+ * @param {number} pageNumber - The current page number
+ * @param {number} offSet - The document offset to start fetching documents
+ * @param {string} documentAccess - The access level of the document to search for
+ * @param {string} searchText - The search text used for querying the database
+ * @param {string} roleType - The role the user belongs to
+ * @param {number} id - The userId searching the document
+ * @return {null} returns void
+ */
 export const paginateDocument = (pageNumber, offSet,
-  documentAccess, searchText) => dispatch => {
+  documentAccess, searchText, roleType, id) => (dispatch) => {
     const userToken = localStorage.getItem('docmanagertoken');
     let url = '';
     switch (documentAccess) {
     case 'Private':
-        
+      url = `/api/v1/users/${id}/documents?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     case 'Public':
-        
+      url = `/api/v1/Public/documents?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     case 'Role':
-        
+      url =
+      `/api/v1/${roleType}/documents?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     case 'All':
-        
+      url = roleType !== 'Admin' ?
+        `/api/v1/All/documents?&offset=${offSet}&limit=8&token=${userToken}`
+        : `/api/v1/documents?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
-    
     default:
       url = `/api/v1/search/documents?q=${searchText}&offset=${offSet}&limit=8&token=${userToken}`;
       break;

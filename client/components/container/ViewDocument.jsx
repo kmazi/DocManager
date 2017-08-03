@@ -7,6 +7,7 @@ import DocumentView from '../presentation/DocumentView';
 
 const mapStateToProps = state => ({
   id: state.authenticateUser.userId,
+  roleType: state.authenticateUser.roleType,
   documents: state.fetchDocuments.documents,
   read: state.readDocument.status,
   deleteId: state.readDocument.delStatus,
