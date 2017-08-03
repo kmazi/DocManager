@@ -58,7 +58,7 @@ const signUp = (event, signUserUp, history, getUserDocuments) => {
  * @return {object} Returns the signup form to render
  */
 const SignupForm = ({ signUserUp, history,
-  signUpButtonText, getUserDocuments }) => (
+  submitButton, getUserDocuments }) => (
     <div id="signupform" style={{ display: 'none' }}>
       <input
         className="forminput"
@@ -125,7 +125,7 @@ const SignupForm = ({ signUserUp, history,
         id="signinbtn"
         className="center-align waves-effect waves-light btn"
         onClick={event => signUp(event, signUserUp, history, getUserDocuments)}
-      >{signUpButtonText}</button>
+      >{submitButton}</button>
     </div>
   );
 
@@ -134,7 +134,7 @@ SignupForm.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-  signUpButtonText: PropTypes.string.isRequired,
+  submitButton: PropTypes.string.isRequired,
   getUserDocuments: PropTypes.func.isRequired,
 };
 export default SignupForm;

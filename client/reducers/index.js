@@ -6,8 +6,7 @@ const authenticateUser = (state = {
   userId: 0,
   updateStatus: 'Update Profile',
   disabled: true,
-  signInStatus: 'Sign In',
-  signUpStatus: 'Sign Up',
+  authButtonStatus: 'Submit',
   signUpDate: '',
   userName: 'Guest',
   userEmail: '',
@@ -35,11 +34,11 @@ const authenticateUser = (state = {
     });
   case types.START_SIGNUP:
     return Object.assign({}, state, {
-      signUpStatus: 'Signing Up...',
+      signUpStatus: 'Submiting...',
     });
   case types.SUCCESSFUL_SIGNUP:
     return Object.assign({}, state, {
-      signUpStatus: 'Sign Up',
+      authButtonStatus: 'Submit',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
       userEmail: action.userDetail.email,
@@ -52,7 +51,7 @@ const authenticateUser = (state = {
   case types.FAILED_SIGNUP:
     return Object.assign({}, state, {
       documents: [],
-      signUpStatus: 'Sign Up',
+      authButtonStatus: 'Submit',
       errors: action.errors,
       status: 'unsuccessful',
     });
@@ -63,12 +62,12 @@ const authenticateUser = (state = {
 
   case types.START_SIGNIN:
     return Object.assign({}, state, {
-      signInStatus: 'Signing In...',
+      authButtonStatus: 'Submitting...',
       status: 'unsuccessful',
     });
   case types.SUCCESSFUL_SIGNIN:
     return Object.assign({}, state, {
-      signInStatus: 'Sign In',
+      authButtonStatus: 'Submit',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
       userEmail: action.userDetail.email,
@@ -81,7 +80,7 @@ const authenticateUser = (state = {
   case types.FAILED_SIGNIN:
     return Object.assign({}, state, {
       documents: [],
-      signInStatus: 'Sign In',
+      authButtonStatus: 'Submit',
       errors: action.errors,
       status: 'unsuccessful',
     });

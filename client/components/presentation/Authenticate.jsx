@@ -38,7 +38,7 @@ const showSignUpForm = (event) => {
  * @return {object} Returns the authentication form to render
  */
 const Authenticate = ({ history, signInUser, signUserUp,
-  signInButtonText, signUpButtonText, getUserDocuments }) => (
+  submitButton, getUserDocuments }) => (
     <div className="container">
       <div id="authbuttons" className="row">
         <div className="col s6">
@@ -61,23 +61,24 @@ const Authenticate = ({ history, signInUser, signUserUp,
         <SigninForm
           history={history}
           signInUser={signInUser}
-          signInButtonText={signInButtonText}
+          signInButtonText={submitButton}
           getUserDocuments={getUserDocuments}
+          submitButton={submitButton}
         />
 
         <SignUpForm
           signUserUp={signUserUp}
           history={history}
-          signUpButtonText={signUpButtonText}
+          signUpButtonText={submitButton}
           getUserDocuments={getUserDocuments}
+          submitButton={submitButton}
         />
       </div>
     </div>
 );
 
 Authenticate.propTypes = {
-  signInButtonText: PropTypes.string.isRequired,
-  signUpButtonText: PropTypes.string.isRequired,
+  submitButton: PropTypes.string.isRequired,
   signUserUp: PropTypes.func.isRequired,
   signInUser: PropTypes.func.isRequired,
   getUserDocuments: PropTypes.func.isRequired,

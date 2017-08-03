@@ -45,7 +45,7 @@ const signUserIn = (event, history, signInUser, getUserDocuments) => {
  * @return {object} Returns the signin form to render
  */
 const SigninForm = ({ history, signInUser,
-  signInButtonText, getUserDocuments }) => (
+  submitButton, getUserDocuments }) => (
     <div id="signinform" className="">
       <input type="text" className="forminput" placeholder="Username" />
       <input type="password" className="forminput" placeholder="Password" />
@@ -54,7 +54,7 @@ const SigninForm = ({ history, signInUser,
         className="center-align waves-effect waves-light btn"
         onClick={event =>
           signUserIn(event, history, signInUser, getUserDocuments)}
-      >{signInButtonText}</button>
+      >{submitButton}</button>
     </div>
 );
 
@@ -63,7 +63,7 @@ SigninForm.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   signInUser: PropTypes.func.isRequired,
-  signInButtonText: PropTypes.string.isRequired,
+  submitButton: PropTypes.string.isRequired,
   getUserDocuments: PropTypes.func.isRequired,
 };
 export default SigninForm;

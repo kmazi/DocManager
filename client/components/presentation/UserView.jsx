@@ -13,7 +13,7 @@ const editDetail = (userId, editUser) => {
   editUser(userDetail, userId, localStorage.getItem('docmanagertoken'));
 };
 
-const UserView = ({ userName, userId, userEmail, updateStatus, disabled,
+const UserView = ({ userName, userId, userEmail, updateStatus,
   changeInputValue, createdAt, roleType, editUserDetail }) => (
     <div id="userview" className="container">
       <h5 className="center-align">SignUp Details</h5>
@@ -107,7 +107,6 @@ UserView.propTypes = {
   roleType: PropTypes.string.isRequired,
   userId: PropTypes.number.isRequired,
   updateStatus: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
   changeInputValue: PropTypes.func.isRequired,
   editUserDetail: PropTypes.func.isRequired,
 };

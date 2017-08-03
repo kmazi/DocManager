@@ -7,8 +7,7 @@ import { getUserDocuments } from '../../actions/documentActions';
 
 // Maps the application state to component properties
 const mapStateToProps = state => ({
-  signInButtonText: state.authenticateUser.signInStatus,
-  signUpButtonText: state.authenticateUser.signUpStatus,
+  submitButton: state.authenticateUser.authButtonStatus,
 });
 
 export default connect(mapStateToProps,

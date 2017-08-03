@@ -83,15 +83,8 @@ const UserPage = ({ userName, userId, history,
         <div className="col m2 header" >
           <h5 className="btn">Dashboard&nbsp;
             <i className="fa fa-tasks" aria-hidden="true" />
-          </h5>
-          <p>
-            Hi {userName} , Welcome to your document manager board.<br />
-            You have created <strong>10</strong> documents
-          </p>
-          <hr />
-          <h8 className="center-align">My Documents&nbsp;
-            <i className="fa fa-tasks" aria-hidden="true" />
-          </h8><hr />
+          </h5><hr />
+
           <a
             className="center-align"
             onClick={(event) => {
@@ -99,26 +92,23 @@ const UserPage = ({ userName, userId, history,
             }}
             href="/user/documents"
           >
-          View&nbsp;
+          My Documents&nbsp;
             <i className="fa fa-lock" aria-hidden="true" />
           </a>
 
           <Link className="center-align" to="/user/documents/createdocument">
-          Create&nbsp;
+          Create document&nbsp;
             <i className="fa fa-pencil-square-o" aria-hidden="true" />
           </Link><hr />
 
-          <h8 className="center-align">User Info&nbsp;
-            <i className="fa fa-tasks" aria-hidden="true" />
-          </h8><hr />
-
           <Link className="center-align" to="/user/documents/users">
-          Profile&nbsp;
+          My Profile&nbsp;
           <i className="fa fa-user" aria-hidden="true" /></Link>
 
           <a
             className="center-align"
             href="/user/documents/users/all"
+            style={{ display: roleType === 'Admin' ? '' : 'none' }}
             onClick={(event) => {
               event.preventDefault();
               getAllUsers();
@@ -136,7 +126,7 @@ const UserPage = ({ userName, userId, history,
         </div>
       </div>
 
-      <footer>DocManager &copy;2017</footer>
+      <footer><a href="/">DocManager &copy;2017</a></footer>
     </section>
 );
 

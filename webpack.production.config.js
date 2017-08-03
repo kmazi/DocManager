@@ -76,7 +76,7 @@ module.exports = {
       loader: 'babel-loader'
     }, {
       test: /\.json?$/,
-      loader: 'json'
+      loader: 'json-loader'
     }, {
       test: /\.scss$/,
       // we extract the styles into their own .css file instead of having
@@ -87,7 +87,7 @@ module.exports = {
       loader: 'url-loader?limit=10000&mimetype=application/font-woff'
     }, {
       test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/,
-      loader: 'file'
+      loader: 'file-loader'
     }]
   },
   postcss: [
