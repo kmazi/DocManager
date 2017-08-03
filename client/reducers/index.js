@@ -177,7 +177,6 @@ const fetchDocuments = (state = {
   case types.ERROR_SEARCHING_DOCUMENTS:
     return Object.assign({}, state, {
       status: action.error,
-      isReady: false,
       documentCounter: 0,
     });
   case types.START_GET_USER_DOCUMENT:
