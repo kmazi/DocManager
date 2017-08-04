@@ -302,24 +302,29 @@ const deleteUser = (req, res) => {
   const userId = req.params.id;
   user.findById(userId).then((knownUser) => {
     if (!knownUser) {
-      res.send({
+      res.status(400).send({
         status: 'unsuccessful',
         message: 'Could not find any user!',
       });
     } else {
-      user.update({ isactive: false }, {
+      let statusUpdate = false;
+      if (!knownUser.isactive) {
+        statusUpdate = true;
+      }
+      user.update({ isactive: statusUpdate }, {
         where: {
           id: userId,
         }
       }).then(() => {
-        res.send({
+        res.status(200).send({
           status: 'successful',
-          message: `${knownUser.username} has been successfull deactivated!`,
+          message: `${knownUser.username} has been successfull
+          ${statusUpdate ? 'deactivated!' : 'activated'}`,
         });
       }).catch();
     }
   }).catch(() => {
-    res.send({
+    res.status(500).send({
       status: 'unsuccessful',
       message: 'Invalid user ID!',
     });

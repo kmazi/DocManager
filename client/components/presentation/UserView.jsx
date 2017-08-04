@@ -13,14 +13,14 @@ const editDetail = (userId, editUser) => {
   editUser(userDetail, userId, localStorage.getItem('docmanagertoken'));
 };
 
-const UserView = ({ userName, userId, userEmail, updateStatus, disabled,
+const UserView = ({ userName, userId, userEmail, updateStatus,
   changeInputValue, createdAt, roleType, editUserDetail }) => (
     <div id="userview" className="container">
       <h5 className="center-align">SignUp Details</h5>
       <hr />
       <div className="row">
         <div className="col m2">
-          <label htmlFor="username">UserName:</label>
+          <label htmlFor="username">Name:</label>
         </div>
         <div className="col m10">
           <input id="username" type="text" value={userName} disabled />
@@ -29,7 +29,7 @@ const UserView = ({ userName, userId, userEmail, updateStatus, disabled,
       </div>
       <div className="row">
         <div className="col m2">
-          <label htmlFor="userEmail">userEmail:</label>
+          <label htmlFor="userEmail">Email:</label>
         </div>
         <div className="col m10">
           <input
@@ -46,40 +46,42 @@ const UserView = ({ userName, userId, userEmail, updateStatus, disabled,
       </div>
       <div className="row">
         <div className="col m2">
-          <label htmlFor="roleType">Role:</label>
+          <label htmlFor="roleType">Department:</label>
         </div>
         <div className="col m10">
-          <p id="roleType">{roleType}</p>
+          <input id="roleType" type="text" value={roleType} disabled />
         </div>
       </div>
+
       <div id="passwordreset" className="hide">
         <div className="row">
           <div className="col m2">
-            <label htmlFor="oldpassword">Old password</label>
+            <label htmlFor="oldpassword">Old password:</label>
           </div>
           <div className="col m10">
-            <input id="oldpassword" type="text" />
+            <input id="oldpassword" type="password" />
           </div>
         </div>
         <div className="row">
           <div className="col m2">
-            <label htmlFor="newpassword">New password</label>
+            <label htmlFor="newpassword">New password:</label>
           </div>
           <div className="col m10">
-            <input id="newpassword" type="text" />
+            <input id="newpassword" type="password" />
           </div>
         </div>
       </div>
       <div className="row">
         <div className="col m2">
-          <label htmlFor="signUpDate">signUpDate:</label>
+          <label htmlFor="signUpDate">Registered on:</label>
         </div>
         <div className="col m10">
-          <p id="signUpDate">{createdAt}</p>
+          <input id="signUpDate" type="text" value={createdAt} disabled />
         </div>
       </div>
       <div className="row">
         <button
+          className="btn"
           onClick={(event) => {
             event.preventDefault();
             $('#userEmail').prop('disabled', (i, v) => (!v));
@@ -88,7 +90,7 @@ const UserView = ({ userName, userId, userEmail, updateStatus, disabled,
         >Edit profile</button>
         <button
           id="submitedit"
-          className="hide"
+          className="btn hide"
           onClick={(event) => {
             event.preventDefault();
             editDetail(userId, editUserDetail);
@@ -107,7 +109,6 @@ UserView.propTypes = {
   roleType: PropTypes.string.isRequired,
   userId: PropTypes.number.isRequired,
   updateStatus: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
   changeInputValue: PropTypes.func.isRequired,
   editUserDetail: PropTypes.func.isRequired,
 };

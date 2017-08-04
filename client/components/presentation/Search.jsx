@@ -4,7 +4,7 @@ import $ from 'jquery';
 
 const Search = ({ searchDocuments }) => (
   <div className="searchcontainer">
-    <div className="">
+    <div >
       <input
         type="text"
         onChange={(event) => {

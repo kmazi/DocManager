@@ -14,7 +14,7 @@ import Alert from 'sweetalert2';
    * fetching documents belonging to a particular user
    * @return {null} returns void
    */
-const signUserIn = (event, history, signInUser, getUserDocuments) => {
+const signUserIn = (event, history, signInUser, roleType, allDocuments) => {
   // prevent the default behaviour of the button
   event.preventDefault();
   // Get the input values
@@ -25,7 +25,7 @@ const signUserIn = (event, history, signInUser, getUserDocuments) => {
   signInUser(formData)
     .then((res) => {
       if (res.status === 'successful') {
-        getUserDocuments(res.userId, res.token);
+        allDocuments(roleType);
         history.push('/user/documents');
       } else {
         Alert({
@@ -45,7 +45,7 @@ const signUserIn = (event, history, signInUser, getUserDocuments) => {
  * @return {object} Returns the signin form to render
  */
 const SigninForm = ({ history, signInUser,
-  signInButtonText, getUserDocuments }) => (
+  submitButton, roleType, allDocuments }) => (
     <div id="signinform" className="">
       <input type="text" className="forminput" placeholder="Username" />
       <input type="password" className="forminput" placeholder="Password" />
@@ -53,8 +53,8 @@ const SigninForm = ({ history, signInUser,
         id="signinbtn"
         className="center-align waves-effect waves-light btn"
         onClick={event =>
-          signUserIn(event, history, signInUser, getUserDocuments)}
-      >{signInButtonText}</button>
+          signUserIn(event, history, signInUser, roleType, allDocuments)}
+      >{submitButton}</button>
     </div>
 );
 
@@ -62,8 +62,9 @@ SigninForm.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  roleType: PropTypes.string.isRequired,
   signInUser: PropTypes.func.isRequired,
-  signInButtonText: PropTypes.string.isRequired,
-  getUserDocuments: PropTypes.func.isRequired,
+  submitButton: PropTypes.string.isRequired,
+  allDocuments: PropTypes.func.isRequired,
 };
 export default SigninForm;

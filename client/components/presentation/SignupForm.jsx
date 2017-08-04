@@ -13,7 +13,7 @@ import $ from 'jquery';
    * fetching documents belonging to a particular user
  * @return {null} returns void
  */
-const signUp = (event, signUserUp, history, getUserDocuments) => {
+const signUp = (event, signUserUp, history, roleType, allDocuments) => {
   event.preventDefault();
   const userName = $('#signupform input[name=username]').val();
   const email = $('#signupform input[type=email]').val();
@@ -29,12 +29,8 @@ const signUp = (event, signUserUp, history, getUserDocuments) => {
     signUserUp(formData)
       .then((res) => {
         if (res.status === 'successful') {
-          getUserDocuments(res.userId, res.token)
-          .then((res) => {
-            if (res) {
-              history.push('/user/documents');
-            }
-          });
+          allDocuments(roleType);
+          history.push('/user/documents');
         } else {
           Alert({
             title: 'Error Signing up',
@@ -58,7 +54,7 @@ const signUp = (event, signUserUp, history, getUserDocuments) => {
  * @return {object} Returns the signup form to render
  */
 const SignupForm = ({ signUserUp, history,
-  signUpButtonText, getUserDocuments }) => (
+  submitButton, roleType, allDocuments }) => (
     <div id="signupform" style={{ display: 'none' }}>
       <input
         className="forminput"
@@ -124,17 +120,19 @@ const SignupForm = ({ signUserUp, history,
       <button
         id="signinbtn"
         className="center-align waves-effect waves-light btn"
-        onClick={event => signUp(event, signUserUp, history, getUserDocuments)}
-      >{signUpButtonText}</button>
+        onClick={
+          event => signUp(event, signUserUp, history, roleType, allDocuments)}
+      >{submitButton}</button>
     </div>
   );
 
 SignupForm.propTypes = {
   signUserUp: PropTypes.func.isRequired,
+  roleType: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-  signUpButtonText: PropTypes.string.isRequired,
-  getUserDocuments: PropTypes.func.isRequired,
+  submitButton: PropTypes.string.isRequired,
+  allDocuments: PropTypes.func.isRequired,
 };
 export default SignupForm;

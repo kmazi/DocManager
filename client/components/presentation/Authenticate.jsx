@@ -38,7 +38,7 @@ const showSignUpForm = (event) => {
  * @return {object} Returns the authentication form to render
  */
 const Authenticate = ({ history, signInUser, signUserUp,
-  signInButtonText, signUpButtonText, getUserDocuments }) => (
+  submitButton, roleType, allDocuments }) => (
     <div className="container">
       <div id="authbuttons" className="row">
         <div className="col s6">
@@ -61,26 +61,30 @@ const Authenticate = ({ history, signInUser, signUserUp,
         <SigninForm
           history={history}
           signInUser={signInUser}
-          signInButtonText={signInButtonText}
-          getUserDocuments={getUserDocuments}
+          signInButtonText={submitButton}
+          roleType={roleType}
+          allDocuments={allDocuments}
+          submitButton={submitButton}
         />
 
         <SignUpForm
           signUserUp={signUserUp}
           history={history}
-          signUpButtonText={signUpButtonText}
-          getUserDocuments={getUserDocuments}
+          signUpButtonText={submitButton}
+          allDocuments={allDocuments}
+          roleType={roleType}
+          submitButton={submitButton}
         />
       </div>
     </div>
 );
 
 Authenticate.propTypes = {
-  signInButtonText: PropTypes.string.isRequired,
-  signUpButtonText: PropTypes.string.isRequired,
+  submitButton: PropTypes.string.isRequired,
+  roleType: PropTypes.string.isRequired,
   signUserUp: PropTypes.func.isRequired,
   signInUser: PropTypes.func.isRequired,
-  getUserDocuments: PropTypes.func.isRequired,
+  allDocuments: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,

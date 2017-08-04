@@ -24,7 +24,7 @@ const signOut = (event, history) => {
 
 const fetchUserDocs = (event, getUserDocs, userId, history) => {
   event.preventDefault();
-  getUserDocs(userId, localStorage.getItem('docmanagertoken'));
+  getUserDocs(userId);
   history.push('/user/documents');
 };
 
@@ -46,97 +46,87 @@ const UserPage = ({ userName, userId, history,
         <div className="row">
           <div className="col m10 offset-m2">
             <button
-              name="public"
               className="btn"
               onClick={(event) => {
                 event.preventDefault();
-                getPublicDocuments(localStorage.getItem('docmanagertoken'));
-                history.push('/user/documents');
-              }}
-            >Public Documents&nbsp;
-            <i className="fa fa-globe" aria-hidden="true" /></button>
-            <button
-              className="btn"
-              onClick={(event) => {
-                event.preventDefault();
-                getRoleDocuments(localStorage.getItem('docmanagertoken'),
-                roleType);
-                history.push('/user/documents');
-              }}
-            >{roleType} Documents&nbsp;
-              <i className="fa fa-key" aria-hidden="true" /></button>
-            <button
-              className="btn"
-              onClick={(event) => {
-                event.preventDefault();
-                getAllDocuments(localStorage.getItem('docmanagertoken'),
-                roleType);
+                getAllDocuments(roleType);
                 history.push('/user/documents');
               }}
             >All Documents&nbsp;
             <i className="fa fa-file-archive-o" aria-hidden="true" /></button>
+
+            <button
+              name="public"
+              className="btn"
+              onClick={(event) => {
+                event.preventDefault();
+                getPublicDocuments();
+                history.push('/user/documents');
+              }}
+            >Public Documents&nbsp;
+            <i className="fa fa-globe" aria-hidden="true" /></button>
+
+            <button
+              className="btn"
+              onClick={(event) => {
+                event.preventDefault();
+                getRoleDocuments(roleType);
+                history.push('/user/documents');
+              }}
+            >{roleType} Documents&nbsp;
+              <i className="fa fa-key" aria-hidden="true" /></button>
           </div>
         </div>
       </div>
 
       <div id="doccontent" className="row">
         <div className="col m2 header" >
-          <h5 className="btn">Dashboard&nbsp;
+          <h5 className="btn">Dashboard&nbsp;&nbsp;
             <i className="fa fa-tasks" aria-hidden="true" />
-          </h5>
-          <p>
-            Hi {userName} , Welcome to your document manager board.<br />
-            You have created <strong>10</strong> documents
-          </p>
-          <hr />
-          <h8 className="center-align">My Documents&nbsp;
-            <i className="fa fa-tasks" aria-hidden="true" />
-          </h8><hr />
+          </h5><hr />
+
           <a
-            className="center-align"
+            className="center-align btn"
             onClick={(event) => {
               fetchUserDocs(event, getUserDocs, userId, history);
             }}
             href="/user/documents"
           >
-          View&nbsp;
+          My Documents&nbsp;&nbsp;
             <i className="fa fa-lock" aria-hidden="true" />
           </a>
 
-          <Link className="center-align" to="/user/documents/createdocument">
-          Create&nbsp;
+          <Link className="center-align btn" to="/user/documents/createdocument">
+          Create document&nbsp;&nbsp;
             <i className="fa fa-pencil-square-o" aria-hidden="true" />
           </Link><hr />
 
-          <h8 className="center-align">User Info&nbsp;
-            <i className="fa fa-tasks" aria-hidden="true" />
-          </h8><hr />
-
-          <Link className="center-align" to="/user/documents/users">
-          Profile&nbsp;
+          <Link className="center-align btn" to="/user/documents/users">
+          My Profile&nbsp;&nbsp;
           <i className="fa fa-user" aria-hidden="true" /></Link>
 
           <a
-            className="center-align"
+            className="center-align btn"
             href="/user/documents/users/all"
+            style={{ display: roleType === 'Admin' ? '' : 'none' }}
             onClick={(event) => {
               event.preventDefault();
-              getAllUsers(localStorage.getItem('docmanagertoken'));
+              getAllUsers();
               history.push('/user/documents/users/all');
             }}
           >
-          Manage Users&nbsp;
+          Manage Users&nbsp;&nbsp;
           <i className="fa fa-users" aria-hidden="true" /></a>
         </div>
 
         <div id="contentdisplay" className="col m10">
-          <div className="container">
+          <div className="container" style={minHeight}>
             {userRoutes}
           </div>
         </div>
       </div>
 
-      <footer>DocManager &copy;2017</footer>
+      <footer><a href="/">DocManager &copy;2017</a></footer>
     </section>
 );
 
@@ -161,20 +151,20 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getPublicDocuments: (userToken) => {
-    dispatch(publicDocuments(userToken));
+  getPublicDocuments: () => {
+    dispatch(publicDocuments());
   },
-  getAllUsers: (token) => {
-    dispatch(fetchAllUsers(token));
+  getAllUsers: () => {
+    dispatch(fetchAllUsers());
   },
-  getRoleDocuments: (userToken, roleType) => {
-    dispatch(roleDocuments(userToken, roleType));
+  getRoleDocuments: (roleType) => {
+    dispatch(roleDocuments(roleType));
   },
-  getUserDocs: (id, tokenString) => {
-    dispatch(getUserDocuments(id, tokenString));
+  getUserDocs: (id) => {
+    dispatch(getUserDocuments(id));
   },
-  getAllDocuments: (userToken, roletype) => {
-    dispatch(allDocuments(userToken, roletype));
+  getAllDocuments: (roletype) => {
+    dispatch(allDocuments(roletype));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(UserPage);

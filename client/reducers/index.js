@@ -6,8 +6,7 @@ const authenticateUser = (state = {
   userId: 0,
   updateStatus: 'Update Profile',
   disabled: true,
-  signInStatus: 'Sign In',
-  signUpStatus: 'Sign Up',
+  authButtonStatus: 'Submit',
   signUpDate: '',
   userName: 'Guest',
   userEmail: '',
@@ -35,11 +34,11 @@ const authenticateUser = (state = {
     });
   case types.START_SIGNUP:
     return Object.assign({}, state, {
-      signUpStatus: 'Signing Up...',
+      signUpStatus: 'Submiting...',
     });
   case types.SUCCESSFUL_SIGNUP:
     return Object.assign({}, state, {
-      signUpStatus: 'Sign Up',
+      authButtonStatus: 'Submit',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
       userEmail: action.userDetail.email,
@@ -52,7 +51,7 @@ const authenticateUser = (state = {
   case types.FAILED_SIGNUP:
     return Object.assign({}, state, {
       documents: [],
-      signUpStatus: 'Sign Up',
+      authButtonStatus: 'Submit',
       errors: action.errors,
       status: 'unsuccessful',
     });
@@ -63,12 +62,12 @@ const authenticateUser = (state = {
 
   case types.START_SIGNIN:
     return Object.assign({}, state, {
-      signInStatus: 'Signing In...',
+      authButtonStatus: 'Submitting...',
       status: 'unsuccessful',
     });
   case types.SUCCESSFUL_SIGNIN:
     return Object.assign({}, state, {
-      signInStatus: 'Sign In',
+      authButtonStatus: 'Submit',
       userName: action.userDetail.userName || 'Guest',
       userId: action.userDetail.userId || 0,
       userEmail: action.userDetail.email,
@@ -81,7 +80,7 @@ const authenticateUser = (state = {
   case types.FAILED_SIGNIN:
     return Object.assign({}, state, {
       documents: [],
-      signInStatus: 'Sign In',
+      authButtonStatus: 'Submit',
       errors: action.errors,
       status: 'unsuccessful',
     });
@@ -161,16 +160,24 @@ const fetchDocuments = (state = {
   isReady: false,
   status: 'Loading my documents...',
   documents: [],
-  documentaccess: 'Private',
+  documentType: '',
+  documentCounter: 0,
+  currentPage: 1,
+  documentaccess: 'All',
 }, action) => {
   switch (action.type) {
   case types.DONE_SEARCHING_DOCUMENTS:
     return Object.assign({}, state, {
       documents: action.documents,
+      isReady: true,
+      documentaccess: '',
+      currentPage: action.pageNumber,
+      documentCounter: action.count,
     });
   case types.ERROR_SEARCHING_DOCUMENTS:
     return Object.assign({}, state, {
       status: action.error,
+      documentCounter: 0,
     });
   case types.START_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
@@ -181,12 +188,15 @@ const fetchDocuments = (state = {
   case types.SUCCESS_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       isReady: true,
+      documentType: 'Private',
       documents: action.documents,
+      documentCounter: action.count,
     });
   case types.ERROR_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
       status: action.error.message,
       isReady: false,
+      documentCounter: 0,
     });
 
   case types.START_FETCHING_PUBLIC_DOCUMENTS:
@@ -199,7 +209,9 @@ const fetchDocuments = (state = {
   case types.DONE_FETCHING_PUBLIC_DOCUMENTS:
     return Object.assign({}, state, {
       isReady: true,
+      documentType: 'Public',
       documents: action.documents,
+      documentCounter: action.count,
     });
 
   case types.ERROR_FETCHING_PUBLIC_DOCUMENTS:
@@ -207,6 +219,7 @@ const fetchDocuments = (state = {
       status: action.error,
       isReady: false,
       documents: [],
+      documentCounter: 0,
     });
 
   case types.START_FETCHING_ALL_DOCUMENTS:
@@ -219,7 +232,9 @@ const fetchDocuments = (state = {
   case types.DONE_FETCHING_ALL_DOCUMENTS:
     return Object.assign({}, state, {
       isReady: true,
+      documentType: 'All',
       documents: action.documents,
+      documentCounter: action.count,
     });
 
   case types.ERROR_FETCHING_ALL_DOCUMENTS:
@@ -227,6 +242,7 @@ const fetchDocuments = (state = {
       status: action.error,
       documents: [],
       isReady: false,
+      documentCounter: 0,
     });
 
   case types.START_FETCHING_ROLE_DOCUMENTS:
@@ -239,14 +255,17 @@ const fetchDocuments = (state = {
   case types.DONE_FETCHING_ROLE_DOCUMENTS:
     return Object.assign({}, state, {
       isReady: true,
+      documentType: 'Role',
       documents: action.documents,
+      documentCounter: action.count,
     });
 
   case types.ERROR_FETCHING_ROLE_DOCUMENTS:
     return Object.assign({}, state, {
       isReady: false,
       documents: [],
-      status: action.error
+      status: action.error,
+      documentCounter: 0,
     });
   default:
     return state;
@@ -257,6 +276,8 @@ const fetchAllUsers = (state = {
   status: '',
   responseStatus: '',
   users: [],
+  counter: 0,
+  currentPage: 1,
 }, action) => {
   switch (action.type) {
   case types.START_GETTING_ALL_USERS:
@@ -273,7 +294,28 @@ const fetchAllUsers = (state = {
     return Object.assign({}, state, {
       users: action.users,
       status: '',
+      currentPage: action.pageNumber,
+      counter: action.count,
       responseStatus: action.responseStatus,
+    });
+  default:
+    return state;
+  }
+};
+
+const deactivateUser = (state = {
+  status: 'Activate',
+  deactivatedId: 0,
+}, action) => {
+  switch (action.type) {
+  case types.ERROR_DEACTIVATING_USER:
+    return Object.assign({}, state, {
+      deactivatedId: 0,
+      status: '',
+    });
+  case types.DONE_DEACTIVATING_USER:
+    return Object.assign({}, state, {
+      deactivatedId: action.userId,
     });
   default:
     return state;
@@ -286,6 +328,7 @@ const rootReducer = combineReducers({
   fetchDocuments,
   readDocument,
   fetchAllUsers,
+  deactivateUser,
   routing
 });
 

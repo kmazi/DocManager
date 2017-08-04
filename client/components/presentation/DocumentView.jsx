@@ -4,7 +4,8 @@ import propTypes from 'prop-types';
 import DocumentPreview from './DocumentPreview';
 
 const DocumentView = ({ documents, shouldDisplay, read, deleteId,
-  documentStatus, readDocument, history, deleteDocument }) => {
+  documentStatus, readDocument, history, deleteDocument, paginateDocument,
+  documentAccess, currentPage, documentsCount, roleType, id }) => {
   const finalRender = (shouldDisplay) ?
     (<DocumentPreview
       userDocuments={documents}
@@ -13,6 +14,12 @@ const DocumentView = ({ documents, shouldDisplay, read, deleteId,
       readDocument={readDocument}
       history={history}
       deleteDocument={deleteDocument}
+      paginateDocument={paginateDocument}
+      documentAccess={documentAccess}
+      currentPage={currentPage}
+      documentsCount={documentsCount}
+      roleType={roleType}
+      userId={id}
     />) :
     <p id="status" className="center-align">{documentStatus}</p>;
   /**
@@ -32,11 +39,17 @@ DocumentView.propTypes = {
   history: propTypes.shape({
     push: propTypes.func.isRequired,
   }).isRequired,
+  paginateDocument: propTypes.func.isRequired,
   readDocument: propTypes.func.isRequired,
   deleteDocument: propTypes.func.isRequired,
   read: propTypes.number.isRequired,
   deleteId: propTypes.number.isRequired,
   shouldDisplay: propTypes.bool.isRequired,
+  id: propTypes.number.isRequired,
+  documentsCount: propTypes.number.isRequired,
+  currentPage: propTypes.number.isRequired,
+  documentAccess: propTypes.string.isRequired,
+  roleType: propTypes.string.isRequired,
 };
 
 export default DocumentView;
