@@ -6909,6 +6909,13 @@ button {
     top: 0;
     left: 0; }
 
+#readdocument {
+  color: #2c3a46; }
+  #readdocument #docbody {
+    color: gray; }
+  #readdocument h3 {
+    display: block; }
+
 #viewusers button {
   color: whitesmoke; }
 

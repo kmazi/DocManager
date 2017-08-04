@@ -192,7 +192,7 @@ describe('SignIn and SignUp validation: ', () => {
         });
       });
 
-    fit('Should throw correct error message when password has a wrong format',
+    it('Should throw correct error message when password has a wrong format',
       (done) => {
         requestObject.json.password = '';
         request(requestObject, (req, res, body) => {

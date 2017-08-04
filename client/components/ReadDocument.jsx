@@ -4,14 +4,25 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import parser from 'html-react-parser';
 
+const formatDate = (datetime) => {
+  if (datetime) {
+    const date = datetime.substring(0, datetime.indexOf('T'));
+    const formattedDate = new Date(date);
+    return formattedDate.toDateString();
+  }
+};
+
 const ReadDocument = ({ title, body, author, modifiedDate, history }) => (
-  <div id="readdocument" className="row">
-    <h6>{title}</h6>
-    {parser(body)}
+  <div id="readdocument" className="container">
+    <h3 className="center-align">{title}</h3>
+    <hr />
+    <div id="docbody">
+      {parser(body)}
+    </div><br />
     <div>
       <span>Author: {author}</span><br />
-      <span>Modified: {modifiedDate}</span>
-    </div>
+      <span>Modified: {formatDate(modifiedDate)}</span>
+    </div><br />
     <button
       className="btn"
       onClick={(event) => {

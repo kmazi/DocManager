@@ -18,6 +18,14 @@ const processRole = (roleId) => {
   }
 };
 
+const formatDate = (datetime) => {
+  if (datetime) {
+    const date = datetime.substring(0, datetime.indexOf('T'));
+    const formattedDate = new Date(date);
+    return formattedDate.toDateString();
+  }
+};
+
 const AllUsersView = ({ allUsers, responseStatus, error,
   deactivateUser, deactivatedUserId, counter, currentPage,
   fetchAllUsers }) => {
@@ -33,7 +41,7 @@ const AllUsersView = ({ allUsers, responseStatus, error,
         <span>{processRole(user.roleId)}</span>
       </td>
       <td>
-        <span>{user.createdAt}</span>
+        <span>{formatDate(user.createdAt)}</span>
       </td>
       <td>
         <button
@@ -96,10 +104,10 @@ const AllUsersView = ({ allUsers, responseStatus, error,
               <span>UserEmail</span>
             </th>
             <th>
-              <span>RoleId</span>
+              <span>Department/Role</span>
             </th>
             <th>
-              <span>CreatedAt</span>
+              <span>Registered on</span>
             </th>
           </tr>
         </thead>

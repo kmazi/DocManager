@@ -11,7 +11,7 @@ const document = index.Document;
 const createDocument = (req, res) => {
   const title = req.body.title || '';
   const body = req.body.body || '';
-  const userId = req.body.userId || '';
+  const userId = req.body.user.userId || req.body.userId || '';
   const access = req.body.access || '';
   // Don't create document if fields are empty
   if (title === '' || body === '' || access === '' || userId === '') {
@@ -31,7 +31,8 @@ const createDocument = (req, res) => {
     }).spread((docCreated, isCreated) => {
       if (isCreated) {
         res.status(200).send({
-          status: 'successful'
+          status: 'successful',
+          documentId: docCreated.id,
         });
       } else {
         res.status(400).send({
@@ -42,7 +43,7 @@ const createDocument = (req, res) => {
     }).catch(() => {
       res.status(400).send({
         status: 'unsuccessful',
-        message: 'Could not create the document!',
+        message: 'Could not create your document!',
       });
     });
   }
@@ -229,7 +230,7 @@ const findDocument = (req, res) => {
     }).catch(() => {
       res.status(400).send({
         status: 'unsuccessful',
-        message: 'Could not find any document!',
+        message: 'An error coccured while loading your document!',
       });
     });
   } else {

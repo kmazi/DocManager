@@ -69,6 +69,15 @@ button{
 		left: 0;
 	}
 }
+#readdocument{
+	color: $textcolor;
+	#docbody{
+		color: gray;
+	}
+	h3{
+		display: block;
+	}
+}
 #viewusers{
 	button{
 		color: whitesmoke;
