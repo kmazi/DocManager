@@ -276,6 +276,8 @@ const fetchAllUsers = (state = {
   status: '',
   responseStatus: '',
   users: [],
+  counter: 0,
+  currentPage: 1,
 }, action) => {
   switch (action.type) {
   case types.START_GETTING_ALL_USERS:
@@ -292,7 +294,28 @@ const fetchAllUsers = (state = {
     return Object.assign({}, state, {
       users: action.users,
       status: '',
+      currentPage: action.pageNumber,
+      counter: action.count,
       responseStatus: action.responseStatus,
+    });
+  default:
+    return state;
+  }
+};
+
+const deactivateUser = (state = {
+  status: 'Activate',
+  deactivatedId: 0,
+}, action) => {
+  switch (action.type) {
+  case types.ERROR_DEACTIVATING_USER:
+    return Object.assign({}, state, {
+      deactivatedId: 0,
+      status: '',
+    });
+  case types.DONE_DEACTIVATING_USER:
+    return Object.assign({}, state, {
+      deactivatedId: action.userId,
     });
   default:
     return state;
@@ -305,6 +328,7 @@ const rootReducer = combineReducers({
   fetchDocuments,
   readDocument,
   fetchAllUsers,
+  deactivateUser,
   routing
 });
 

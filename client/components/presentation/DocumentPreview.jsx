@@ -13,24 +13,34 @@ import Search from '../container/Search';
  * @return {null} returns void
  */
 const deleteDocById = (deleteDocument, docId) => {
-  deleteDocument(docId)
-    .then((res) => {
-      if (res.status === 'successful') {
-        Alert({
-          title: 'Delete successful',
-          text: res.message,
-          type: 'success',
-          confirmButtonText: 'ok'
-        });
-      } else {
-        Alert({
-          title: 'Error loading document',
-          text: res.message,
-          type: 'error',
-          confirmButtonText: 'ok'
-        });
-      }
+  Alert({
+    title: 'Comfirm deactivation',
+    text: 'Are you sure you want to this document?',
+    type: 'info',
+    showCloseButton: true,
+    showCancelButton: true,
+    confirmButtonText:
+      '<i class="fa fa-thumbs-up"></i> Yes!',
+    cancelButtonText:
+      '<i class="fa fa-thumbs-down"></i> No',
+    showLoaderOnConfirm: true,
+    preConfirm: () => new Promise((resolve, reject) => {
+      deleteDocument(docId)
+      .then((res) => {
+        if (res.status === 'successful') {
+          resolve();
+        } else {
+          reject();
+        }
+      });
+    }),
+    allowOutsideClick: false
+  }).then(() => {
+    Alert({
+      type: 'success',
+      title: 'Delete successful!',
     });
+  });
 };
 
 /**

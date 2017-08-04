@@ -7,6 +7,8 @@ $btnhover: #90caf9;
 $contentpadding: 5px;
 $docviewfontsize: 70px;
 $italicstylefont: 'Lobster', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$previewfontstyle: 'Asap Condensed', sans-serif;
+$previewheaderstyle: 'Bree Serif', serif;
 $textcolor: #2c3a46;
 
 body{
@@ -65,6 +67,11 @@ button{
 		background: rgba(62,111,111, 0.7);
 		top: 0;
 		left: 0;
+	}
+}
+#viewusers{
+	button{
+		color: whitesmoke;
 	}
 }
 #userview{
@@ -127,15 +134,13 @@ input[type=text]:not(.browser-default):disabled{
 	#docview{
 		div{
 			background: $shadebackground;
-			border-style: solid;
-			border-width: thin;
-			border-color: $btncolor;
 			max-height: 190px;
 			padding: 5px;
 			margin: 5px;
+			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 			h6{
 				font-weight: bold;
-				font-family: $italicstylefont;
+				font-family: $previewheaderstyle;
 				height: 25px;
 			 	white-space: nowrap; 
 				width: 12em; 

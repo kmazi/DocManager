@@ -5,17 +5,19 @@ import { connect } from 'react-redux';
 import parser from 'html-react-parser';
 
 const ReadDocument = ({ title, body, author, modifiedDate, history }) => (
-  <div className="row">
-    <p>{title}</p>
+  <div id="readdocument" className="row">
+    <h6>{title}</h6>
     {parser(body)}
     <div>
       <span>Author: {author}</span><br />
       <span>Modified: {modifiedDate}</span>
     </div>
-    <button onClick={(event) => {
-      event.preventDefault();
-      history.push('/user/documents');
-    }}
+    <button
+      className="btn"
+      onClick={(event) => {
+        event.preventDefault();
+        history.push('/user/documents');
+      }}
     >ok</button>
   </div>
 );

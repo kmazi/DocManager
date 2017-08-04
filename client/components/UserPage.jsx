@@ -160,8 +160,8 @@ const mapDispatchToProps = dispatch => ({
   getRoleDocuments: (roleType) => {
     dispatch(roleDocuments(roleType));
   },
-  getUserDocs: (id, tokenString) => {
-    dispatch(getUserDocuments(id, tokenString));
+  getUserDocs: (id) => {
+    dispatch(getUserDocuments(id));
   },
   getAllDocuments: (roletype) => {
     dispatch(allDocuments(roletype));

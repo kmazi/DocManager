@@ -111,17 +111,22 @@ export const startGettingUsers = () => ({
 /**
  * Dispatches an action that indicates that the system has fetched all users
  * @param {object} users - The array of users from the database
+ * @param {string} responseStatus - Error message from the server
  * @return {object} returns an object containing
  * details about the dispatched action
  */
-export const finishGettingUsers = (users, responseStatus) => ({
-  type: types.FINISH_GETTING_ALL_USERS,
-  users,
-  responseStatus,
-});
+export const finishGettingUsers = (users, responseStatus, count,
+  pageNumber) => ({
+    type: types.FINISH_GETTING_ALL_USERS,
+    users,
+    responseStatus,
+    count,
+    pageNumber,
+  });
 /**
  * Dispatches an action that indicates that the system is fetching users
  * @param {string} error - The error message
+ * @param {string} responseStatus - Error message from the server
  * @return {object} returns an object containing
  * details about the dispatched action
  */
@@ -132,31 +137,40 @@ export const errorGettingUsers = (error, responseStatus) => ({
 });
 /**
  * Dispatches an action to get all users
- * @param {object} token - user token for identification
+ * @param {object} offset - the offset for fetching pages
+ * @param {number} pageNumber - the current page number
  * @return {func} returns a function that will be executed to signin a user
  */
-export const fetchAllUsers = token => (dispatch) => {
+export const fetchAllUsers = (offset = 0, pageNumber) => (dispatch) => {
+  const token = localStorage.getItem('docmanagertoken');
   dispatch(startGettingUsers());
-  return axios.get(`/api/v1/users?token=${token}`)
+  return axios.get(`/api/v1/users?&offset=${offset}&limit=8&token=${token}`)
     .then((response) => {
-      dispatch(finishGettingUsers(response.data.users, response.data.status));
+      dispatch(finishGettingUsers(response.data.users, response.data.status,
+      response.data.count, pageNumber));
     },
     ({ response }) => {
-      dispatch(errorGettingUsers(response.data.message, response.data.status));
+      dispatch(errorGettingUsers(response.data.message, response.data.status,
+      response.data.count, pageNumber));
     });
 };
+
 export const updatingUser = () => ({
   type: types.START_UPDATING_USER,
 });
+
 export const doneUpdatingUser = status => ({
   type: types.DONE_UPDATING_USER,
   status,
 });
+
 export const errorUpdatingUser = error => ({
   type: types.ERROR_UPDATING_USER,
   error,
 });
-export const editUserDetail = (userDetail, userId, token) => (dispatch) => {
+
+export const editUserDetail = (userDetail, userId) => (dispatch) => {
+  const token = localStorage.getItem('docmanagertoken');
   dispatch(updatingUser());
   return axios.put(`/api/v1/users/${userId}?token=${token}`, userDetail)
     .then((response) => {
@@ -166,10 +180,36 @@ export const editUserDetail = (userDetail, userId, token) => (dispatch) => {
       dispatch(errorUpdatingUser(response.data.status, response.data.message));
     });
 };
+
 export const setEmailInputValue = inputValue => ({
   type: types.UPDATE_EMAIL,
   email: inputValue,
 });
+
 export const changeInputValue = inputValue => (dispatch) => {
   dispatch(setEmailInputValue(inputValue));
 };
+
+export const doneDeactivatingUser = (userId, status) => ({
+  type: types.DONE_DEACTIVATING_USER,
+  status,
+  userId,
+});
+
+export const errorDeactivatingUser = () => ({
+  types: types.ERROR_DEACTIVATING_USER,
+});
+
+export const deactivateUser = userId => (dispatch) => {
+  const token = localStorage.getItem('docmanagertoken');
+  return axios.delete(`/api/v1/users/${userId}?token=${token}`)
+    .then((response) => {
+      dispatch(doneDeactivatingUser(userId, response.data.status));
+      return response.data;
+    },
+    ({ response }) => {
+      dispatch(errorDeactivatingUser(response.data.status, response.data.message));
+      return response.data;
+    });
+};
+
