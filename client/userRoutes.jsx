@@ -3,9 +3,10 @@ import { Route, Switch } from 'react-router-dom';
 
 import ViewDocument from './components/container/ViewDocument';
 import UserView from './components/container/UserView';
-import AllUsersView from './components/AllUsersView';
+import AllUsersView from './components/container/AllUsersView';
 import WriteDocument from './components/container/WriteDocument';
 import ReadDocument from './components/ReadDocument';
+import ErrorPage from './components/presentation/ErrorPage';
 
 export default (
   <Switch>
@@ -14,5 +15,6 @@ export default (
     <Route path="/user/documents/users/all" component={AllUsersView} />
     <Route path="/user/documents/users" component={UserView} />
     <Route path="/user/documents/read" component={ReadDocument} />
+    <Route path="/user/*" component={ErrorPage} />
   </Switch>
 );

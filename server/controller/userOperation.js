@@ -307,14 +307,19 @@ const deleteUser = (req, res) => {
         message: 'Could not find any user!',
       });
     } else {
-      user.update({ isactive: false }, {
+      let statusUpdate = false;
+      if (!knownUser.isactive) {
+        statusUpdate = true;
+      }
+      user.update({ isactive: statusUpdate }, {
         where: {
           id: userId,
         }
       }).then(() => {
         res.status(200).send({
           status: 'successful',
-          message: `${knownUser.username} has been successfull deactivated!`,
+          message: `${knownUser.username} has been successfull
+          ${statusUpdate ? 'deactivated!' : 'activated'}`,
         });
       }).catch();
     }

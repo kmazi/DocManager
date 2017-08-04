@@ -6909,6 +6909,9 @@ button {
     top: 0;
     left: 0; }
 
+#viewusers button {
+  color: whitesmoke; }
+
 #userview {
   color: #2c3a46; }
   #userview h5 {
@@ -6957,15 +6960,13 @@ input[type=text]:not(.browser-default):disabled {
     color: inherit; }
   #doccontent #docview div {
     background: #0288d1;
-    border-style: solid;
-    border-width: thin;
-    border-color: #2e71b4;
     max-height: 190px;
     padding: 5px;
-    margin: 5px; }
+    margin: 5px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); }
     #doccontent #docview div h6 {
       font-weight: bold;
-      font-family: "Lobster", cursive, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Bree Serif", serif;
       height: 25px;
       white-space: nowrap;
       width: 12em;
@@ -6973,6 +6974,13 @@ input[type=text]:not(.browser-default):disabled {
       text-overflow: ellipsis; }
     #doccontent #docview div button {
       border: thin solid whitesmoke; }
+  #doccontent #errorpage {
+    font-weight: bold;
+    font-size: 3em;
+    color: gray;
+    width: 50%;
+    margin: 70px auto;
+    font-family: "Lobster", cursive, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
   #doccontent p#status {
     font-size: 70px;
     margin: 100px 60px; }
