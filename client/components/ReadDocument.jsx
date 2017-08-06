@@ -29,7 +29,14 @@ const ReadDocument = ({ title, body, author, modifiedDate, history }) => (
         event.preventDefault();
         history.push('/user/documents');
       }}
-    >ok</button>
+    >back</button>
+    <button
+      className="btn"
+      onClick={(event) => {
+        event.preventDefault();
+        history.push('/user/documents');
+      }}
+    >edit</button>
   </div>
 );
 

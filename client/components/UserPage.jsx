@@ -7,18 +7,20 @@ import userRoutes from '../userRoutes';
 import { publicDocuments,
   roleDocuments,
   allDocuments,
-  getUserDocuments } from '../actions/documentActions';
-import { fetchAllUsers } from '../actions/userActions';
+  getUserDocuments,
+  } from '../actions/documentActions';
+import { fetchAllUsers, signOut } from '../actions/userActions';
 
 const minHeight = {
   minHeight: window.innerHeight - 131 ||
   document.documentElement.clientHeight - 131
 };
-const signOut = (event, history) => {
+const signOutUser = (event, history, signUserOut) => {
   event.preventDefault();
   if (localStorage.getItem('docmanagertoken')) {
     localStorage.removeItem('docmanagertoken');
   }
+  signUserOut();
   history.push('/');
 };
 
@@ -28,7 +30,7 @@ const fetchUserDocs = (event, getUserDocs, userId, history) => {
   history.push('/user/documents');
 };
 
-const UserPage = ({ userName, userId, history,
+const UserPage = ({ userName, userId, history, signUserOut,
   getPublicDocuments, getRoleDocuments, getAllUsers,
   getUserDocs, getAllDocuments, roleType }) => (
     <section className="row" style={minHeight}>
@@ -38,7 +40,7 @@ const UserPage = ({ userName, userId, history,
           <a
             href="/"
             onClick={(event) => {
-              signOut(event, history);
+              signOutUser(event, history, signUserOut);
             }}
           >Hi {userName}! Sign Out&nbsp;
           <i className="fa fa-sign-out" aria-hidden="true" /></a>
@@ -137,6 +139,7 @@ UserPage.propTypes = {
   history: propTypes.shape({
     push: propTypes.func.isRequired,
   }).isRequired,
+  signUserOut: propTypes.func.isRequired,
   getPublicDocuments: propTypes.func.isRequired,
   getRoleDocuments: propTypes.func.isRequired,
   getAllDocuments: propTypes.func.isRequired,
@@ -159,6 +162,9 @@ const mapDispatchToProps = dispatch => ({
   },
   getRoleDocuments: (roleType) => {
     dispatch(roleDocuments(roleType));
+  },
+  signUserOut: () => {
+    dispatch(signOut());
   },
   getUserDocs: (id) => {
     dispatch(getUserDocuments(id));

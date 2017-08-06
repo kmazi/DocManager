@@ -254,39 +254,49 @@ const updateUser = (req, res) => {
     req.body.user.roleType === 'Admin') {
     userDetail.isactive = req.body.isactive;
   }
-  bcrypt.hash(req.body.password, saltRound, (err, hash) => {
-    if (req.body.password &&
-      validatePassword(req.body.password, 'password').status === 'successful') {
-      userDetail.password = hash;
-    }
-    if (userId === req.body.user.userId
-      || req.body.user.userName === 'SuperAdmin'
-      || req.body.user.roleType === 'Admin') {
-      user.update(userDetail, {
-        where: {
-          id: userId,
+  const inputPassword = req.body.password || '';
+  bcrypt.hash(inputPassword, saltRound, (err, hash) => {
+    if (inputPassword &&
+      validatePassword(inputPassword, 'password').status === 'successful') {
+      user.findById(req.body.user.userId).then((foundUser) => {
+        if (foundUser) {
+          bcrypt.compare(req.body.oldPassword, foundUser.password,
+            (err, response) => {
+              if (response) {
+                userDetail.password = hash;
+              }
+              if (userId === req.body.user.userId
+                || req.body.user.userName === 'SuperAdmin'
+                || req.body.user.roleType === 'Admin') {
+                user.update(userDetail, {
+                  where: {
+                    id: userId,
+                  }
+                }).then(() => {
+                  if (Object.keys(userDetail).length !== 0) {
+                    res.status(200).send({
+                      status: 'successful',
+                    });
+                  } else {
+                    res.status(400).send({
+                      status: 'unsuccessful',
+                      message: 'update failed!',
+                    });
+                  }
+                }).catch(() => {
+                  res.status(400).send({
+                    status: 'unsuccessful',
+                    message: 'Could not find any user to update!',
+                  });
+                });
+              } else {
+                res.status(400).send({
+                  status: 'unsuccessful',
+                  message: 'No user found!',
+                });
+              }
+            });
         }
-      }).then(() => {
-        if (Object.keys(userDetail).length !== 0) {
-          res.status(200).send({
-            status: 'successful',
-          });
-        } else {
-          res.status(400).send({
-            status: 'unsuccessful',
-            message: 'update failed!',
-          });
-        }
-      }).catch(() => {
-        res.status(400).send({
-          status: 'unsuccessful',
-          message: 'Could not find any user to update!',
-        });
-      });
-    } else {
-      res.status(400).send({
-        status: 'unsuccessful',
-        message: 'No user found!',
       });
     }
   });

@@ -1,6 +1,7 @@
 import index from '../models';
 
-const document = index.Document;
+const Document = index.Document;
+const User = index.User;
 /**
  * function to create a document
  * @param {object} req - an object that contains the request body
@@ -21,7 +22,7 @@ const createDocument = (req, res) => {
     });
   } else {
     // check to see if document with same title exist before creation
-    document.findOrCreate({
+    Document.findOrCreate({
       where: { title },
       defaults: {
         body,
@@ -61,7 +62,7 @@ const getAllDocuments = (req, res) => {
   if (searchParams.offset && searchParams.limit) {
     params = { offset: searchParams.offset, limit: searchParams.limit };
   }
-  document.findAndCountAll({
+  Document.findAndCountAll({
     attributes: ['id', 'title', 'body', 'access', 'createdAt'],
     ...params
   }).then((documents) => {
@@ -134,7 +135,7 @@ const getUserDocuments = (req, res) => {
     break;
   }
   if (searchQuery) {
-    document.findAndCountAll({
+    Document.findAndCountAll({
       where: {
         ...searchQuery,
       },
@@ -147,8 +148,8 @@ const getUserDocuments = (req, res) => {
       res.status(400);
       if (foundDocuments.count > 0 && access === 'All') {
         const finalDocuments = foundDocuments.rows.filter(foundDocument => (
-           (foundDocument.userId === req.body.user.userId ||
-             foundDocument.access === 'Public' ||
+          (foundDocument.userId === req.body.user.userId ||
+            foundDocument.access === 'Public' ||
             foundDocument.access === req.body.user.roleType)
         ));
         response.status = 'successful';
@@ -189,48 +190,54 @@ const getUserDocuments = (req, res) => {
 const findDocument = (req, res) => {
   const documentId = Number(req.params.id);
   if (Number.isInteger(documentId) && documentId > 0) {
-    document.findById(documentId).then((foundDocument) => {
-      if (foundDocument) {
-        let doc = {};
-        switch (foundDocument.access) {
-        case 'Private':
-          if (foundDocument.userId === req.body.user.userId ||
-          req.body.user.roleType === 'Admin') {
-            doc = foundDocument;
+    Document.findOne({
+      where: { id: documentId },
+    }).then((foundDocument) => {
+      User.findById(foundDocument.userId).then((documentOwner) => {
+        foundDocument.dataValues.author = documentOwner.username;
+        if (foundDocument) {
+          let doc = {};
+          switch (foundDocument.access) {
+          case 'Private':
+            if (foundDocument.userId === req.body.user.userId ||
+                req.body.user.roleType === 'Admin') {
+              doc = foundDocument;
+            }
+            break;
+          case 'Public':
+            doc = req.body.user.userId ? foundDocument : {};
+            break;
+          case req.body.user.roleType:
+            if (foundDocument.access === req.body.user.roleType) {
+              doc = foundDocument;
+            }
+            break;
+          default:
+            if (req.body.user.roleType === 'Admin') {
+              doc = foundDocument;
+            } else {
+              return res.status(400).send({
+                status: 'unsuccessful',
+                message: 'Access denied!',
+              });
+            }
           }
-          break;
-        case 'Public':
-          doc = req.body.user.userId ? foundDocument : {};
-          break;
-        case req.body.user.roleType:
-          if (foundDocument.access === req.body.user.roleType) {
-            doc = foundDocument;
-          }
-          break;
-        default:
-          if (req.body.user.roleType === 'Admin') {
-            doc = foundDocument;
-          } else {
-            return res.status(400).send({
-              status: 'unsuccessful',
-              message: 'Access denied!',
-            });
-          }
+          res.status(200).send({
+            status: 'successful',
+            document: doc,
+          });
+        } else {
+          res.status(400).send({
+            status: 'unsuccessful',
+            message: 'Could not find any document!',
+          });
         }
-        res.status(200).send({
-          status: 'successful',
-          document: doc,
-        });
-      } else {
-        res.status(400).send({
-          status: 'unsuccessful',
-          message: 'Could not find any document!',
-        });
-      }
-    }).catch(() => {
+      });
+    }).catch((err) => {
       res.status(400).send({
         status: 'unsuccessful',
         message: 'An error coccured while loading your document!',
+        err
       });
     });
   } else {
@@ -258,10 +265,10 @@ const updateDocument = (req, res) => {
   if (req.body.access) {
     userDocument.access = req.body.access;
   }
-  document.findById(documentId).then((foundDocument) => {
+  Document.findById(documentId).then((foundDocument) => {
     if (foundDocument.userId === req.body.user.userId
-    || req.body.user.roleType === 'Admin') {
-      document.update(userDocument, {
+      || req.body.user.roleType === 'Admin') {
+      Document.update(userDocument, {
         where: {
           id: documentId,
         }
@@ -309,22 +316,27 @@ const searchForDocument = (req, res) => {
   }
   const titleSearchQuery = {
     title: {
-      $iLike: `%${req.query.q}%` }
+      $iLike: `%${req.query.q}%`
+    }
   };
   let searchQuery = req.body.user.roleType === 'Admin' ?
-  titleSearchQuery : { $or:
-  [{ userId: req.body.user.userId, ...titleSearchQuery },
-    { access: req.body.user.roleType, ...titleSearchQuery },
-    { access: 'Public', ...titleSearchQuery }] };
+    titleSearchQuery : {
+      $or:
+      [{ userId: req.body.user.userId, ...titleSearchQuery },
+      { access: req.body.user.roleType, ...titleSearchQuery },
+      { access: 'Public', ...titleSearchQuery }]
+    };
 
   if (!req.query.q) {
     searchQuery = req.body.user.roleType === 'Admin' ?
-    {} : { $or:
-    [{ userId: req.body.user.userId },
-    { access: req.body.user.roleType },
-    { access: 'Public' }] };
+      {} : {
+        $or:
+        [{ userId: req.body.user.userId },
+        { access: req.body.user.roleType },
+        { access: 'Public' }]
+      };
   }
-  document.findAndCountAll({
+  Document.findAndCountAll({
     where: { ...searchQuery },
     attributes: ['id', 'title', 'body', 'access', 'createdAt'],
     ...params
@@ -359,7 +371,7 @@ const deleteDocument = (req, res) => {
   const documentId = Number(req.params.id);
   const response = {};
   response.status = 'unsuccessful';
-  document.findById(documentId).then((knownDocument) => {
+  Document.findById(documentId).then((knownDocument) => {
     if (!knownDocument) {
       response.status = 'unsuccessful';
       response.message = 'Could not find document!';
@@ -386,6 +398,8 @@ const deleteDocument = (req, res) => {
   });
 };
 
-export { createDocument, getAllDocuments, findDocument,
+export {
+  createDocument, getAllDocuments, findDocument,
   deleteDocument, getUserDocuments, searchForDocument,
-  updateDocument };
+  updateDocument
+};

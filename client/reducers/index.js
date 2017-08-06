@@ -322,7 +322,7 @@ const deactivateUser = (state = {
   }
 };
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   authenticateUser,
   createDoc,
   fetchDocuments,
@@ -331,5 +331,11 @@ const rootReducer = combineReducers({
   deactivateUser,
   routing
 });
+const rootReducer = (state, action) => {
+  if (action.type === 'USER_SIGNOUT') {
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
 
 export default rootReducer;
