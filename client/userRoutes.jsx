@@ -5,7 +5,7 @@ import ViewDocument from './components/container/ViewDocument';
 import UserView from './components/container/UserView';
 import AllUsersView from './components/container/AllUsersView';
 import WriteDocument from './components/container/WriteDocument';
-import ReadDocument from './components/ReadDocument';
+import ReadDocument from './components/container/ReadDocument';
 import ErrorPage from './components/presentation/ErrorPage';
 
 export default (

@@ -213,3 +213,6 @@ export const deactivateUser = userId => (dispatch) => {
     });
 };
 
+export const signOut = () => ({
+  type: types.USER_SIGNOUT,
+});

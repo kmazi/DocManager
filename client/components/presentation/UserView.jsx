@@ -7,6 +7,9 @@ const editDetail = (userId, editUser) => {
   if ($('#userEmail').val() !== '') {
     userDetail.email = $('#userEmail').val();
   }
+  if ($('#oldpassword').val() !== '') {
+    userDetail.oldPassword = $('#oldpassword').val();
+  }
   if ($('#newpassword').val() !== '') {
     userDetail.password = $('#newpassword').val();
   }

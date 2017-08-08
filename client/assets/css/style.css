@@ -6913,8 +6913,10 @@ button {
   color: #2c3a46; }
   #readdocument #docbody {
     color: gray; }
-  #readdocument h3 {
-    display: block; }
+  #readdocument button {
+    margin-left: 3px; }
+  #readdocument input {
+    font-size: xx-large; }
 
 #viewusers button {
   color: whitesmoke; }
