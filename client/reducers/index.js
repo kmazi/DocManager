@@ -117,6 +117,8 @@ const readDocument = (state = {
   delStatus: 0,
   error: '',
   message: '',
+  docStatus: 'submit',
+  documentTitle: '',
   document: {},
 }, action) => {
   switch (action.type) {
@@ -129,6 +131,23 @@ const readDocument = (state = {
     return Object.assign({}, state, {
       status: 0,
       document: action.document,
+      documentTitle: action.document.title,
+    });
+  case types.START_EDITING_DOCUMENT:
+    return Object.assign({}, state, {
+      docStatus: 'Editing',
+    });
+  case types.DONE_EDITING_DOCUMENT:
+    return Object.assign({}, state, {
+      docStatus: 'submit',
+    });
+  case types.ERROR_EDITING_DOCUMENT:
+    return Object.assign({}, state, {
+      docStatus: 'submit',
+    });
+  case types.UPDATE_TITLE:
+    return Object.assign({}, state, {
+      documentTitle: action.title,
     });
   case types.ERROR_READING_DOCUMENT:
     return Object.assign({}, state, {

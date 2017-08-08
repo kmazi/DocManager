@@ -267,6 +267,7 @@ module.exports = {
           } else {
             res.status(400).send({
               status: 'unsuccessful',
+              message: 'No new value to update document!',
             });
           }
         }).catch(() => {

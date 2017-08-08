@@ -300,6 +300,42 @@ export const readDocumentFailed = error => ({
   error,
 });
 
+export const setTitleInputValue = title => ({
+  type: types.UPDATE_TITLE,
+  title,
+});
+
+export const changeTitleValue = title => (dispatch) => {
+  dispatch(setTitleInputValue(title));
+};
+
+export const startEditingDocument = () => ({
+  type: types.START_EDITING_DOCUMENT,
+});
+
+export const doneEditingDocument = documentId => ({
+  type: types.DONE_EDITING_DOCUMENT,
+  documentId,
+});
+
+export const errorEditingDocument = () => ({
+  type: types.ERROR_EDITING_DOCUMENT,
+});
+
+export const editDocument = (documentValue, documentId) => (dispatch) => {
+  dispatch(startEditingDocument());
+  const userToken = localStorage.getItem('docmanagertoken');
+  return axios.put(`/api/v1/documents/${documentId}?token=${userToken}`, documentValue)
+  .then((response) => {
+    dispatch(doneEditingDocument(documentId));
+    return response.data;
+  },
+    ({ response }) => {
+      dispatch(errorEditingDocument());
+      return response.data;
+    });
+};
+
 /**
  * Reads a particular document
  * @param {number} id  - The document id to view
@@ -309,7 +345,7 @@ export const readDocumentFailed = error => ({
 export const readDocument = id => (dispatch) => {
   const userToken = localStorage.getItem('docmanagertoken');
   dispatch(readADocument(id));
-  return axios.get(`/api/v1/document/${id}?&offset=0&limit=8&token=${userToken}`)
+  return axios.get(`/api/v1/document/${id}?offset=0&limit=8&token=${userToken}`)
   .then((response) => {
     dispatch(readDocumentComplete(response.data.document));
     return response.data;
