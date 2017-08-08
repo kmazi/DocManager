@@ -144,7 +144,7 @@ export const fetchingPublicDocumentsFailed = error => ({
 export const publicDocuments = () => (dispatch) => {
   const token = localStorage.getItem('docmanagertoken');
   dispatch(fetchingPublicDocuments());
-  return axios.get(`/api/v1/Public/documents?&offset=0&limit=8&token=${token}`)
+  return axios.get(`/api/v1/documents/Public?&offset=0&limit=8&token=${token}`)
     .then((response) => {
       dispatch(fetchingPublicDocumentsComplete(response.data.documents,
       response.data.count));
@@ -174,10 +174,11 @@ export const fetchRoleDocuments = roleType => ({
  * @return {object} returns an object containing
  *  the action type and the error message
  */
-export const fetchRoleDocumentsComplete = (documents, count) => ({
+export const fetchRoleDocumentsComplete = (documents, count, roleType) => ({
   type: types.DONE_FETCHING_ROLE_DOCUMENTS,
   documents,
   count,
+  roleType
 });
 
 /**
@@ -201,10 +202,10 @@ export const fetchRoleDocumentsFailed = error => ({
 export const roleDocuments = roleType => (dispatch) => {
   const token = localStorage.getItem('docmanagertoken');
   dispatch(fetchRoleDocuments());
-  return axios.get(`/api/v1/${roleType}/documents?&offset=0&limit=8&token=${token}`)
+  return axios.get(`/api/v1/documents/${roleType}?&offset=0&limit=8&token=${token}`)
   .then((response) => {
     dispatch(fetchRoleDocumentsComplete(response.data.documents,
-    response.data.count));
+    response.data.count, roleType));
   },
     ({ response }) => {
       dispatch(fetchRoleDocumentsFailed(response.data.message));
@@ -254,7 +255,7 @@ export const fetchAllDocumentsFailed = error => ({
 export const allDocuments = roletype => (dispatch) => {
   const token = localStorage.getItem('docmanagertoken');
   const url = roletype !== 'Admin' ?
-  `/api/v1/All/documents?&offset=0&limit=8&token=${token}`
+  `/api/v1/documents/All?&offset=0&limit=8&token=${token}`
   : `/api/v1/documents?&offset=0&limit=8&token=${token}`;
   dispatch(fetchAllDocuments());
   return axios.get(url).then((response) => {
@@ -308,7 +309,7 @@ export const readDocumentFailed = error => ({
 export const readDocument = id => (dispatch) => {
   const userToken = localStorage.getItem('docmanagertoken');
   dispatch(readADocument(id));
-  return axios.get(`/api/v1/documents/${id}?&offset=0&limit=8&token=${userToken}`)
+  return axios.get(`/api/v1/document/${id}?&offset=0&limit=8&token=${userToken}`)
   .then((response) => {
     dispatch(readDocumentComplete(response.data.document));
     return response.data;
@@ -382,11 +383,13 @@ export const deleteDocument = id => (dispatch) => {
  * @return {object} contains the type of action dispatched
  * as well as the documents matching the search parameter
  */
-export const doneSearchingDocuments = (documents, count, pageNumber) => ({
+export const doneSearchingDocuments =
+(documents, count, pageNumber, access) => ({
   type: types.DONE_SEARCHING_DOCUMENTS,
   documents,
   count,
   pageNumber,
+  access
 });
 
 /**
@@ -438,15 +441,18 @@ export const paginateDocument = (pageNumber, offSet,
       url = `/api/v1/users/${id}/documents?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     case 'Public':
-      url = `/api/v1/Public/documents?&offset=${offSet}&limit=8&token=${userToken}`;
+      url = `/api/v1/documents/Public?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
-    case 'Role':
+    case 'Admin':
+    case 'Learning':
+    case 'Devops':
+    case 'Fellow':
       url =
-      `/api/v1/${roleType}/documents?&offset=${offSet}&limit=8&token=${userToken}`;
+      `/api/v1/documents/${roleType}?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     case 'All':
       url = roleType !== 'Admin' ?
-        `/api/v1/All/documents?&offset=${offSet}&limit=8&token=${userToken}`
+        `/api/v1/documents/All?&offset=${offSet}&limit=8&token=${userToken}`
         : `/api/v1/documents?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     default:
@@ -457,7 +463,7 @@ export const paginateDocument = (pageNumber, offSet,
   .get(url)
   .then((response) => {
     dispatch(doneSearchingDocuments(response.data.documents,
-      response.data.count, pageNumber));
+      response.data.count, pageNumber, documentAccess));
   },
     ({ response }) => {
       dispatch(errorSearchingDocuments(response.data.message));

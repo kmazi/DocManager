@@ -170,7 +170,7 @@ const fetchDocuments = (state = {
     return Object.assign({}, state, {
       documents: action.documents,
       isReady: true,
-      documentaccess: '',
+      documentaccess: action.access || '',
       currentPage: action.pageNumber,
       documentCounter: action.count,
     });
@@ -189,6 +189,7 @@ const fetchDocuments = (state = {
     return Object.assign({}, state, {
       isReady: true,
       documentType: 'Private',
+      documentaccess: 'Private',
       documents: action.documents,
       documentCounter: action.count,
     });
@@ -210,6 +211,7 @@ const fetchDocuments = (state = {
     return Object.assign({}, state, {
       isReady: true,
       documentType: 'Public',
+      documentaccess: 'Public',
       documents: action.documents,
       documentCounter: action.count,
     });
@@ -233,6 +235,7 @@ const fetchDocuments = (state = {
     return Object.assign({}, state, {
       isReady: true,
       documentType: 'All',
+      documentaccess: 'All',
       documents: action.documents,
       documentCounter: action.count,
     });
@@ -256,6 +259,7 @@ const fetchDocuments = (state = {
     return Object.assign({}, state, {
       isReady: true,
       documentType: 'Role',
+      documentaccess: action.roleType,
       documents: action.documents,
       documentCounter: action.count,
     });
