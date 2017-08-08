@@ -303,10 +303,20 @@ module.exports = {
     if (searchParams.offset && searchParams.limit) {
       params = { offset: searchParams.offset, limit: searchParams.limit };
     }
+    if (!req.query.q) {
+      return res.status(400).send({
+        status: 'unsuccessful',
+        message: 'No title to search for!'
+      });
+    }
+    const searchContents = req.query.q.split(' ')
+    .filter(search => search !== ' ');
+    const searchQueryContents = searchContents
+    .map(searchContent => ({ $iLike: `%${searchContent}%` }));
     const titleSearchQuery = {
       title: {
-        $iLike: `%${req.query.q}%`
-      }
+        $or: searchQueryContents,
+      },
     };
     let searchQuery = req.body.user.roleType === 'Admin' ?
       titleSearchQuery : {
