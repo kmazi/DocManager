@@ -75,7 +75,7 @@ const AllUsersView = ({ allUsers, responseStatus, error,
             }).then(() => {
               Alert({
                 type: 'success',
-                title: 'Delete successful!',
+                title: 'Operation successful!',
               });
             });
           }}

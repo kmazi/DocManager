@@ -119,7 +119,7 @@ module.exports = {
       }
       break;
     case 'All':
-      searchQuery = req.body.user.roleType === 'Admin' ? {
+      searchQuery = req.body.user.roleType !== 'Admin' ? {
         $or:
         [{ userId: req.body.user.userId },
           { access: req.body.user.roleType },

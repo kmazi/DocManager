@@ -102,6 +102,8 @@ const DocumentPreview = ({ userDocuments, readDocument,
         <i className="fa fa-envelope-o" aria-hidden="true" />
       </button>
       <button
+        className={userId === document.userId || roleType === 'Admin'
+        ? '' : 'hide'}
         id={document.id}
         onClick={(event) => {
           event.preventDefault();

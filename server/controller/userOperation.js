@@ -337,6 +337,47 @@ module.exports = {
             });
           }
         });
+      } else if (userId === req.body.user.userId
+        || req.body.user.userName === 'SuperAdmin'
+        || req.body.user.roleType === 'Admin') {
+        Role.count().then((count) => {
+          if (req.body.roleId && req.body.roleId > 0 &&
+            req.body.roleId <= count &&
+            req.body.user.userName === 'SuperAdmin') {
+            userDetail.roleId = req.body.roleId;
+          }
+          User.update(userDetail, {
+            where: {
+              id: userId,
+            }
+          }).then(() => {
+            if (Object.keys(userDetail).length !== 0) {
+              res.status(200).send({
+                status: 'successful',
+              });
+            } else {
+              res.status(400).send({
+                status: 'unsuccessful',
+                message: 'update failed!',
+              });
+            }
+          }).catch(() => {
+            res.status(400).send({
+              status: 'unsuccessful',
+              message: 'Could not find any user to update!',
+            });
+          });
+        }).catch(() => {
+          res.status(400).send({
+            status: 'unsuccessful',
+            message: 'Could not count roles!',
+          });
+        });
+      } else {
+        res.status(400).send({
+          status: 'unsuccessful',
+          message: 'No user found!',
+        });
       }
     });
   },

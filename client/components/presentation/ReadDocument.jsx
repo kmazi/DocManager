@@ -50,7 +50,7 @@ const handleEditorChange = (event) => {
 
 const ReadDocument = ({ documentTitle, body, author,
   modifiedDate, history, changeTitleValue, editDocument,
-  documentId, docStatus }) => (
+  documentId, docStatus, userId, roleType, ownerId }) => (
     <div id="readdocument" className="container">
       <input
         className="center-align"
@@ -90,6 +90,8 @@ const ReadDocument = ({ documentTitle, body, author,
         >back</button>
         <button
           id="editbtn"
+          style={{ display: userId === ownerId || roleType === 'Admin'
+          ? '' : 'none' }}
           className="btn right"
           onClick={(event) => {
             event.preventDefault();
@@ -115,6 +117,9 @@ const ReadDocument = ({ documentTitle, body, author,
 ReadDocument.propTypes = {
   documentTitle: propTypes.string.isRequired,
   body: propTypes.string.isRequired,
+  userId: propTypes.number.isRequired,
+  ownerId: propTypes.number.isRequired,
+  roleType: propTypes.string.isRequired,
   author: propTypes.string.isRequired,
   modifiedDate: propTypes.string.isRequired,
   editDocument: propTypes.func.isRequired,

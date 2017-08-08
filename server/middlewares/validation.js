@@ -2,6 +2,7 @@ import JwtToken from 'jsonwebtoken';
 import index from '../models';
 
 const userModel = index.User;
+const Role = index.Roles;
 /**
  * Creates a web token for the user
  * @param {object} user - The user object to create token for
@@ -12,7 +13,7 @@ const createToken = (user) => {
     return 'No payload to create token';
   }
   return JwtToken.sign(user,
-  process.env.SUPERSECRET);
+    process.env.SUPERSECRET);
 };
 
 /**
@@ -25,7 +26,7 @@ const createToken = (user) => {
  */
 const verifyToken = (req, res, next) => {
   const token = req.body.token || req.query.token ||
-  req.headers.token || '';
+    req.headers.token || '';
   JwtToken.verify(token, process.env.SUPERSECRET, (err, verifiedToken) => {
     if (err) {
       res.status(400).send({
@@ -36,7 +37,8 @@ const verifyToken = (req, res, next) => {
       userModel.findOne({
         where: {
           username: verifiedToken.userName,
-          id: verifiedToken.userId }
+          id: verifiedToken.userId
+        }
       }).then((user) => {
         if (!user) {
           return res.status(400).send({
@@ -205,13 +207,15 @@ const signUpValidation = (req, res, next) => {
       passwordValidation.status === 'successful' &&
       emailValidation.status === 'successful' &&
       typeof req.body.isactive === 'boolean') {
-      if (req.body.roleId > 1 && req.body.roleId < 5) {
-        next();
-      } else {
-        err.status = 'unsuccessful';
-        err.message.push('\nInvalid role!');
-        res.status(400).send(err);
-      }
+      Role.count().then((count) => {
+        if (req.body.roleId > 1 && req.body.roleId <= count) {
+          next();
+        } else {
+          err.status = 'unsuccessful';
+          err.message.push('\nInvalid role!');
+          res.status(400).send(err);
+        }
+      });
     } else {
       err.status = 'unsuccessful';
       err.message = err.message.concat(...userNameValidation.message,
