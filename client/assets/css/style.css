@@ -6865,6 +6865,7 @@ section {
   color: whitesmoke; }
 
 input[type=text]:not(.browser-default):focus:not([readonly]),
+input[type=email]:not(.browser-default):focus:not([readonly]),
 input[type=password]:not(.browser-default):focus:not([readonly]) {
   border-bottom: 1px solid whitesmoke;
   box-shadow: 0 1px 0 0 whitesmoke; }
@@ -6908,6 +6909,11 @@ button {
     background: rgba(62, 111, 111, 0.7);
     top: 0;
     left: 0; }
+
+#roles {
+  color: white; }
+  #roles input[type=radio], #roles label {
+    color: whitesmoke; }
 
 #readdocument {
   color: #2c3a46; }

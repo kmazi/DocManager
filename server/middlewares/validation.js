@@ -132,8 +132,9 @@ const validateEmail = (inputEmail, formField) => {
   const email = generalValidation(inputEmail, formField);
   // check to see if email entered follows the standard format
   if (email.status === 'successful') {
-    const foundMatch = inputEmail.match(
-      /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g);
+  //  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    const foundMatch = inputEmail.match(emailRegex);
     if (!foundMatch) {
       email.status = 'unsuccessful';
       email.message.push('\nEmail has got wrong format');

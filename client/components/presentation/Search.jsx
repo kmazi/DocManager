@@ -7,8 +7,7 @@ const Search = ({ searchDocuments }) => (
     <div >
       <input
         type="text"
-        onChange={(event) => {
-          event.preventDefault();
+        onChange={() => {
           const searchText = $('.searchcontainer input').val();
           searchDocuments(searchText);
         }}

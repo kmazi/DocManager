@@ -1,10 +1,18 @@
 import * as types from '../actions/types';
 
+/**
+ * Manages actions that controls document creation
+ * @param {object} state - The redux state of the application
+ * that manages authentication
+ * @param {object} action - The dispatched action from redux
+ * action creators
+ * @return {object} returns the updated state of the application
+ */
 export const createDoc = (state = {
   status: 'Unsuccessful',
   errors: [],
 }, action) => {
-  switch (action) {
+  switch (action.type) {
   case types.START_CREATING_DOCUMENT:
     return Object.assign({}, state, {
       status: 'Creating document...',
@@ -16,13 +24,21 @@ export const createDoc = (state = {
   case types.ERROR_CREATING_DOCUMENT:
     return Object.assign({}, state, {
       status: 'Unsuccessful',
-      errors: action.errors.message,
+      errors: action.error.message,
     });
   default:
     return state;
   }
 };
 
+/**
+ * Manages actions that controls reading a particular document
+ * @param {object} state - The redux state of the application
+ * that manages authentication
+ * @param {object} action - The dispatched action from redux
+ * action creators
+ * @return {object} returns the updated state of the application
+ */
 export const readDocument = (state = {
   status: 0,
   delStatus: 0,
@@ -66,6 +82,32 @@ export const readDocument = (state = {
       document: {},
       error: action.error
     });
+  default:
+    return state;
+  }
+};
+
+/**
+ * Manages actions that controls fetching documents from storage
+ * @param {object} state - The redux state of the application
+ * that manages authentication
+ * @param {object} action - The dispatched action from redux
+ * action creators
+ * @return {object} returns the updated state of the application
+ */
+export const fetchDocuments = (state = {
+  isReady: false,
+  status: 'Loading my documents...',
+  documents: [],
+  documentType: '',
+  documentCounter: 0,
+  currentPage: 1,
+  delStatus: 0,
+  error: '',
+  message: '',
+  documentaccess: 'All',
+}, action) => {
+  switch (action.type) {
   case types.START_DELETING_DOCUMENT:
     return Object.assign({}, state, {
       delStatus: action.docId,
@@ -75,27 +117,14 @@ export const readDocument = (state = {
     return Object.assign({}, state, {
       delStatus: 0,
       message: action.message,
+      documents: state.documents
+        .filter(document => document.id !== action.docId),
     });
   case types.ERROR_DELETING_DOCUMENT:
     return Object.assign({}, state, {
       delStatus: 0,
       error: action.error
     });
-  default:
-    return state;
-  }
-};
-
-export const fetchDocuments = (state = {
-  isReady: false,
-  status: 'Loading my documents...',
-  documents: [],
-  documentType: '',
-  documentCounter: 0,
-  currentPage: 1,
-  documentaccess: 'All',
-}, action) => {
-  switch (action.type) {
   case types.DONE_SEARCHING_DOCUMENTS:
     return Object.assign({}, state, {
       documents: action.documents,
@@ -108,6 +137,7 @@ export const fetchDocuments = (state = {
     return Object.assign({}, state, {
       status: action.error,
       documentCounter: 0,
+      isReady: false,
     });
   case types.START_GET_USER_DOCUMENT:
     return Object.assign({}, state, {
