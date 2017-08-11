@@ -62,6 +62,8 @@ module.exports = {
     // check it limit and offset where passed
     if (req.query.offset && req.query.limit) {
       params = { offset: req.query.offset, limit: req.query.limit };
+    } else {
+      params = { offset: 0, limit: 8 };
     }
     Document.findAndCountAll({
       where: { userId: req.body.user.userId },
@@ -74,6 +76,9 @@ module.exports = {
           status: 'successful',
           count: documents.count,
           documents: documents.rows,
+          curPage: parseInt(params.offset / params.limit, 10) + 1,
+          pageCount: parseInt(documents.count / params.limit, 10),
+          pageSize: documents.rows.length
         });
       } else {
         res.status(400).send({
@@ -102,6 +107,8 @@ module.exports = {
     // check it limit and offset where passed
     if (req.query.offset && req.query.limit) {
       params = { offset: req.query.offset, limit: req.query.limit };
+    } else {
+      params = { offset: 0, limit: 8 };
     }
     let searchQuery = {};
     switch (access) {
@@ -109,6 +116,7 @@ module.exports = {
       searchQuery = { access };
       break;
     case 'Admin':
+    case 'SuperAdmin':
     case 'Learning':
     case 'Devops':
     case 'Fellow':
@@ -119,7 +127,8 @@ module.exports = {
       }
       break;
     case 'All':
-      searchQuery = req.body.user.roleType !== 'Admin' ? {
+      searchQuery = req.body.user.roleType !== 'Admin'
+      || req.body.user.roleType !== 'SuperAdmin' ? {
         $or:
         [{ userId: req.body.user.userId },
           { access: req.body.user.roleType },
@@ -127,7 +136,8 @@ module.exports = {
       } : {};
       break;
     default:
-      if (req.body.user.roleType !== 'Admin') {
+      if (req.body.user.roleType !== 'Admin'
+      || req.body.user.roleType !== 'SuperAdmin') {
         searchQuery = null;
       }
       break;
@@ -149,6 +159,10 @@ module.exports = {
           response.message = '';
           response.count = foundDocuments.count;
           response.documents = foundDocuments.rows;
+          response.curPage = parseInt(params.offset / params.limit, 10) + 1;
+          response.pageCount =
+          parseInt(foundDocuments.count / params.limit, 10);
+          response.pageSize = foundDocuments.rows.length;
           res.status(200);
         }
         res.send(response);
@@ -185,7 +199,8 @@ module.exports = {
             switch (foundDocument.access) {
             case 'Private':
               if (foundDocument.userId === req.body.user.userId ||
-                  req.body.user.roleType === 'Admin') {
+                  req.body.user.roleType === 'Admin'
+                || req.body.user.roleType === 'SuperAdmin') {
                 doc = foundDocument;
               }
               break;
@@ -199,7 +214,8 @@ module.exports = {
               }
               break;
             default:
-              if (req.body.user.roleType === 'Admin') {
+              if (req.body.user.roleType === 'Admin'
+              || req.body.user.roleType === 'SuperAdmin') {
                 doc = foundDocument;
               } else {
                 return res.status(400).send({
@@ -254,7 +270,8 @@ module.exports = {
     }
     Document.findById(documentId).then((foundDocument) => {
       if (foundDocument.userId === req.body.user.userId
-        || req.body.user.roleType === 'Admin') {
+        || req.body.user.roleType === 'Admin'
+      || req.body.user.roleType === 'SuperAdmin') {
         Document.update(userDocument, {
           where: {
             id: documentId,
@@ -297,11 +314,12 @@ module.exports = {
  * @return {null} Returns null
  */
   search(req, res) {
-    const searchParams = req.query;
     let params;
     // check it limit and offset where passed
-    if (searchParams.offset && searchParams.limit) {
-      params = { offset: searchParams.offset, limit: searchParams.limit };
+    if (req.query.offset && req.query.limit) {
+      params = { offset: req.query.offset, limit: req.query.limit };
+    } else {
+      params = { offset: 0, limit: 8 };
     }
     if (!req.query.q) {
       return res.status(400).send({
@@ -318,7 +336,8 @@ module.exports = {
         $or: searchQueryContents,
       },
     };
-    let searchQuery = req.body.user.roleType === 'Admin' ?
+    let searchQuery = req.body.user.roleType === 'Admin'
+    || req.body.user.roleType === 'SuperAdmin' ?
       titleSearchQuery : {
         $or:
         [{ userId: req.body.user.userId, ...titleSearchQuery },
@@ -327,7 +346,8 @@ module.exports = {
       };
 
     if (!req.query.q) {
-      searchQuery = req.body.user.roleType === 'Admin' ?
+      searchQuery = req.body.user.roleType === 'Admin'
+      || req.body.user.roleType === 'SuperAdmin' ?
         {} : {
           $or:
           [{ userId: req.body.user.userId },
@@ -345,6 +365,9 @@ module.exports = {
           status: 'successful',
           count: documents.count,
           documents: documents.rows,
+          curPage: parseInt(params.offset / params.limit, 10) + 1,
+          pageCount: parseInt(documents.count / params.limit, 10),
+          pageSize: documents.rows.length
         });
       } else {
         res.status(400).send({

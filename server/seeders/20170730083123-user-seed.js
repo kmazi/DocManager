@@ -13,7 +13,7 @@ module.exports = {
     */
     return queryInterface.bulkInsert('Users', [{
       username: 'SuperAdmin',
-      password: '$2a$10$yXmuEDVPsRWPKMMfTM1ZUOqXVnNSQIaMhglytLGNLeDq7FaPXqtzW',
+      password: process.env.ADMINPASSWORD,
       roleId: 1,
       email: 'superadmin@gmail.com',
       isactive: true,
@@ -21,8 +21,8 @@ module.exports = {
       updatedAt: new Date(),
     }, {
       username: 'touchstone',
-      password: '$2a$10$yXmuEDVPsRWPKMMfTM1ZUOqXVnNSQIaMhglytLGNLeDq7FaPXqtzW',
-      roleId: 1,
+      password: process.env.ADMINPASSWORD,
+      roleId: 2,
       email: 'touchstone@gmail.com',
       isactive: true,
       createdAt: new Date(),

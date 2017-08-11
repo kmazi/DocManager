@@ -91,7 +91,7 @@ const ReadDocument = ({ documentTitle, body, author,
         <button
           id="editbtn"
           style={{ display: userId === ownerId || roleType === 'Admin'
-          ? '' : 'none' }}
+          || roleType === 'SuperAdmin' ? '' : 'none' }}
           className="btn right"
           onClick={(event) => {
             event.preventDefault();

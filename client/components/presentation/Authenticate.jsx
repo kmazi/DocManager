@@ -14,6 +14,8 @@ const showSignInForm = (event) => {
   event.preventDefault();
   const signInForm = $('#signinform');
   const signUpForm = $('#signupform');
+  $('#signinbtn').toggleClass('btn homebtncolor');
+  $('#signupbtn').toggleClass('btn homebtncolor');
   signUpForm.slideUp(400, () => {
     signInForm.slideDown(400);
   });
@@ -26,6 +28,8 @@ const showSignInForm = (event) => {
    */
 const showSignUpForm = (event) => {
   event.preventDefault();
+  $('#signupbtn').toggleClass('btn homebtncolor');
+  $('#signinbtn').toggleClass('btn homebtncolor');
   const signInForm = $('#signinform');
   const signUpForm = $('#signupform');
   signInForm.slideUp(400, () => {
@@ -43,7 +47,8 @@ const Authenticate = ({ history, signInUser, signUserUp,
       <div id="authbuttons" className="row">
         <div className="col s6">
           <span
-            className="a center-align waves-effect waves-light btn"
+            className="a center-align waves-effect waves-light homebtncolor"
+            id="signinbtn"
             href="/"
             onClick={(event) => { showSignInForm(event); }}
           >SignIn</span>
@@ -51,6 +56,7 @@ const Authenticate = ({ history, signInUser, signUserUp,
         <div className="col s6">
           <span
             className="a center-align waves-effect waves-light btn"
+            id="signupbtn"
             href="/"
             onClick={(event) => { showSignUpForm(event); }}
           >SignUp</span>

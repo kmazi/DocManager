@@ -1,4 +1,4 @@
-import nock from 'nock';
+import moxios from 'moxios';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
@@ -9,9 +9,8 @@ import '../mockObjects/localStorage';
 describe('documentAction():', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  afterEach(() => {
-    nock.cleanAll();
-  });
+  beforeEach(() => moxios.install());
+  afterEach(() => moxios.uninstall());
   afterAll(() => {
     localStorage.clear();
   });
@@ -44,7 +43,7 @@ describe('documentAction():', () => {
     expect(actionObject.type).toBe(types.ERROR_CREATING_DOCUMENT);
   });
 
-  it('creates DONE_CREATING_DOCUMENT when signing up user has been done',
+  test('creates DONE_CREATING_DOCUMENT when signing up user has been done',
   () => {
     const formValue = { userId: 1,
       title: 'hello',
@@ -53,20 +52,51 @@ describe('documentAction():', () => {
       'Pubic' };
     const userId = 1;
     const token = 'sdfseflsfkjifsejfeis';
-    const response = { data: {
+    const response = {
       status: 'successful',
-      message: 'No user found!' } };
-    nock('http://example.com/')
-      .delete(`/api/v1/users/${userId}?token=${token}`)
-      .reply(200, response);
+      message: 'No user found!' };
+    moxios.stubRequest(`/api/v1/users/${userId}?token=${token}`, {
+      status: 200,
+      response,
+    });
 
     const expectedActions = [
       { type: types.START_CREATING_DOCUMENT, },
       { type: types.DONE_CREATING_DOCUMENT,
-        status: response.data.status, },
+        status: 'successful', },
     ];
     const store = mockStore({});
-    return store.dispatch(documentAction.documentCreation(formValue))
+    store.dispatch(documentAction.documentCreation(formValue))
+      .then(() => {
+      // return of async actions
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  test('creates ERROR_CREATING_DOCUMENT when signing up user failed',
+  () => {
+    const formValue = { userId: 1,
+      title: 'hello',
+      body: 'Hie',
+      access:
+      'Pubic' };
+    const userId = 1;
+    const token = 'sdfseflsfkjifsejfeis';
+    const response = {
+      status: 'successful',
+      message: 'No user found!' };
+    moxios.stubRequest(`/api/v1/users/${userId}?token=${token}`, {
+      status: 400,
+      response,
+    });
+
+    const expectedActions = [
+      { type: types.START_CREATING_DOCUMENT, },
+      { type: types.ERROR_CREATING_DOCUMENT,
+        error: 'No user found!', },
+    ];
+    const store = mockStore({});
+    store.dispatch(documentAction.documentCreation(formValue))
       .then(() => {
       // return of async actions
         expect(store.getActions()).toEqual(expectedActions);

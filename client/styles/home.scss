@@ -11,17 +11,30 @@ $previewfontstyle: 'Asap Condensed', sans-serif;
 $previewheaderstyle: 'Bree Serif', serif;
 $textcolor: #2c3a46;
 
-body{
+body, .aboutpage h3, .aboutpage h4{
 	color: $textcolor;
 }
 section {
 	color: whitesmoke;
+}
+.homebtncolor{
+	padding: 0 30px;
+	background: inherit;
+	text-transform: uppercase;
 }
 input[type=text]:not(.browser-default):focus:not([readonly]),
 input[type=email]:not(.browser-default):focus:not([readonly]),
 input[type=password]:not(.browser-default):focus:not([readonly]){
 	border-bottom: 1px solid whitesmoke;
 	box-shadow: 0 1px 0 0 whitesmoke;
+}
+.aboutpage{
+	h3{
+		display: block;
+	}
+	p,ol{
+		color: gray;
+	}
 }
 .btn, button{
 	background: $btncolor;

@@ -35,7 +35,7 @@ const UserPage = ({ userName, userId, history, signUserOut,
   getUserDocs, getAllDocuments, roleType }) => (
     <section className="row" style={minHeight}>
       <div id="docheader" className="header">
-        <span className="left">DocManager</span>
+        <span className="left">DocManger</span>
         <span className="right">
           <a
             href="/"
@@ -95,7 +95,7 @@ const UserPage = ({ userName, userId, history, signUserOut,
             href="/user/documents"
           >
           My Documents&nbsp;&nbsp;
-            <i className="fa fa-lock" aria-hidden="true" />
+            <i className="fa fa-unlock-alt" aria-hidden="true" />
           </a>
 
           <Link className="center-align btn" to="/user/documents/createdocument">
@@ -107,10 +107,15 @@ const UserPage = ({ userName, userId, history, signUserOut,
           My Profile&nbsp;&nbsp;
           <i className="fa fa-user" aria-hidden="true" /></Link>
 
+          <Link className="center-align btn" to="/user/documents/about">
+          About&nbsp;&nbsp;
+          <i className="fa fa-question-circle" aria-hidden="true" /></Link>
+
           <a
             className="center-align btn"
             href="/user/documents/users/all"
-            style={{ display: roleType === 'Admin' ? '' : 'none' }}
+            style={{ display: roleType === 'Admin'
+            || roleType === 'SuperAdmin' ? '' : 'none' }}
             onClick={(event) => {
               event.preventDefault();
               getAllUsers();

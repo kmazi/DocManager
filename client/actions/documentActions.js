@@ -44,7 +44,7 @@ export const documentCreation = formValue => (dispatch) => {
       return response.data;
     },
     ({ response }) => {
-      dispatch(errorCreatingDocument(response.data));
+      dispatch(errorCreatingDocument(response.data.message));
       return response.data;
     }
     );

@@ -94,8 +94,8 @@ export const errorSignUpUser = errors => ({
  * @return {func} returns a function that will be executed to signin a user
  */
 export const signUserUp = user => (dispatch) => {
-  dispatch(startSignUpUser());
   dispatch(setUserRole(user.roleValue));
+  dispatch(startSignUpUser());
   return axios.post('/api/v1/users', user)
     .then((response) => {
       localStorage.setItem('docmanagertoken', response.data.token);
@@ -206,9 +206,11 @@ export const editUserDetail = (userDetail, userId) => (dispatch) => {
   return axios.put(`/api/v1/users/${userId}?token=${token}`, userDetail)
     .then((response) => {
       dispatch(doneUpdatingUser(response.data.status));
+      return response.data.status;
     },
     ({ response }) => {
       dispatch(errorUpdatingUser(response.data.message));
+      return response.data.status;
     });
 };
 

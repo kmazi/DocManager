@@ -40,6 +40,6 @@ describe('The signinform component:', () => {
       preventDefault: () => 'hello',
     };
     enzymeWrapper.find('button#signinbtn').props().onClick(event);
-    expect(enzymeWrapper.find('button#signupbtn').text()).toBe('submit');
+    expect(props.signInUser.mock.calls.length).toBe(1);
   });
 });

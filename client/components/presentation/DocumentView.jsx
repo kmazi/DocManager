@@ -1,27 +1,36 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import DocumentPreview from './DocumentPreview';
+import { DocumentPreview } from './DocumentPreview';
+import Search from '../container/Search';
 
 const DocumentView = ({ documents, shouldDisplay, read, deleteId,
   documentStatus, readDocument, history, deleteDocument, paginateDocument,
   documentAccess, currentPage, documentsCount, roleType, id }) => {
   const finalRender = (shouldDisplay) ?
-    (<DocumentPreview
-      userDocuments={documents}
-      read={read}
-      deleteId={deleteId}
-      readDocument={readDocument}
-      history={history}
-      deleteDocument={deleteDocument}
-      paginateDocument={paginateDocument}
-      documentAccess={documentAccess}
-      currentPage={currentPage}
-      documentsCount={documentsCount}
-      roleType={roleType}
-      userId={id}
-    />) :
-    <p id="status" className="center-align">{documentStatus}</p>;
+    (
+      <div>
+        <Search />
+        <DocumentPreview
+          userDocuments={documents}
+          read={read}
+          deleteId={deleteId}
+          readDocument={readDocument}
+          history={history}
+          deleteDocument={deleteDocument}
+          paginateDocument={paginateDocument}
+          documentAccess={documentAccess}
+          currentPage={currentPage}
+          documentsCount={documentsCount}
+          roleType={roleType}
+          userId={id}
+        />
+      </div>
+    ) :
+      (<div>
+        <Search />
+        <p id="status" className="center-align">{documentStatus}</p>
+      </div>);
   /**
  * Renders the html elements on the browser
  * @return {object} Returns the html object to render

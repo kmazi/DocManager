@@ -222,33 +222,75 @@ describe('userAction():', () => {
     });
   });
 
-  it('creates FINISH_GETTING_ALL_USERS when signing up user has been done',
+  test('creates FINISH_GETTING_ALL_USERS when signing up user has been done',
   () => {
     const users = [{ name: 'jackson',
       email: 'jackson@gmail.com',
       roleValue: 'Admin' }];
     const offset = 0;
     const token = 'sdfseflsfkjifsejfeis';
-    const response = { data: { token,
+    const response = { token,
       roleType: 'Learning',
       users,
       status: 'successful',
       count: 2,
-      pageNumber: 1 } };
-    nock('http://example.com/')
-      .get(`/api/v1/users?&offset=${offset}&limit=8&token=${token}`)
-      .reply(200, response);
+      pageNumber: 1 };
+    moxios
+    .stubRequest(`/api/v1/users?&offset=${offset}&limit=8&token=${token}`, {
+      status: 200,
+      response,
+    });
 
     const expectedActions = [
       { type: types.START_GETTING_ALL_USERS, },
       { type: types.FINISH_GETTING_ALL_USERS,
         users,
-        responseStatus: response.data.status,
-        count: response.data.count,
-        pageNumber: response.data.pageNumber, }
+        responseStatus: 'successful',
+        count: 2,
+        pageNumber: 1, }
     ];
     const store = mockStore({ users: [] });
-    return store.dispatch(userAction.fetchAllUsers(offset, 1)).then(() => {
+    store.dispatch(userAction.fetchAllUsers(offset, 1)).then(() => {
+      // return of async actions
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  test(`that changeInputValue function should return
+    change the value of the input element`, () => {
+    const store = mockStore({ email: '' });
+    const expectedAction = [{
+      type: types.UPDATE_EMAIL,
+      email: 'Hi',
+    }];
+    store.dispatch(userAction.changeInputValue('Hi'));
+    expect(store.getActions()).toEqual(expectedAction);
+  });
+
+  test('creates FINISH_GETTING_ALL_USERS when error occurred',
+  () => {
+    const offset = 0;
+    const token = 'sdfseflsfkjifsejfeis';
+    const response = { token,
+      roleType: 'Learning',
+      message: 'Access denied!',
+      status: 'unsuccessful',
+      count: 2,
+      pageNumber: 1 };
+    moxios
+    .stubRequest(`/api/v1/users?&offset=${offset}&limit=8&token=${token}`, {
+      status: 400,
+      response,
+    });
+
+    const expectedActions = [
+      { type: types.START_GETTING_ALL_USERS, },
+      { type: types.ERROR_GETTING_ALL_USERS,
+        error: 'Access denied',
+        responseStatus: 'unsuccessful', }
+    ];
+    const store = mockStore({ users: [] });
+    store.dispatch(userAction.fetchAllUsers(offset, 1)).then(() => {
       // return of async actions
       expect(store.getActions()).toEqual(expectedActions);
     });
@@ -281,29 +323,55 @@ describe('userAction():', () => {
     });
   });
 
-  it('creates DONE_UPDATING_USER when signing up user has been done',
+  test('creates DONE_UPDATING_USER when update is successful',
+  () => {
+    const userDetail = { name: 'jackson',
+      email: 'jackson@gmail.com',
+      roleValue: 'Admin' };
+    const token = 'sdfseflsfkjifsejfeis';
+    const response = {
+      status: 'successful' };
+    moxios
+    .stubRequest(`/api/v1/users/1?token=${token}`, {
+      status: 200,
+      response,
+    });
+
+    const expectedActions = [
+      { type: types.START_UPDATING_USER, },
+      { type: types.DONE_UPDATING_USER,
+        status: 'successful', }
+    ];
+    const store = mockStore({ users: [] });
+    store.dispatch(userAction.editUserDetail(userDetail, 1)).then(() => {
+      // return of async actions
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  test('creates ERROR_UPDATING_USER when error occurred',
   () => {
     const userDetail = { name: 'jackson',
       email: 'jackson@gmail.com',
       roleValue: 'Admin' };
     const offset = 0;
     const token = 'sdfseflsfkjifsejfeis';
-    const response = { data: {
+    const response = {
       status: 'successful',
-      message: 'No user found!' } };
-    nock('http://example.com/')
-      .get(`/api/v1/users?&offset=${offset}&limit=8&token=${token}`)
-      .reply(200, response);
+      message: 'No user found!' };
+    moxios
+    .stubRequest(`/api/v1/users?&offset=${offset}&limit=8&token=${token}`, {
+      status: 400,
+      response,
+    });
 
     const expectedActions = [
-      { type: types.START_UPDATING_USER, },
-      { type: types.DONE_UPDATING_USER,
-        status: response.data.status, }, {
-          type: types.ERROR_UPDATING_USER,
-          error: 'No user found!', }
+      { type: types.START_UPDATING_USER },
+      { type: types.ERROR_UPDATING_USER,
+        error: 'No user found!', }
     ];
     const store = mockStore({ users: [] });
-    return store.dispatch(userAction.editUserDetail(userDetail, 1)).then(() => {
+    store.dispatch(userAction.editUserDetail(userDetail, 1)).then(() => {
       // return of async actions
       expect(store.getActions()).toEqual(expectedActions);
     });
@@ -337,26 +405,52 @@ describe('userAction():', () => {
     });
   });
 
-  it('creates DONE_DEACTIVATING_USER when signing up user has been done',
+  test('creates DONE_DEACTIVATING_USER when signing up user has been done',
   () => {
     const userId = 1;
     const token = 'sdfseflsfkjifsejfeis';
-    const response = { data: {
+    const response = {
       status: 'successful',
-      message: 'No user found!' } };
-    nock('http://example.com/')
-      .delete(`/api/v1/users/${userId}?token=${token}`)
-      .reply(200, response);
+      message: 'No user found!' };
+    moxios.stubRequest(`/api/v1/users/${userId}?token=${token}`, {
+      status: 200,
+      response,
+    });
 
     const expectedActions = [
       {
         type: types.DONE_DEACTIVATING_USER,
-        status: response.data.status,
+        status: 200,
         userId,
       }
     ];
     const store = mockStore({ users: [] });
-    return store.dispatch(userAction.deactivateUser(userId)).then(() => {
+    store.dispatch(userAction.deactivateUser(userId)).then(() => {
+      // return of async actions
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  test(`creates DONE_DEACTIVATING_USER when error
+  occurred while signing up user`,
+  () => {
+    const userId = 1;
+    const token = 'sdfseflsfkjifsejfeis';
+    const response = {
+      status: 'successful',
+      message: 'No user found!' };
+    moxios.stubRequest(`/api/v1/users/${userId}?token=${token}`, {
+      status: 400,
+      response,
+    });
+
+    const expectedActions = [
+      {
+        type: types.ERROR_DEACTIVATING_USER,
+      }
+    ];
+    const store = mockStore({ users: [] });
+    store.dispatch(userAction.deactivateUser(userId)).then(() => {
       // return of async actions
       expect(store.getActions()).toEqual(expectedActions);
     });

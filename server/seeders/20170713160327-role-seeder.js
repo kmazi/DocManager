@@ -11,6 +11,10 @@ module.exports = {
       }], {});
     */
     return queryInterface.bulkInsert('Roles', [{
+      roletype: 'SuperAdmin',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }, {
       roletype: 'Admin',
       createdAt: new Date(),
       updatedAt: new Date(),

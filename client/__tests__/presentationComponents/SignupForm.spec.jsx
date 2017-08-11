@@ -32,11 +32,11 @@ describe('The signupform component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('should change submit button when it is clicked', () => {
+  test('should call sisgnUserUp function when signupbtn is clicked', () => {
     const event = {
       preventDefault: () => 'hello',
     };
     enzymeWrapper.find('button#signupbtn').props().onClick(event);
-    expect(enzymeWrapper.find('button#signupbtn').text()).toBe('submit');
+    expect(props.signUserUp.mock.calls.length).toBe(1);
   });
 });
