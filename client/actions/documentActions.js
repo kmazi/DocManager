@@ -17,7 +17,7 @@ export const startCreatingDocument = () => ({
  */
 export const doneCreatingDocument = status => ({
   type: types.DONE_CREATING_DOCUMENT,
-  status
+  status,
 });
 
 /**
@@ -44,7 +44,7 @@ export const documentCreation = formValue => (dispatch) => {
       return response.data;
     },
     ({ response }) => {
-      dispatch(errorCreatingDocument(response.data));
+      dispatch(errorCreatingDocument(response.data.message));
       return response.data;
     }
     );
@@ -91,7 +91,8 @@ export const errorGetUserDocuments = error => ({
 export const getUserDocuments = id => (dispatch) => {
   const token = localStorage.getItem('docmanagertoken');
   dispatch(startGetUserDocuments());
-  return axios.get(`/api/v1/users/${id}/documents?&offset=0&limit=8&token=${token}`)
+  const url = `/api/v1/users/${id}/documents?&offset=0&limit=8&token=${token}`;
+  return axios.get(url)
     .then((response) => {
       dispatch(completeGetUserDocuments(response.data.documents,
       response.data.count));
@@ -171,6 +172,7 @@ export const fetchRoleDocuments = roleType => ({
  * @param {string} documents - The role based documents fetched from
  * the database
  * @param {number} count - The total number of documents matched
+ * @param {string} roleType - The role type access of the document
  * @return {object} returns an object containing
  *  the action type and the error message
  */
@@ -202,7 +204,8 @@ export const fetchRoleDocumentsFailed = error => ({
 export const roleDocuments = roleType => (dispatch) => {
   const token = localStorage.getItem('docmanagertoken');
   dispatch(fetchRoleDocuments());
-  return axios.get(`/api/v1/documents/${roleType}?&offset=0&limit=8&token=${token}`)
+  return axios
+    .get(`/api/v1/documents/${roleType}?&offset=0&limit=8&token=${token}`)
   .then((response) => {
     dispatch(fetchRoleDocumentsComplete(response.data.documents,
     response.data.count, roleType));
@@ -300,42 +303,6 @@ export const readDocumentFailed = error => ({
   error,
 });
 
-export const setTitleInputValue = title => ({
-  type: types.UPDATE_TITLE,
-  title,
-});
-
-export const changeTitleValue = title => (dispatch) => {
-  dispatch(setTitleInputValue(title));
-};
-
-export const startEditingDocument = () => ({
-  type: types.START_EDITING_DOCUMENT,
-});
-
-export const doneEditingDocument = documentId => ({
-  type: types.DONE_EDITING_DOCUMENT,
-  documentId,
-});
-
-export const errorEditingDocument = () => ({
-  type: types.ERROR_EDITING_DOCUMENT,
-});
-
-export const editDocument = (documentValue, documentId) => (dispatch) => {
-  dispatch(startEditingDocument());
-  const userToken = localStorage.getItem('docmanagertoken');
-  return axios.put(`/api/v1/documents/${documentId}?token=${userToken}`, documentValue)
-  .then((response) => {
-    dispatch(doneEditingDocument(documentId));
-    return response.data;
-  },
-    ({ response }) => {
-      dispatch(errorEditingDocument());
-      return response.data;
-    });
-};
-
 /**
  * Reads a particular document
  * @param {number} id  - The document id to view
@@ -357,6 +324,72 @@ export const readDocument = id => (dispatch) => {
 };
 
 /**
+ * Edits the title of a document in the application state
+ * @param {string} title - The title of a document
+ * @return {object} returns an object containing
+ *  the action type and the title
+ */
+export const setTitleInputValue = title => ({
+  type: types.UPDATE_TITLE,
+  title,
+});
+
+/**
+ * Dispatches an action to change to title of a document
+ * @param {string} title - The title of a document
+ * @return {object} returns a function that dispatchces
+ *  the action to change the title of a document
+ */
+export const changeTitleValue = title => (dispatch) => {
+  dispatch(setTitleInputValue(title));
+};
+
+/**
+ * Edits a document in the application state
+ * @return {object} returns an object containing
+ *  the action type
+ */
+export const startEditingDocument = () => ({
+  type: types.START_EDITING_DOCUMENT,
+});
+
+/**
+ * Creates an action when editing a document is successful
+ * @param {number} documentId - The document ID to edit
+ * @return {object} returns an object containing
+ *  the action type and the documentId
+ */
+export const doneEditingDocument = documentId => ({
+  type: types.DONE_EDITING_DOCUMENT,
+  documentId,
+});
+
+/**
+ * Creates an action when there is an error editing a
+ * document
+ * @return {object} returns an object containing
+ *  the action type
+ */
+export const errorEditingDocument = () => ({
+  type: types.ERROR_EDITING_DOCUMENT,
+});
+
+export const editDocument = (documentValue, documentId) => (dispatch) => {
+  dispatch(startEditingDocument());
+  const userToken = localStorage.getItem('docmanagertoken');
+  return axios
+    .put(`/api/v1/documents/${documentId}?token=${userToken}`, documentValue)
+  .then((response) => {
+    dispatch(doneEditingDocument(documentId));
+    return response.data;
+  },
+    ({ response }) => {
+      dispatch(errorEditingDocument());
+      return response.data;
+    });
+};
+
+/**
  * Create an action object when deleting a document starts
  * @param {string} docId - The ID of the document to delete
  * @return {object} returns an object containing
@@ -370,12 +403,14 @@ export const deleteDocumentStart = docId => ({
 /**
  * Create an action object when deleting a document is successful
  * @param {string} message - The status message when deleting completes
+ * @param {number} docId - The iD of the document to delete
  * @return {object} returns an object containing
  *  the action type and the error message
  */
-export const deleteDocumentComplete = message => ({
+export const deleteDocumentComplete = (message, docId) => ({
   type: types.DONE_DELETING_DOCUMENT,
   message,
+  docId,
 });
 
 /**
@@ -398,9 +433,10 @@ export const deleteDocumentFailed = error => ({
 export const deleteDocument = id => (dispatch) => {
   const userToken = localStorage.getItem('docmanagertoken');
   dispatch(deleteDocumentStart(id));
-  return axios.delete(`/api/v1/documents/${id}?&offset=0&limit=8&token=${userToken}`)
+  return axios
+    .delete(`/api/v1/documents/${id}?&offset=0&limit=8&token=${userToken}`)
   .then((response) => {
-    dispatch(deleteDocumentComplete(response.data.message));
+    dispatch(deleteDocumentComplete(response.data.message, id));
     return response.data;
   },
     ({ response }) => {
@@ -416,17 +452,18 @@ export const deleteDocument = id => (dispatch) => {
  *  number of document
  * @param {number} pageNumber - the page number in view
  *  number of document
+ * @param {string} access - The access level of the document
  * @return {object} contains the type of action dispatched
  * as well as the documents matching the search parameter
  */
 export const doneSearchingDocuments =
-(documents, count, pageNumber, access) => ({
-  type: types.DONE_SEARCHING_DOCUMENTS,
-  documents,
-  count,
-  pageNumber,
-  access
-});
+  (documents, count, pageNumber, access) => ({
+    type: types.DONE_SEARCHING_DOCUMENTS,
+    documents,
+    count,
+    pageNumber,
+    access
+  });
 
 /**
  * Dispatches an action when searching fails
@@ -445,9 +482,10 @@ export const errorSearchingDocuments = error => ({
  * @return {object} returns a promise
  */
 export const searchDocuments = searchText => (dispatch) => {
+  const url = '/api/v1/search/documents?';
   const userToken = localStorage.getItem('docmanagertoken');
   return axios
-  .get(`/api/v1/search/documents?q=${searchText}&offset=0&limit=8&token=${userToken}`)
+  .get(`${url}q=${searchText}&offset=0&limit=8&token=${userToken}`)
   .then((response) => {
     dispatch(doneSearchingDocuments(response.data.documents,
       response.data.count, 1));
@@ -459,32 +497,35 @@ export const searchDocuments = searchText => (dispatch) => {
 };
 
 /**
- * Paginates the documents from the database
- * @param {number} pageNumber - The current page number
- * @param {number} offSet - The document offset to start fetching documents
- * @param {string} documentAccess - The access level of the document to search for
- * @param {string} searchText - The search text used for querying the database
- * @param {string} roleType - The role the user belongs to
- * @param {number} id - The userId searching the document
- * @return {null} returns void
+ * Constructs the url to use for pagination
+ * @param {string} documentAccess - The access level of
+ * the document to search for
+ * @param {*} offSet - The document offset to start fetching documents
+ * @param {*} id - The userId searching the document
+ * @param {*} roleType - The role the user belongs to
+ * @param {*} searchText - The search text used for querying the database
+ * @return {string} returns the url to use for pagination
  */
-export const paginateDocument = (pageNumber, offSet,
-  documentAccess, searchText, roleType, id) => (dispatch) => {
+export const paginationUrl =
+  (documentAccess, offSet, id, roleType, searchText) => {
     const userToken = localStorage.getItem('docmanagertoken');
     let url = '';
+    let apiUrl = '';
     switch (documentAccess) {
     case 'Private':
-      url = `/api/v1/users/${id}/documents?&offset=${offSet}&limit=8&token=${userToken}`;
+      apiUrl = `/api/v1/users/${id}/documents?`;
+      url = `${apiUrl}&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     case 'Public':
-      url = `/api/v1/documents/Public?&offset=${offSet}&limit=8&token=${userToken}`;
+      apiUrl = '/api/v1/documents/Public?';
+      url = `${apiUrl}&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     case 'Admin':
     case 'Learning':
     case 'Devops':
     case 'Fellow':
-      url =
-      `/api/v1/documents/${roleType}?&offset=${offSet}&limit=8&token=${userToken}`;
+      apiUrl = `/api/v1/documents/${roleType}?`;
+      url = `${apiUrl}&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     case 'All':
       url = roleType !== 'Admin' ?
@@ -492,9 +533,27 @@ export const paginateDocument = (pageNumber, offSet,
         : `/api/v1/documents?&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     default:
-      url = `/api/v1/search/documents?q=${searchText}&offset=${offSet}&limit=8&token=${userToken}`;
+      apiUrl = `/api/v1/search/documents?q=${searchText}`;
+      url = `${apiUrl}&offset=${offSet}&limit=8&token=${userToken}`;
       break;
     }
+    return url;
+  };
+
+/**
+ * Paginates the documents from the database
+ * @param {number} pageNumber - The current page number
+ * @param {number} offSet - The document offset to start fetching documents
+ * @param {string} documentAccess - The access level of
+ * the document to search for
+ * @param {string} searchText - The search text used for querying the database
+ * @param {string} roleType - The role the user belongs to
+ * @param {number} id - The userId searching the document
+ * @return {null} returns void
+ */
+export const paginateDocument = (pageNumber, offSet,
+  documentAccess, searchText, roleType, id) => (dispatch) => {
+    const url = paginationUrl(documentAccess, offSet, id, roleType, searchText);
     return axios
   .get(url)
   .then((response) => {

@@ -68,9 +68,10 @@ const verifyToken = (req, res, next) => {
  * @param {object} next - Function used to access the next route
  * @return {null} Returns void
  */
-const allowOnlyAdmin = (req, res, next) => {
+const isAdmin = (req, res, next) => {
   const userDetails = req.body.user || {};
-  if (userDetails.roleType === 'Admin') {
+  if (userDetails.roleType === 'Admin'
+    || userDetails.roleType === 'SuperAdmin') {
     next();
   } else {
     res.status(400).send({
@@ -86,10 +87,9 @@ const allowOnlyAdmin = (req, res, next) => {
  * @param {object} next - Function used to access the next route
  * @return {null} Returns void
  */
-const allowOnlySuperAdmin = (req, res, next) => {
+const isSuperAdmin = (req, res, next) => {
   const userDetails = req.body.user || {};
-  if (userDetails.roleType === 'Admin' &&
-    userDetails.userName === 'SuperAdmin') {
+  if (userDetails.roleType === 'SuperAdmin') {
     next();
   } else {
     res.status(400).send({
@@ -132,8 +132,9 @@ const validateEmail = (inputEmail, formField) => {
   const email = generalValidation(inputEmail, formField);
   // check to see if email entered follows the standard format
   if (email.status === 'successful') {
-    const foundMatch = inputEmail.match(
-      /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g);
+  //  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    const foundMatch = inputEmail.match(emailRegex);
     if (!foundMatch) {
       email.status = 'unsuccessful';
       email.message.push('\nEmail has got wrong format');
@@ -208,7 +209,7 @@ const signUpValidation = (req, res, next) => {
       emailValidation.status === 'successful' &&
       typeof req.body.isactive === 'boolean') {
       Role.count().then((count) => {
-        if (req.body.roleId > 1 && req.body.roleId <= count) {
+        if (req.body.roleId > 2 && req.body.roleId <= count) {
           next();
         } else {
           err.status = 'unsuccessful';
@@ -235,6 +236,6 @@ const signUpValidation = (req, res, next) => {
 
 export {
   signUpValidation, signInValidation, generalValidation, validateEmail,
-  validatePassword, createToken, verifyToken, allowOnlyAdmin,
-  allowOnlySuperAdmin
+  validatePassword, createToken, verifyToken, isAdmin,
+  isSuperAdmin
 };

@@ -6,12 +6,14 @@ import Pagination from 'react-js-pagination';
 const processRole = (roleId) => {
   switch (roleId) {
   case 1:
-    return 'Admin';
+    return 'SuperAdmin';
   case 2:
-    return 'Fellow';
+    return 'Admin';
   case 3:
-    return 'Learning';
+    return 'Fellow';
   case 4:
+    return 'Learning';
+  case 5:
     return 'Devops';
   default:
     break;
@@ -82,13 +84,13 @@ const AllUsersView = ({ allUsers, responseStatus, error,
         >{user.isactive && deactivatedUserId !== user.id
         ? 'Deactivate' : 'Activate'}</button>
       </td>
-      <td>
+      {/* <td>
         <button
           onClick={(event) => {
             event.preventDefault();
           }}
         >Change Role</button>
-      </td>
+      </td> */}
     </tr>
   ));
 

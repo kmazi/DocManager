@@ -4,8 +4,6 @@ import thunkMiddleware from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
 import rootReducer from '../reducers';
 
-import DevTools from '../components/DevTools';
-
 const history = createHistory();
 const middleware = routerMiddleware(history);
 /**
@@ -19,7 +17,8 @@ const configureStore = initialState => createStore(
   initialState,
   compose(
     applyMiddleware(thunkMiddleware, middleware),
-    DevTools.instrument()
+    window.devToolsExtension ? window.devToolsExtension() :
+      f => f
   )
 );
 export { history, configureStore };

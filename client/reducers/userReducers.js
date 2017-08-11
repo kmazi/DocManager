@@ -1,5 +1,13 @@
 import * as types from '../actions/types';
 
+/**
+ * Manages actions that controls user authentication
+ * @param {object} state - The redux state of the application
+ * that manages authentication
+ * @param {object} action - The dispatched action from redux
+ * action creators
+ * @return {object} returns the updated state of the application
+ */
 export const authenticateUser = (state = {
   userId: 0,
   updateStatus: 'Update Profile',
@@ -28,7 +36,7 @@ export const authenticateUser = (state = {
     });
   case types.ERROR_UPDATING_USER:
     return Object.assign({}, state, {
-      updateStatus: 'Updating Profile',
+      updateStatus: 'Update Profile',
     });
   case types.START_SIGNUP:
     return Object.assign({}, state, {
@@ -48,7 +56,6 @@ export const authenticateUser = (state = {
     });
   case types.FAILED_SIGNUP:
     return Object.assign({}, state, {
-      documents: [],
       authButtonStatus: 'Submit',
       errors: action.errors,
       status: 'unsuccessful',
@@ -77,7 +84,6 @@ export const authenticateUser = (state = {
     });
   case types.FAILED_SIGNIN:
     return Object.assign({}, state, {
-      documents: [],
       authButtonStatus: 'Submit',
       errors: action.errors,
       status: 'unsuccessful',
@@ -87,6 +93,14 @@ export const authenticateUser = (state = {
   }
 };
 
+/**
+ * Manages actions that controls fetching all users from storage
+ * @param {object} state - The redux state of the application
+ * that manages authentication
+ * @param {object} action - The dispatched action from redux
+ * action creators
+ * @return {object} returns the updated state of the application
+ */
 export const fetchAllUsers = (state = {
   status: '',
   responseStatus: '',
@@ -118,6 +132,14 @@ export const fetchAllUsers = (state = {
   }
 };
 
+/**
+ * Manages actions that controls user deactivation
+ * @param {object} state - The redux state of the application
+ * that manages authentication
+ * @param {object} action - The dispatched action from redux
+ * action creators
+ * @return {object} returns the updated state of the application
+ */
 export const deactivateUser = (state = {
   status: 'Activate',
   deactivatedId: 0,
@@ -126,7 +148,6 @@ export const deactivateUser = (state = {
   case types.ERROR_DEACTIVATING_USER:
     return Object.assign({}, state, {
       deactivatedId: 0,
-      status: '',
     });
   case types.DONE_DEACTIVATING_USER:
     return Object.assign({}, state, {

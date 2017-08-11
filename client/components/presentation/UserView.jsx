@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
+import Alert from 'sweetalert2';
 
 const editDetail = (userId, editUser) => {
   const userDetail = {};
@@ -13,7 +14,23 @@ const editDetail = (userId, editUser) => {
   if ($('#newpassword').val() !== '') {
     userDetail.password = $('#newpassword').val();
   }
-  editUser(userDetail, userId, localStorage.getItem('docmanagertoken'));
+  editUser(userDetail, userId).then((res) => {
+    if (res === 'successful') {
+      Alert({
+        title: 'Update successful',
+        text: 'You have successfully updated your profile',
+        type: 'success',
+        confirmButtonText: 'ok'
+      });
+    } else {
+      Alert({
+        title: 'Update error!',
+        text: 'An error occurred while updating your profile',
+        type: 'error',
+        confirmButtonText: 'ok'
+      });
+    }
+  });
 };
 
 const UserView = ({ userName, userId, userEmail, updateStatus,
@@ -85,9 +102,11 @@ const UserView = ({ userName, userId, userEmail, updateStatus,
       <div className="row">
         <button
           className="btn"
+          id="editbtn"
           onClick={(event) => {
             event.preventDefault();
             $('#userEmail').prop('disabled', (i, v) => (!v));
+            $('#userEmail').focus();
             $('#passwordreset, #submitedit').toggleClass('hide');
           }}
         >Edit profile</button>
@@ -96,14 +115,14 @@ const UserView = ({ userName, userId, userEmail, updateStatus,
           className="btn hide"
           onClick={(event) => {
             event.preventDefault();
-            editDetail(userId, editUserDetail);
             $('#userEmail').prop('disabled', (i, v) => (!v));
             $('#passwordreset, #submitedit').toggleClass('hide');
+            editDetail(userId, editUserDetail);
           }}
         >{updateStatus}</button>
       </div>
     </div>
-);
+  );
 
 UserView.propTypes = {
   userName: PropTypes.string.isRequired,

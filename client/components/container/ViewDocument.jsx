@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
   roleType: state.authenticateUser.roleType,
   documents: state.fetchDocuments.documents,
   read: state.readDocument.status,
-  deleteId: state.readDocument.delStatus,
+  deleteId: state.fetchDocuments.delStatus,
   shouldDisplay: state.fetchDocuments.isReady,
   documentStatus: state.fetchDocuments.status,
   documentAccess: state.fetchDocuments.documentaccess,

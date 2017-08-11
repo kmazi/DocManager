@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt-nodejs';
 import index from '../models';
 import {
   createToken,
@@ -17,55 +17,51 @@ module.exports = {
    * @return {null} Returns void
    */
   signUp(req, res) {
-    const saltRound = 10;
-    bcrypt.hash(req.body.password, saltRound, (err, hash) => {
-      req.body.password = hash;
-      // find or create the user if they don't already exist in the
-      // database
-      User.findOrCreate({
-        where: {
-          username: req.body.userName
-        },
-        defaults: {
-          username: req.body.userName,
-          email: req.body.email,
-          password: req.body.password,
-          roleId: req.body.roleId,
-          isactive: req.body.isactive,
-        }
-      }).spread((createdUser, isCreated) => {
-        // send successful as response when the user is created
-        if (isCreated) {
-          Role.findById(createdUser.roleId).then((userRole) => {
-            if (userRole) {
-              const userDetail = {
-                userName: createdUser.username,
-                userId: createdUser.id,
-                email: createdUser.email,
-                isactive: createdUser.isactive,
-                roleType: userRole.roletype,
-                createdAt: createdUser.createdAt,
-              };
-              const token = createToken(userDetail);
-              res.status(200).send({
-                status: 'successful',
-                ...userDetail,
-                token,
-              });
-            }
-          }).catch();
-        } else {
-          res.status(400).send({
-            status: 'unsuccessful',
-            message: 'User already exist',
-          });
-        }
-      }).catch(() => {
-        res.status(500).send({
+    // find or create the user if they don't already exist in the
+    // database
+    User.findOrCreate({
+      where: {
+        username: req.body.userName
+      },
+      defaults: {
+        username: req.body.userName,
+        email: req.body.email,
+        password: req.body.password,
+        roleId: req.body.roleId,
+        isactive: req.body.isactive,
+      }
+    }).spread((createdUser, isCreated) => {
+      // send successful as response when the user is created
+      if (isCreated) {
+        Role.findById(createdUser.roleId).then((userRole) => {
+          if (userRole) {
+            const userDetail = {
+              userName: createdUser.username,
+              userId: createdUser.id,
+              email: createdUser.email,
+              isactive: createdUser.isactive,
+              roleType: userRole.roletype,
+              createdAt: createdUser.createdAt,
+            };
+            const token = createToken(userDetail);
+            res.status(200).send({
+              status: 'successful',
+              ...userDetail,
+              token,
+            });
+          }
+        }).catch();
+      } else {
+        res.status(400).send({
           status: 'unsuccessful',
-          message:
-          'Server error just occured!'
+          message: 'User already exist',
         });
+      }
+    }).catch(() => {
+      res.status(500).send({
+        status: 'unsuccessful',
+        message:
+        'Server error just occured!'
       });
     });
   },
@@ -172,7 +168,8 @@ module.exports = {
       params = { offset: req.query.offset, limit: req.query.limit };
     }
     User.findAndCountAll({
-      attributes: ['id', 'username', 'email', 'roleId', 'isactive', 'createdAt'],
+      attributes:
+      ['id', 'username', 'email', 'roleId', 'isactive', 'createdAt'],
       ...params
     }).then((users) => {
       res.status(200).send({
@@ -278,7 +275,6 @@ module.exports = {
    */
   update(req, res) {
     const userId = Number(req.params.id);
-    const saltRound = 10;
     const userDetail = {};
     if (req.body.email &&
       validateEmail(req.body.email, 'email').status === 'successful') {
@@ -288,98 +284,101 @@ module.exports = {
       req.body.user.roleType === 'Admin') {
       userDetail.isactive = req.body.isactive;
     }
-    const inputPassword = req.body.password || '';
-    bcrypt.hash(inputPassword, saltRound, (err, hash) => {
-      if (inputPassword &&
-        validatePassword(inputPassword, 'password').status === 'successful') {
-        User.findById(req.body.user.userId).then((foundUser) => {
-          if (foundUser) {
-            bcrypt.compare(req.body.oldPassword, foundUser.password,
-              (err, response) => {
-                if (response) {
-                  userDetail.password = hash;
-                }
-                if (userId === req.body.user.userId
-                  || req.body.user.userName === 'SuperAdmin'
-                  || req.body.user.roleType === 'Admin') {
-                  User.update(userDetail, {
-                    where: {
-                      id: userId,
-                    }
-                  }).then(() => {
-                    if (Object.keys(userDetail).length !== 0) {
-                      res.status(200).send({
-                        status: 'successful',
-                      });
-                    } else {
-                      res.status(400).send({
-                        status: 'unsuccessful',
-                        message: 'update failed!',
-                      });
-                    }
-                  }).catch(() => {
+    if (typeof req.body.isactive !== 'undefined' &&
+      req.body.user.roleType === 'SuperAdmin') {
+      userDetail.isactive = req.body.isactive;
+    }
+    if (req.body.password &&
+      validatePassword(req.body.password, 'password').status === 'successful') {
+      User.findById(req.body.user.userId).then((foundUser) => {
+        if (foundUser) {
+          bcrypt.compare(req.body.oldPassword, foundUser.password,
+            (err, response) => {
+              console.log('..........true!', req.body.oldPassword, foundUser.password);
+              if (response) {
+                userDetail.password = req.body.password;
+              }
+              if (userId === req.body.user.userId
+                || req.body.user.roleType === 'SuperAdmin'
+                || req.body.user.roleType === 'Admin') {
+                User.update(userDetail, {
+                  individualHooks: true,
+                  where: {
+                    id: userId,
+                  }
+                }).then(() => {
+                  if (Object.keys(userDetail).length !== 0) {
+                    res.status(200).send({
+                      status: 'successful',
+                    });
+                  } else {
                     res.status(400).send({
                       status: 'unsuccessful',
-                      message: 'Could not find any user to update!',
+                      message: 'update failed!',
                     });
-                  });
-                } else {
+                  }
+                }).catch(() => {
                   res.status(400).send({
                     status: 'unsuccessful',
-                    message: 'No user found!',
+                    message: 'Could not find any user to update!',
                   });
-                }
-              });
+                });
+              } else {
+                res.status(400).send({
+                  status: 'unsuccessful',
+                  message: 'No user found!',
+                });
+              }
+            });
+        } else {
+          res.status(400).send({
+            status: 'unsuccessful',
+            message: 'No user found!',
+          });
+        }
+      });
+    } else if (userId === req.body.user.userId
+      || req.body.user.roleType === 'SuperAdmin'
+      || req.body.user.roleType === 'Admin') {
+      Role.count().then((count) => {
+        if (req.body.roleId && req.body.roleId > 0 &&
+          req.body.roleId <= count &&
+          req.body.user.roleType === 'SuperAdmin') {
+          userDetail.roleId = req.body.roleId;
+        }
+        User.update(userDetail, {
+          where: {
+            id: userId,
+          }
+        }).then(() => {
+          if (Object.keys(userDetail).length !== 0) {
+            res.status(200).send({
+              status: 'successful',
+            });
           } else {
             res.status(400).send({
               status: 'unsuccessful',
-              message: 'No user found!',
+              message: 'update failed!',
             });
           }
-        });
-      } else if (userId === req.body.user.userId
-        || req.body.user.userName === 'SuperAdmin'
-        || req.body.user.roleType === 'Admin') {
-        Role.count().then((count) => {
-          if (req.body.roleId && req.body.roleId > 0 &&
-            req.body.roleId <= count &&
-            req.body.user.userName === 'SuperAdmin') {
-            userDetail.roleId = req.body.roleId;
-          }
-          User.update(userDetail, {
-            where: {
-              id: userId,
-            }
-          }).then(() => {
-            if (Object.keys(userDetail).length !== 0) {
-              res.status(200).send({
-                status: 'successful',
-              });
-            } else {
-              res.status(400).send({
-                status: 'unsuccessful',
-                message: 'update failed!',
-              });
-            }
-          }).catch(() => {
-            res.status(400).send({
-              status: 'unsuccessful',
-              message: 'Could not find any user to update!',
-            });
-          });
         }).catch(() => {
           res.status(400).send({
             status: 'unsuccessful',
-            message: 'Could not count roles!',
+            message: 'Could not find any user to update!',
           });
         });
-      } else {
+      }).catch(() => {
         res.status(400).send({
           status: 'unsuccessful',
-          message: 'No user found!',
+          message: 'Could not count roles!',
         });
-      }
-    });
+      });
+    } else {
+      res.status(400).send({
+        status: 'unsuccessful',
+        message: 'No user found!',
+      });
+    }
   },
 
   /**
