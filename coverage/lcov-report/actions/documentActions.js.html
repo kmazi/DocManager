@@ -1,0 +1,1769 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for actions/documentActions.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">All files</a> / <a href="index.html">actions</a> documentActions.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">55.35% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>88/159</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">85.71% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>12/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">42.86% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>30/70</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">49.18% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>60/122</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import axios from 'axios';
+import * as types from './types';
+&nbsp;
+/**
+ * Starts creating documents
+ * @returns {object} returns the type of data it dispatches
+ */
+export const startCreatingDocument = () =&gt; ({
+  type: types.START_CREATING_DOCUMENT,
+});
+&nbsp;
+/**
+ * Fires when a document was just created
+ * @param {object} status - A string indicating the stage
+ * of the document creation process
+ * @returns {object} returns the type of data it dispatches
+ */
+export const doneCreatingDocument = status =&gt; ({
+  type: types.DONE_CREATING_DOCUMENT,
+  status,
+});
+&nbsp;
+/**
+ * Fires when there where errors creating a document
+ * @param {object} error - An array of server errors after API calls
+ * @returns {object} returns the error it dispatches
+ */
+export const errorCreatingDocument = error =&gt; ({
+  type: types.ERROR_CREATING_DOCUMENT,
+  error
+});
+&nbsp;
+/**
+ * Creates a document
+ * @param {object} formValue - An object containing the document to create
+ * @return {func} Returns a function that dispatches actions
+ *  in response from the server
+ */
+export const documentCreation = formValue =&gt; (dispatch) =&gt; {
+  dispatch(startCreatingDocument());
+  return axios.post('/api/v1/documents', formValue)
+    .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(doneCreatingDocument(response.data.status));</span>
+<span class="cstat-no" title="statement not covered" >      return response.data;</span>
+    },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(errorCreatingDocument(response.data.message));</span>
+<span class="cstat-no" title="statement not covered" >      return response.data;</span>
+    }
+    );
+};
+&nbsp;
+/**
+ * Starts creating documents
+ * @returns {object} returns the type of data it dispatches
+ */
+export const startGetUserDocuments = () =&gt; ({
+  type: types.START_GET_USER_DOCUMENT,
+});
+&nbsp;
+/**
+ * Starts creating documents
+ * @param {object} documents - An array of documents from api
+ * @param {number} count - The total number of documents matched
+ * @returns {object} returns the an object containing the
+ *  type of action it dispatches
+ */
+export const completeGetUserDocuments = (documents, count) =&gt; ({
+  type: types.SUCCESS_GET_USER_DOCUMENT,
+  documents,
+  count,
+});
+&nbsp;
+/**
+ * Starts creating documents
+ * @param {object} error - The error message when getting user document fails
+ * @returns {object} returns the an object containing the
+ *  type of action it dispatches
+ */
+export const errorGetUserDocuments = error =&gt; ({
+  type: types.ERROR_GET_USER_DOCUMENT,
+  error,
+});// done fetching own documents
+&nbsp;
+/**
+ * Gets all documents created by a given user
+ * @param {number} id - The user ID used to fetch documents
+ * @return {func} Returns a function that dispatches actions
+ *  in response from the server
+ */
+export const getUserDocuments = <span class="fstat-no" title="function not covered" >id</span> =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+  const token = <span class="cstat-no" title="statement not covered" >localStorage.getItem('docmanagertoken');</span>
+<span class="cstat-no" title="statement not covered" >  dispatch(startGetUserDocuments());</span>
+  const url = <span class="cstat-no" title="statement not covered" >`/api/v1/users/${id}/documents?&amp;offset=0&amp;limit=8&amp;token=${token}`;</span>
+<span class="cstat-no" title="statement not covered" >  return axios.get(url)</span>
+    .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(completeGetUserDocuments(response.data.documents,</span>
+      response.data.count));
+<span class="cstat-no" title="statement not covered" >      return response.data.status;</span>
+    }, <span class="fstat-no" title="function not covered" >({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(errorGetUserDocuments(response.data));</span>
+<span class="cstat-no" title="statement not covered" >      return response.data.status;</span>
+    });
+};
+&nbsp;
+// fetching public document
+/**
+ * create an action object for fetching public document
+ * @returns {object} returns the an object containing the
+ *  type of action it dispatches
+ */
+export const fetchingPublicDocuments = () =&gt; ({
+  type: types.START_FETCHING_PUBLIC_DOCUMENTS,
+});
+&nbsp;
+/**
+ * Creates an action object when fetching public documents completes
+ * @param {object} documents - An array of documents from api
+ * @param {number} count - The total number of documents matched
+ * @returns {object} returns the an object containing the
+ *  type of action it dispatches
+ */
+export const fetchingPublicDocumentsComplete = (documents, count) =&gt; ({
+  type: types.DONE_FETCHING_PUBLIC_DOCUMENTS,
+  documents,
+  count,
+});
+&nbsp;
+/**
+ * Creates an action object when fetching public documents fails
+ * @param {object} error - The error message when getting public documents fails
+ * @returns {object} returns the an object containing the
+ *  type of action it dispatches
+ */
+export const fetchingPublicDocumentsFailed = error =&gt; ({
+  type: types.ERROR_FETCHING_PUBLIC_DOCUMENTS,
+  error,
+}); // done fetching public document
+&nbsp;
+/**
+ * Get all public documents accessible by a given user
+ * @return {func} Returns a function that dispatches actions
+ *  in response from the server
+ */
+export const publicDocuments = <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+  const token = <span class="cstat-no" title="statement not covered" >localStorage.getItem('docmanagertoken');</span>
+<span class="cstat-no" title="statement not covered" >  dispatch(fetchingPublicDocuments());</span>
+<span class="cstat-no" title="statement not covered" >  return axios.get(`/api/v1/documents/Public?&amp;offset=0&amp;limit=8&amp;token=${token}`)</span>
+    .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(fetchingPublicDocumentsComplete(response.data.documents,</span>
+      response.data.count));
+    },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(fetchingPublicDocumentsFailed(response.data.message));</span>
+    });
+};
+&nbsp;
+// start fetching role documents
+/**
+ * Create an action object when fetching role base a documents starts
+ * @param {string} roleType - The role type used to search through documents
+ * @return {object} returns an object containing
+ *  the action type and the error message
+ */
+export const fetchRoleDocuments = roleType =&gt; ({
+  type: types.START_FETCHING_ROLE_DOCUMENTS,
+  roleType: roleType || 'Loading...',
+});
+&nbsp;
+/**
+ * Create an action object when fetching role base a documents starts
+ * @param {string} documents - The role based documents fetched from
+ * the database
+ * @param {number} count - The total number of documents matched
+ * @param {string} roleType - The role type access of the document
+ * @return {object} returns an object containing
+ *  the action type and the error message
+ */
+export const fetchRoleDocumentsComplete = (documents, count, roleType) =&gt; ({
+  type: types.DONE_FETCHING_ROLE_DOCUMENTS,
+  documents,
+  count,
+  roleType
+});
+&nbsp;
+/**
+ * Create an action object when fetching role base a documents fails
+ * @param {string} error - The error message
+ * @return {object} returns an object containing
+ *  the action type and the error message
+ */
+export const fetchRoleDocumentsFailed = error =&gt; ({
+  type: types.ERROR_FETCHING_ROLE_DOCUMENTS,
+  error,
+});
+// done fetching role documents
+&nbsp;
+/**
+ * Fetches all role based documents
+ * @param {*} roleType  - The role a user belongs to
+ * @return {func} Returns a function that dispatches actions
+ *  in response from the server
+ */
+export const roleDocuments = <span class="fstat-no" title="function not covered" >ro</span>leType =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+  const token = <span class="cstat-no" title="statement not covered" >localStorage.getItem('docmanagertoken');</span>
+<span class="cstat-no" title="statement not covered" >  dispatch(fetchRoleDocuments());</span>
+<span class="cstat-no" title="statement not covered" >  return axios</span>
+    .get(`/api/v1/documents/${roleType}?&amp;offset=0&amp;limit=8&amp;token=${token}`)
+  .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >    dispatch(fetchRoleDocumentsComplete(response.data.documents,</span>
+    response.data.count, roleType));
+  },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(fetchRoleDocumentsFailed(response.data.message));</span>
+    });
+};
+&nbsp;
+// start fetching all documents
+/**
+ * Create an action object when getting all document starts
+ * @return {object} returns an object containing
+ *  the action type and the error message
+ */
+export const fetchAllDocuments = () =&gt; ({
+  type: types.START_FETCHING_ALL_DOCUMENTS,
+});
+&nbsp;
+/**
+ * Create an action object when getting all document completes
+ * @param {string} documents - The documents from the server
+ * @param {number} count - The total number of documents matched
+ * @return {object} returns an object containing
+ *  the action type and the documents
+ */
+export const fetchAllDocumentsComplete = (documents, count) =&gt; ({
+  type: types.DONE_FETCHING_ALL_DOCUMENTS,
+  documents,
+  count,
+});
+&nbsp;
+/**
+ * Create an action object when getting all documents fails
+ * @param {string} error - The error message
+ * @return {object} returns an object containing
+ *  the action type and the error message
+ */
+export const fetchAllDocumentsFailed = error =&gt; ({
+  type: types.ERROR_FETCHING_ALL_DOCUMENTS,
+  error
+});// done fetching all documents
+&nbsp;
+/**
+ * Fetches all documents a user can access
+ * @param {string} roletype  - The role a user belongs to
+ * @return {func} Returns a function that dispatches actions
+ *  in response from the server
+ */
+export const allDocuments = <span class="fstat-no" title="function not covered" >ro</span>letype =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+  const token = <span class="cstat-no" title="statement not covered" >localStorage.getItem('docmanagertoken');</span>
+  const url = <span class="cstat-no" title="statement not covered" >roletype !== 'Admin' ?</span>
+  `/api/v1/documents/All?&amp;offset=0&amp;limit=8&amp;token=${token}`
+  : `/api/v1/documents?&amp;offset=0&amp;limit=8&amp;token=${token}`;
+<span class="cstat-no" title="statement not covered" >  dispatch(fetchAllDocuments());</span>
+<span class="cstat-no" title="statement not covered" >  return axios.get(url).then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    dispatch(fetchAllDocumentsComplete(response.data.documents,</span>
+    response.data.count));
+  },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(fetchAllDocumentsFailed(response.data.message));</span>
+    });
+};
+&nbsp;
+/**
+ * Create an action object when reading a document starts
+ * @param {string} docId - The Id of the document
+ * @return {object} returns an object containing
+ *  the action type and the document ID
+ */
+export const readADocument = docId =&gt; ({
+  type: types.START_READING_DOCUMENT,
+  docId,
+});
+&nbsp;
+/**
+ * Create an action object when reading a document completes
+ * @param {string} document - The document to read
+ * @return {object} returns an object containing
+ *  the action type and the document
+ */
+export const readDocumentComplete = document =&gt; ({
+  type: types.DONE_READING_DOCUMENT,
+  document,
+});
+&nbsp;
+/**
+ * Create an action object when reading a document fails
+ * @param {string} error - The error message
+ * @return {object} returns an object containing
+ *  the action type and the error message
+ */
+export const readDocumentFailed = error =&gt; ({
+  type: types.ERROR_READING_DOCUMENT,
+  error,
+});
+&nbsp;
+/**
+ * Reads a particular document
+ * @param {number} id  - The document id to view
+ * @return {func} Returns a function that dispatches actions
+ *  in response from the server
+ */
+export const readDocument = <span class="fstat-no" title="function not covered" >id</span> =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+  const userToken = <span class="cstat-no" title="statement not covered" >localStorage.getItem('docmanagertoken');</span>
+<span class="cstat-no" title="statement not covered" >  dispatch(readADocument(id));</span>
+<span class="cstat-no" title="statement not covered" >  return axios.get(`/api/v1/document/${id}?offset=0&amp;limit=8&amp;token=${userToken}`)</span>
+  .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >    dispatch(readDocumentComplete(response.data.document));</span>
+<span class="cstat-no" title="statement not covered" >    return response.data;</span>
+  },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(readDocumentFailed(response.data.message));</span>
+<span class="cstat-no" title="statement not covered" >      return response.data;</span>
+    });
+};
+&nbsp;
+/**
+ * Edits the title of a document in the application state
+ * @param {string} title - The title of a document
+ * @return {object} returns an object containing
+ *  the action type and the title
+ */
+export const setTitleInputValue = title =&gt; ({
+  type: types.UPDATE_TITLE,
+  title,
+});
+&nbsp;
+/**
+ * Dispatches an action to change to title of a document
+ * @param {string} title - The title of a document
+ * @return {object} returns a function that dispatchces
+ *  the action to change the title of a document
+ */
+export const changeTitleValue = <span class="fstat-no" title="function not covered" >ti</span>tle =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  dispatch(setTitleInputValue(title));</span>
+};
+&nbsp;
+/**
+ * Edits a document in the application state
+ * @return {object} returns an object containing
+ *  the action type
+ */
+export const startEditingDocument = () =&gt; ({
+  type: types.START_EDITING_DOCUMENT,
+});
+&nbsp;
+/**
+ * Creates an action when editing a document is successful
+ * @param {number} documentId - The document ID to edit
+ * @return {object} returns an object containing
+ *  the action type and the documentId
+ */
+export const doneEditingDocument = documentId =&gt; ({
+  type: types.DONE_EDITING_DOCUMENT,
+  documentId,
+});
+&nbsp;
+/**
+ * Creates an action when there is an error editing a
+ * document
+ * @return {object} returns an object containing
+ *  the action type
+ */
+export const errorEditingDocument = () =&gt; ({
+  type: types.ERROR_EDITING_DOCUMENT,
+});
+&nbsp;
+export const editDocument = <span class="fstat-no" title="function not covered" >(d</span>ocumentValue, documentId) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  dispatch(startEditingDocument());</span>
+  const userToken = <span class="cstat-no" title="statement not covered" >localStorage.getItem('docmanagertoken');</span>
+<span class="cstat-no" title="statement not covered" >  return axios</span>
+    .put(`/api/v1/documents/${documentId}?token=${userToken}`, documentValue)
+  .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >    dispatch(doneEditingDocument(documentId));</span>
+<span class="cstat-no" title="statement not covered" >    return response.data;</span>
+  },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(errorEditingDocument());</span>
+<span class="cstat-no" title="statement not covered" >      return response.data;</span>
+    });
+};
+&nbsp;
+/**
+ * Create an action object when deleting a document starts
+ * @param {string} docId - The ID of the document to delete
+ * @return {object} returns an object containing
+ *  the action type and the document id
+ */
+export const deleteDocumentStart = docId =&gt; ({
+  type: types.START_DELETING_DOCUMENT,
+  docId,
+});
+&nbsp;
+/**
+ * Create an action object when deleting a document is successful
+ * @param {string} message - The status message when deleting completes
+ * @param {number} docId - The iD of the document to delete
+ * @return {object} returns an object containing
+ *  the action type and the error message
+ */
+export const deleteDocumentComplete = (message, docId) =&gt; ({
+  type: types.DONE_DELETING_DOCUMENT,
+  message,
+  docId,
+});
+&nbsp;
+/**
+ * Create an action object when deleting a document fails
+ * @param {string} error - The error message
+ * @return {object} returns an object containing
+ *  the action type and the error message
+ */
+export const deleteDocumentFailed = error =&gt; ({
+  type: types.ERROR_DELETING_DOCUMENT,
+  error,
+});
+&nbsp;
+/**
+ * Deletes a particular document
+ * @param {number} id  - The document id to delete
+ * @return {func} Returns a function that dispatches actions
+ *  in response from the server
+ */
+export const deleteDocument = <span class="fstat-no" title="function not covered" >id</span> =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+  const userToken = <span class="cstat-no" title="statement not covered" >localStorage.getItem('docmanagertoken');</span>
+<span class="cstat-no" title="statement not covered" >  dispatch(deleteDocumentStart(id));</span>
+<span class="cstat-no" title="statement not covered" >  return axios</span>
+    .delete(`/api/v1/documents/${id}?&amp;offset=0&amp;limit=8&amp;token=${userToken}`)
+  .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >    dispatch(deleteDocumentComplete(response.data.message, id));</span>
+<span class="cstat-no" title="statement not covered" >    return response.data;</span>
+  },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(deleteDocumentFailed(response.data.message));</span>
+<span class="cstat-no" title="statement not covered" >      return response.data;</span>
+    });
+};
+&nbsp;
+/**
+ * Dispatches an action when searching is successful
+ * @param {string} documents - The documents that matches the search parameter
+ * @param {number} count - the total number of searched document
+ *  number of document
+ * @param {number} pageNumber - the page number in view
+ *  number of document
+ * @param {string} access - The access level of the document
+ * @return {object} contains the type of action dispatched
+ * as well as the documents matching the search parameter
+ */
+export const doneSearchingDocuments =
+  (documents, count, pageNumber, access) =&gt; ({
+    type: types.DONE_SEARCHING_DOCUMENTS,
+    documents,
+    count,
+    pageNumber,
+    access
+  });
+&nbsp;
+/**
+ * Dispatches an action when searching fails
+ * @param {string} error - The error message after searching documents failed
+ * @return {object} contains the type of action dispatched
+ * as well as the error message
+ */
+export const errorSearchingDocuments = error =&gt; ({
+  type: types.ERROR_SEARCHING_DOCUMENTS,
+  error,
+});
+&nbsp;
+/**
+ * Dispatches actions that handles events that search through documents
+ * @param {string} searchText - The search parameter
+ * @return {object} returns a promise
+ */
+export const searchDocuments = <span class="fstat-no" title="function not covered" >se</span>archText =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+  const url = <span class="cstat-no" title="statement not covered" >'/api/v1/search/documents?';</span>
+  const userToken = <span class="cstat-no" title="statement not covered" >localStorage.getItem('docmanagertoken');</span>
+<span class="cstat-no" title="statement not covered" >  return axios</span>
+  .get(`${url}q=${searchText}&amp;offset=0&amp;limit=8&amp;token=${userToken}`)
+  .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >    dispatch(doneSearchingDocuments(response.data.documents,</span>
+      response.data.count, 1));
+  },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(errorSearchingDocuments(response.data.message));</span>
+<span class="cstat-no" title="statement not covered" >      return response.data;</span>
+    });
+};
+&nbsp;
+/**
+ * Constructs the url to use for pagination
+ * @param {string} documentAccess - The access level of
+ * the document to search for
+ * @param {*} offSet - The document offset to start fetching documents
+ * @param {*} id - The userId searching the document
+ * @param {*} roleType - The role the user belongs to
+ * @param {*} searchText - The search text used for querying the database
+ * @return {string} returns the url to use for pagination
+ */
+export const paginationUrl =
+  (documentAccess, offSet, id, roleType, searchText) =&gt; {
+    const userToken = localStorage.getItem('docmanagertoken');
+    let url = '';
+    let apiUrl = '';
+    switch (documentAccess) {
+    case 'Private':
+      apiUrl = `/api/v1/users/${id}/documents?`;
+      url = `${apiUrl}&amp;offset=${offSet}&amp;limit=8&amp;token=${userToken}`;
+      break;
+    case 'Public':
+      apiUrl = '/api/v1/documents/Public?';
+      url = `${apiUrl}&amp;offset=${offSet}&amp;limit=8&amp;token=${userToken}`;
+      break;
+    case 'Admin':
+    case 'Learning':
+    case 'Devops':
+    case 'Fellow':
+      apiUrl = `/api/v1/documents/${roleType}?`;
+      url = `${apiUrl}&amp;offset=${offSet}&amp;limit=8&amp;token=${userToken}`;
+      break;
+    case 'All':
+      url = roleType !== 'Admin' ?
+        `/api/v1/documents/All?&amp;offset=${offSet}&amp;limit=8&amp;token=${userToken}`
+        : `/api/v1/documents?&amp;offset=${offSet}&amp;limit=8&amp;token=${userToken}`;
+      break;
+    default:
+      apiUrl = `/api/v1/search/documents?q=${searchText}`;
+      url = `${apiUrl}&amp;offset=${offSet}&amp;limit=8&amp;token=${userToken}`;
+      break;
+    }
+    return url;
+  };
+&nbsp;
+/**
+ * Paginates the documents from the database
+ * @param {number} pageNumber - The current page number
+ * @param {number} offSet - The document offset to start fetching documents
+ * @param {string} documentAccess - The access level of
+ * the document to search for
+ * @param {string} searchText - The search text used for querying the database
+ * @param {string} roleType - The role the user belongs to
+ * @param {number} id - The userId searching the document
+ * @return {null} returns void
+ */
+export const paginateDocument = <span class="fstat-no" title="function not covered" >(p</span>ageNumber, offSet,
+  documentAccess, searchText, roleType, id) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ispatch) =&gt; {</span>
+    const url = <span class="cstat-no" title="statement not covered" >paginationUrl(documentAccess, offSet, id, roleType, searchText);</span>
+<span class="cstat-no" title="statement not covered" >    return axios</span>
+  .get(url)
+  .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >    dispatch(doneSearchingDocuments(response.data.documents,</span>
+      response.data.count, pageNumber, documentAccess));
+  },
+<span class="fstat-no" title="function not covered" >    ({</span> response }) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(errorSearchingDocuments(response.data.message));</span>
+<span class="cstat-no" title="statement not covered" >      return response.data;</span>
+    });
+  };
+&nbsp;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Aug 11 2017 12:19:33 GMT+0100 (WAT)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
