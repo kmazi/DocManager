@@ -1,6 +1,6 @@
 
 # DocManager
-Docmanager is a full-stack application built with nodejs and the redux framework for creating, securing, and accessing documents from anywhere in the world. Click on this [link](http://docmanager.herokuapp.com) to use the app.
+Docmanager is a full-stack application built with nodejs and the redux framework for creating, securing, and accessing documents from anywhere in the world. Click on this [link](http://docmanger.herokuapp.com) to use the app.
 
 # Features
 * Create a text document with access rights - Public, private or role based.
@@ -60,4 +60,8 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 * God
 * Mark Edomwande
+* Celestine Okoro
+* Bamidele Daniel
+* Esther Falayi
+* Memuna Haruna
 * Co Andelans

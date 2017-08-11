@@ -4,7 +4,7 @@ import {
   generalValidation, validateEmail,
   createToken, validatePassword
 } from
-  '../../server/controller/middlewares/validation';
+  '../../server/middlewares/validation';
 
 const routeUrl = 'http://localhost:1844/api/v1';
 describe('generalValidation()', () => {

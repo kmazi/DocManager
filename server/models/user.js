@@ -1,3 +1,7 @@
+import bcrypt from 'bcrypt-nodejs';
+
+const salt = bcrypt.genSaltSync(10);
+
 /**
  * Creates the document model
  * @param {object} sequelize - the sequelize object to use in defining the model
@@ -9,12 +13,28 @@ module.exports = (sequelize, DataTypes) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        is: {
+          args: ['^[a-z]+$', 'i'],
+          msg: 'last name should contain only alphabets'
+        },
+        len: {
+          arg: [2, 20],
+          msg: 'last name should be between 2 to 20 letters'
+        }
+      }
     },
     email: { type: DataTypes.STRING,
       allowNull: false },
     password: { type: DataTypes.STRING,
-      allowNull: false },
+      allowNull: false,
+      validate: {
+        len: {
+          arg: [6, 20],
+          msg: 'password length should be between 6 to 20 characters'
+        },
+      } },
     isactive: { type: DataTypes.BOOLEAN,
       allowNull: false },
     roleId: { type: DataTypes.INTEGER,
@@ -33,6 +53,15 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'roleId',
           onDelete: 'CASCADE'
         });
+      }
+    },
+    hooks: {
+      beforeCreate(registeringUser) {
+        registeringUser.password =
+        bcrypt.hashSync(registeringUser.password, salt);
+      },
+      beforeUpdate(updatingUser) {
+        updatingUser.password = bcrypt.hashSync(updatingUser.password, salt);
       }
     }
   });

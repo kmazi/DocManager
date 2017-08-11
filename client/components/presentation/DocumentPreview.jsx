@@ -4,8 +4,6 @@ import Alert from 'sweetalert2';
 import $ from 'jquery';
 import Pagination from 'react-js-pagination';
 
-import Search from '../container/Search';
-
 /**
  * Deletes a document from the database
  * @param {func} deleteDocument - Function that fires when deleting a document
@@ -49,6 +47,8 @@ const deleteDocById = (deleteDocument, docId) => {
  * @param {func} paginateDocument - The function that gets
  * executed when paginating documents
  * @param {string} documentAccess - The access level of the document
+ * @param {string} roleType - The roletype a user belongs to
+ * @param {number} userId - The id of the user
  * @return {null} returns void
  */
 const getDocument = (pageNumber, paginateDocument,
@@ -82,6 +82,7 @@ const DocumentPreview = ({ userDocuments, readDocument,
       <br />
       <button
         id={document.id}
+        name="read-doc"
         onClick={(event) => {
           event.preventDefault();
           readDocument(document.id, localStorage.getItem('docmanagertoken'))
@@ -102,7 +103,11 @@ const DocumentPreview = ({ userDocuments, readDocument,
         <i className="fa fa-envelope-o" aria-hidden="true" />
       </button>
       <button
+        className={userId === document.userId || roleType === 'Admin'
+        || roleType === 'SuperAdmin'
+        ? '' : 'hide'}
         id={document.id}
+        name="delete-doc"
         onClick={(event) => {
           event.preventDefault();
           deleteDocById(deleteDocument, document.id);
@@ -115,7 +120,6 @@ const DocumentPreview = ({ userDocuments, readDocument,
   );
   return (
     <div className="row">
-      <Search />
       <div className="row">
         {docs}
       </div>
@@ -156,4 +160,4 @@ DocumentPreview.propTypes = {
   }).isRequired,
 };
 
-export default DocumentPreview;
+export { DocumentPreview, getDocument, deleteDocById };

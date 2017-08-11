@@ -10,7 +10,8 @@ import Alert from 'sweetalert2';
    * triggered an event
    * @param {object} history - The browser and state history
    * @param {func} signInUser - Function that executes when signing the user in
-   * @param {func} getUserDocuments - Function that executes when
+   * @param {string} roleType - the role in which a user belongs to
+   * @param {func} allDocuments - Function that executes when
    * fetching documents belonging to a particular user
    * @return {null} returns void
    */

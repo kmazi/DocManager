@@ -6858,16 +6858,28 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
   stroke-width: 4;
   stroke-linecap: round;
   /*shape-rendering: crispEdges;*/ }
-body {
+body, .aboutpage h3, .aboutpage h4 {
   color: #2c3a46; }
 
 section {
   color: whitesmoke; }
 
+.homebtncolor {
+  padding: 0 30px;
+  background: inherit;
+  text-transform: uppercase; }
+
 input[type=text]:not(.browser-default):focus:not([readonly]),
+input[type=email]:not(.browser-default):focus:not([readonly]),
 input[type=password]:not(.browser-default):focus:not([readonly]) {
   border-bottom: 1px solid whitesmoke;
   box-shadow: 0 1px 0 0 whitesmoke; }
+
+.aboutpage h3 {
+  display: block; }
+
+.aboutpage p, .aboutpage ol {
+  color: gray; }
 
 .btn, button {
   background: #2e71b4; }
@@ -6909,12 +6921,19 @@ button {
     top: 0;
     left: 0; }
 
+#roles {
+  color: white; }
+  #roles input[type=radio], #roles label {
+    color: whitesmoke; }
+
 #readdocument {
   color: #2c3a46; }
   #readdocument #docbody {
     color: gray; }
-  #readdocument h3 {
-    display: block; }
+  #readdocument button {
+    margin-left: 3px; }
+  #readdocument input {
+    font-size: xx-large; }
 
 #viewusers button {
   color: whitesmoke; }

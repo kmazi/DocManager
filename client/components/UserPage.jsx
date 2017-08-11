@@ -7,18 +7,20 @@ import userRoutes from '../userRoutes';
 import { publicDocuments,
   roleDocuments,
   allDocuments,
-  getUserDocuments } from '../actions/documentActions';
-import { fetchAllUsers } from '../actions/userActions';
+  getUserDocuments,
+  } from '../actions/documentActions';
+import { fetchAllUsers, signOut } from '../actions/userActions';
 
 const minHeight = {
   minHeight: window.innerHeight - 131 ||
   document.documentElement.clientHeight - 131
 };
-const signOut = (event, history) => {
+const signOutUser = (event, history, signUserOut) => {
   event.preventDefault();
   if (localStorage.getItem('docmanagertoken')) {
     localStorage.removeItem('docmanagertoken');
   }
+  signUserOut();
   history.push('/');
 };
 
@@ -28,17 +30,17 @@ const fetchUserDocs = (event, getUserDocs, userId, history) => {
   history.push('/user/documents');
 };
 
-const UserPage = ({ userName, userId, history,
+const UserPage = ({ userName, userId, history, signUserOut,
   getPublicDocuments, getRoleDocuments, getAllUsers,
   getUserDocs, getAllDocuments, roleType }) => (
     <section className="row" style={minHeight}>
       <div id="docheader" className="header">
-        <span className="left">DocManager</span>
+        <span className="left">DocManger</span>
         <span className="right">
           <a
             href="/"
             onClick={(event) => {
-              signOut(event, history);
+              signOutUser(event, history, signUserOut);
             }}
           >Hi {userName}! Sign Out&nbsp;
           <i className="fa fa-sign-out" aria-hidden="true" /></a>
@@ -93,7 +95,7 @@ const UserPage = ({ userName, userId, history,
             href="/user/documents"
           >
           My Documents&nbsp;&nbsp;
-            <i className="fa fa-lock" aria-hidden="true" />
+            <i className="fa fa-unlock-alt" aria-hidden="true" />
           </a>
 
           <Link className="center-align btn" to="/user/documents/createdocument">
@@ -108,7 +110,8 @@ const UserPage = ({ userName, userId, history,
           <a
             className="center-align btn"
             href="/user/documents/users/all"
-            style={{ display: roleType === 'Admin' ? '' : 'none' }}
+            style={{ display: roleType === 'Admin'
+            || roleType === 'SuperAdmin' ? '' : 'none' }}
             onClick={(event) => {
               event.preventDefault();
               getAllUsers();
@@ -117,6 +120,11 @@ const UserPage = ({ userName, userId, history,
           >
           Manage Users&nbsp;&nbsp;
           <i className="fa fa-users" aria-hidden="true" /></a>
+
+          <Link className="center-align btn" to="/user/documents/about">
+          About&nbsp;&nbsp;
+          <i className="fa fa-question-circle" aria-hidden="true" /></Link>
+
         </div>
 
         <div id="contentdisplay" className="col m10">
@@ -137,6 +145,7 @@ UserPage.propTypes = {
   history: propTypes.shape({
     push: propTypes.func.isRequired,
   }).isRequired,
+  signUserOut: propTypes.func.isRequired,
   getPublicDocuments: propTypes.func.isRequired,
   getRoleDocuments: propTypes.func.isRequired,
   getAllDocuments: propTypes.func.isRequired,
@@ -159,6 +168,9 @@ const mapDispatchToProps = dispatch => ({
   },
   getRoleDocuments: (roleType) => {
     dispatch(roleDocuments(roleType));
+  },
+  signUserOut: () => {
+    dispatch(signOut());
   },
   getUserDocs: (id) => {
     dispatch(getUserDocuments(id));

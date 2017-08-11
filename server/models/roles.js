@@ -8,7 +8,13 @@ module.exports = (sequelize, DataTypes) => {
   const Roles = sequelize.define('Roles', {
     roletype: {
       type: DataTypes.STRING,
-      unique: true
+      unique: true,
+      validate: {
+        len: {
+          arg: [2, 10],
+          msg: 'Role should contain between 2 to 10 character'
+        }
+      }
     }
   }, {
     classMethods: {

@@ -6,12 +6,14 @@ import Pagination from 'react-js-pagination';
 const processRole = (roleId) => {
   switch (roleId) {
   case 1:
-    return 'Admin';
+    return 'SuperAdmin';
   case 2:
-    return 'Fellow';
+    return 'Admin';
   case 3:
-    return 'Learning';
+    return 'Fellow';
   case 4:
+    return 'Learning';
+  case 5:
     return 'Devops';
   default:
     break;
@@ -27,7 +29,7 @@ const formatDate = (datetime) => {
 };
 
 const AllUsersView = ({ allUsers, responseStatus, error,
-  deactivateUser, deactivatedUserId, counter, currentPage,
+  deactivateUser, counter, currentPage,
   fetchAllUsers }) => {
   const users = allUsers.map(user => (
     <tr id={user.id} key={user.id}>
@@ -48,10 +50,10 @@ const AllUsersView = ({ allUsers, responseStatus, error,
           onClick={(event) => {
             event.preventDefault();
             Alert({
-              title: `Comfirm ${user.isactive && deactivatedUserId !== user.id
+              title: `Comfirm ${user.isactive
         ? 'Deactivation' : 'Activation'}`,
               text: `Are you sure you want to
-              ${user.isactive && deactivatedUserId !== user.id
+              ${user.isactive
         ? 'Deactivate' : 'Activate'} ${user.username}`,
               type: 'info',
               showCloseButton: true,
@@ -75,20 +77,20 @@ const AllUsersView = ({ allUsers, responseStatus, error,
             }).then(() => {
               Alert({
                 type: 'success',
-                title: 'Delete successful!',
+                title: `${user.isactive
+                ? 'Activation' : 'Deactivation'} successful!`,
               });
             });
           }}
-        >{user.isactive && deactivatedUserId !== user.id
-        ? 'Deactivate' : 'Activate'}</button>
+        >{user.isactive ? 'Deactivate' : 'Activate'}</button>
       </td>
-      <td>
+      {/* <td>
         <button
           onClick={(event) => {
             event.preventDefault();
           }}
         >Change Role</button>
-      </td>
+      </td> */}
     </tr>
   ));
 
@@ -138,16 +140,15 @@ const AllUsersView = ({ allUsers, responseStatus, error,
 
 AllUsersView.propTypes = {
   allUsers: PropTypes.arrayOf(PropTypes.shape({
-    userName: PropTypes.string.isRequired,
-    userEmail: PropTypes.string.isRequired,
-    roleType: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    roleId: PropTypes.number.isRequired,
     createdAt: PropTypes.string.isRequired,
   })).isRequired,
   counter: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
   error: PropTypes.string.isRequired,
   fetchAllUsers: PropTypes.func.isRequired,
-  deactivatedUserId: PropTypes.number.isRequired,
   responseStatus: PropTypes.string.isRequired,
   deactivateUser: PropTypes.func.isRequired,
 };
