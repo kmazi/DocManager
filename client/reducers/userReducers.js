@@ -123,9 +123,18 @@ export const fetchAllUsers = (state = {
     return Object.assign({}, state, {
       users: action.users,
       status: '',
-      currentPage: action.pageNumber,
+      currentPage: action.pageNumber || 1,
       counter: action.count,
       responseStatus: action.responseStatus,
+    });
+  case types.DONE_DEACTIVATING_USER:
+    return Object.assign({}, state, {
+      users: state.users.map((user) => {
+        if (user.id === action.userId) {
+          user.isactive = !user.isactive;
+        }
+        return user;
+      }),
     });
   default:
     return state;

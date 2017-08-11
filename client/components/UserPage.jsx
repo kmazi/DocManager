@@ -107,10 +107,6 @@ const UserPage = ({ userName, userId, history, signUserOut,
           My Profile&nbsp;&nbsp;
           <i className="fa fa-user" aria-hidden="true" /></Link>
 
-          <Link className="center-align btn" to="/user/documents/about">
-          About&nbsp;&nbsp;
-          <i className="fa fa-question-circle" aria-hidden="true" /></Link>
-
           <a
             className="center-align btn"
             href="/user/documents/users/all"
@@ -124,6 +120,11 @@ const UserPage = ({ userName, userId, history, signUserOut,
           >
           Manage Users&nbsp;&nbsp;
           <i className="fa fa-users" aria-hidden="true" /></a>
+
+          <Link className="center-align btn" to="/user/documents/about">
+          About&nbsp;&nbsp;
+          <i className="fa fa-question-circle" aria-hidden="true" /></Link>
+
         </div>
 
         <div id="contentdisplay" className="col m10">

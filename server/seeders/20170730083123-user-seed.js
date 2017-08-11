@@ -1,4 +1,6 @@
+const bcrypt = require('bcrypt-nodejs');
 
+const salt = bcrypt.genSaltSync(10);
 module.exports = {
   up(queryInterface) {
     /*
@@ -13,7 +15,7 @@ module.exports = {
     */
     return queryInterface.bulkInsert('Users', [{
       username: 'SuperAdmin',
-      password: process.env.ADMINPASSWORD,
+      password: bcrypt.hashSync(process.env.ADMINPASSWORD, salt),
       roleId: 1,
       email: 'superadmin@gmail.com',
       isactive: true,
@@ -21,7 +23,7 @@ module.exports = {
       updatedAt: new Date(),
     }, {
       username: 'touchstone',
-      password: process.env.ADMINPASSWORD,
+      password: bcrypt.hashSync(process.env.ADMINPASSWORD, salt),
       roleId: 2,
       email: 'touchstone@gmail.com',
       isactive: true,

@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt-nodejs';
 
+const salt = bcrypt.genSaltSync(10);
+
 /**
  * Creates the document model
  * @param {object} sequelize - the sequelize object to use in defining the model
@@ -55,10 +57,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     hooks: {
       beforeCreate(registeringUser) {
-        registeringUser.password = bcrypt.hashSync(registeringUser.password);
+        registeringUser.password =
+        bcrypt.hashSync(registeringUser.password, salt);
       },
       beforeUpdate(updatingUser) {
-        updatingUser.password = bcrypt.hashSync(updatingUser.password);
+        updatingUser.password = bcrypt.hashSync(updatingUser.password, salt);
       }
     }
   });
