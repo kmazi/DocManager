@@ -4,7 +4,6 @@ exports[`The DocumentPreview component: should render the DocumentPreview compon
 <div
   className="row"
 >
-  <Connect(withRouter(Search)) />
   <div
     className="row"
   >

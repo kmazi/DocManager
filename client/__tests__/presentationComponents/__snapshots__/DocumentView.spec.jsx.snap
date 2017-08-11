@@ -4,12 +4,15 @@ exports[`The DocumentView component: should render an error message when shouldd
 <div
   id="doc-view-background"
 >
-  <p
-    className="center-align"
-    id="status"
-  >
-    No document found!
-  </p>
+  <div>
+    <Connect(withRouter(Search)) />
+    <p
+      className="center-align"
+      id="status"
+    >
+      No document found!
+    </p>
+  </div>
 </div>
 `;
 
@@ -17,31 +20,34 @@ exports[`The DocumentView component: should render the DocumentView component co
 <div
   id="doc-view-background"
 >
-  <DocumentPreview
-    currentPage={1}
-    deleteDocument={[Function]}
-    deleteId={1}
-    documentAccess="Admin"
-    documentsCount={1}
-    history={
-      Object {
-        "push": [Function],
-      }
-    }
-    paginateDocument={[Function]}
-    read={1}
-    readDocument={[Function]}
-    roleType="Learning"
-    userDocuments={
-      Array [
+  <div>
+    <Connect(withRouter(Search)) />
+    <DocumentPreview
+      currentPage={1}
+      deleteDocument={[Function]}
+      deleteId={1}
+      documentAccess="Admin"
+      documentsCount={1}
+      history={
         Object {
-          "body": "jackson goes to church",
-          "id": 1,
-          "title": "jackson goes to school",
-        },
-      ]
-    }
-    userId={1}
-  />
+          "push": [Function],
+        }
+      }
+      paginateDocument={[Function]}
+      read={1}
+      readDocument={[Function]}
+      roleType="Learning"
+      userDocuments={
+        Array [
+          Object {
+            "body": "jackson goes to church",
+            "id": 1,
+            "title": "jackson goes to school",
+          },
+        ]
+      }
+      userId={1}
+    />
+  </div>
 </div>
 `;
