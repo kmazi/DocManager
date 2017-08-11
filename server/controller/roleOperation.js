@@ -136,15 +136,11 @@ module.exports = {
    * @return {null} returns void
    */
   getAll(req, res) {
-    let params;
     const response = {};
     response.status = 'unsuccessful';
     // check it limit and offset where passed
-    if (req.query.offset && req.query.limit) {
-      params = { offset: req.query.offset, limit: req.query.limit };
-    } else {
-      params = { offset: 0, limit: 8 };
-    }
+    const params = { offset: req.query.offset || 0,
+      limit: req.query.limit || 8 };
     Role.findAndCountAll({
       attributes: ['id', 'roletype', 'updatedAt'],
       ...params

@@ -162,14 +162,9 @@ module.exports = {
    * @return {null} Returns null
    */
   getAll(req, res) {
-    let params;
     // check it limit and offset where passed
-    if (req.query.offset && req.query.limit) {
-      params = { offset: req.query.offset, limit: req.query.limit };
-    }
-    if (req.query.offset && req.query.limit) {
-      params = { offset: 0, limit: 1 };
-    }
+    const params = { offset: req.query.offset || 0,
+      limit: req.query.limit || 8 };
     User.findAndCountAll({
       attributes:
       ['id', 'username', 'email', 'roleId', 'isactive', 'createdAt'],
@@ -198,15 +193,8 @@ module.exports = {
    * @return {null} Returns null
    */
   find(req, res) {
-    const searchParams = req.query;
-    let params;
-    // check it limit and offset where passed
-    if (searchParams.offset && searchParams.limit) {
-      params = { offset: searchParams.offset, limit: searchParams.limit };
-    }
-    if (req.query.offset && req.query.limit) {
-      params = { offset: 0, limit: 1 };
-    }
+    const params = { offset: req.query.offset || 0,
+      limit: req.query.limit || 8 };
     if (!req.query.q) {
       res.status(400).send({
         status: 'unsuccessful',
