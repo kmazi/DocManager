@@ -4,3 +4,5 @@
 /client/assets/
 .vscode
 /coverage/
+selenium-debug.log
+reports/
