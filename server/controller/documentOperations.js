@@ -13,10 +13,10 @@ module.exports = {
   create(req, res) {
     const title = req.body.title || '';
     const body = req.body.body || '';
-    const userId = req.body.user.userId || req.body.userId || '';
+    const userId = req.body.user.userId;
     const access = req.body.access || '';
     // Don't create document if fields are empty
-    if (title === '' || body === '' || access === '' || userId === '') {
+    if (title === '' || body === '' || access === '') {
       res.status(400).send({
         status: 'unsuccessful',
         message: 'Empty title or body or access field!',
@@ -73,7 +73,7 @@ module.exports = {
           documents: documents.rows,
           curPage: parseInt(params.offset / params.limit, 10) + 1,
           pageCount: parseInt(documents.count / params.limit, 10),
-          pageSize: documents.rows.length
+          pageSize: params.limit,
         });
       } else {
         res.status(400).send({
@@ -200,7 +200,7 @@ module.exports = {
               }
               break;
             case 'Public':
-              doc = req.body.user.userId && req.body.user.isactive
+              doc = req.body.user.userId
               ? foundDocument : {};
               break;
             case req.body.user.roleType:

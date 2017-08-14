@@ -109,66 +109,51 @@ describe('validatePassword:', () => {
 });
 
 describe('SignIn and SignUp validation: ', () => {
-  let userDetail = {
+  const userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 5,
     isactive: true,
   };
-  let requestObject = {
+  const requestObject = {
     url: `${routeUrl}/users`,
     method: 'POST',
     json: userDetail,
   };
-  beforeEach((done) => {
-    request(requestObject, (req, res, body) => {
-      userDetail = {
-        userName: 'jackson',
-        email: 'jackson@gmail.com',
-        password: 'testing1',
-        roleId: 2,
-        isactive: true,
-        userId: body.userId,
-        token: body.token,
-      };
-      requestObject = {
-        url: `${routeUrl}/users`,
-        method: 'POST',
-        json: userDetail,
-      };
-      done();
-    });
-  });
 
-  afterEach((done) => {
-    userDetail.userName = 'jackson';
-    userDetail.password = 'testing1';
-    userDetail.roleId = 2;
-    const user = index.User;
-    user.findOne({
-      where: {
-        username: userDetail.userName,
-      }
-    }).then((userFound) => {
-      if (userFound) {
-        userFound.destroy();
-      }
-      requestObject = {
-        url: `${routeUrl}/users`,
-        method: 'POST',
-        json: userDetail,
-      };
-      done();
-    }).catch(() => {
-      done();
-    });
+  afterEach(() => {
+    requestObject.json = userDetail;
   });
 
   describe('SignInValidation()', () => {
     beforeEach(() => {
       requestObject.url = `${routeUrl}/users/login`;
     });
+
+    beforeAll((done) => {
+      request(requestObject, () => {
+        done();
+      });
+    });
+
+    afterAll((done) => {
+      const user = index.User;
+      userDetail.roleId = 5;
+      user.findOne({
+        where: {
+          username: 'jackson',
+        }
+      }).then((userFound) => {
+        if (userFound) {
+          userFound.destroy();
+        }
+        done();
+      }).catch(() => {
+        done();
+      });
+    });
+
     it('Should return error message when empty form is sent', (done) => {
       requestObject.json = {};
       request(requestObject, (req, res, body) => {
@@ -182,13 +167,10 @@ describe('SignIn and SignUp validation: ', () => {
 
     it('Should move to the next function when form submitted is valid',
       (done) => {
-        requestObject.url = `${routeUrl}/users`;
-        request(requestObject, () => {
-          requestObject.url = `${routeUrl}/users/login`;
-          request(requestObject, (req, res, body) => {
-            expect(body.status).toBe('successful');
-            done();
-          });
+        requestObject.url = `${routeUrl}/users/login`;
+        request(requestObject, (req, res, body) => {
+          expect(body.status).toBe('successful');
+          done();
         });
       });
 
@@ -214,7 +196,7 @@ describe('SignIn and SignUp validation: ', () => {
           expect(body.status).toBe('unsuccessful');
           expect(res.statusCode).toBe(400);
           expect(body.message
-            .includes('Empty or undefined fields are not allowed'))
+            .includes('\nEmpty or undefined username field!'))
             .toBe(true);
           done();
         });
@@ -225,15 +207,102 @@ describe('SignIn and SignUp validation: ', () => {
     // function to run before all tests
     beforeEach(() => {
       requestObject.url = `${routeUrl}/users`;
-      requestObject.json = userDetail;
+      userDetail.userName = 'jackson';
+      userDetail.email = 'jackson@gmail.com';
+      userDetail.password = 'testing1';
+      userDetail.isactive = true;
+      userDetail.roleId = 5;
+    });
+
+    afterAll((done) => {
+      const user = index.User;
+      userDetail.roleId = 5;
+      user.findOne({
+        where: {
+          username: 'jackson',
+        }
+      }).then((userFound) => {
+        if (userFound) {
+          userFound.destroy();
+        }
+        done();
+      }).catch(() => {
+        done();
+      });
     });
 
     it('should throw error when nothing is submitted', (done) => {
       requestObject.json = {};
       request(requestObject, (req, res, body) => {
         expect(body.status).toBe('unsuccessful');
-        expect(body.message[0]).toBe('Empty fields are not allowed');
+        expect(body.message.includes('\nEmpty fields are not allowed'))
+        .toBe(true);
         expect(res.statusCode).toBe(400);
+        done();
+      });
+    });
+
+    it('Should return an error message when username is not filled',
+    (done) => {
+      requestObject.json.userName = '';
+      request(requestObject, (req, res, body) => {
+        expect(res.statusCode).toBe(400);
+        expect(body.status).toBe('unsuccessful');
+        expect(body.message
+          .includes('\nEmpty or undefined username field!')
+        ).toBe(true);
+        done();
+      });
+    });
+
+    it('Should return an error message when password textbox is not filled',
+    (done) => {
+      requestObject.json.password = '';
+      request(requestObject, (req, res, body) => {
+        expect(res.statusCode).toBe(400);
+        expect(body.status).toBe('unsuccessful');
+        expect(body.message
+          .includes('\nEmpty or undefined password field!')
+        ).toBe(true);
+        done();
+      });
+    });
+
+    it('Should return an error message when invalid email is sent',
+    (done) => {
+      requestObject.json.email = 'jackson.com';
+      request(requestObject, (req, res, body) => {
+        expect(res.statusCode).toBe(400);
+        expect(body.status).toBe('unsuccessful');
+        expect(body.message
+          .includes('\nEmail has got wrong format')
+        ).toBe(true);
+        done();
+      });
+    });
+
+    it('Should return an error when the isactive prop is not set',
+    (done) => {
+      requestObject.json.isactive = null;
+      request(requestObject, (req, res, body) => {
+        expect(res.statusCode).toBe(400);
+        expect(body.status).toBe('unsuccessful');
+        expect(body.message
+          .includes('Set "isactive" property')
+        ).toBe(true);
+        done();
+      });
+    });
+
+    it('Should throw error when signup as admin or superadmin',
+    (done) => {
+      requestObject.json.roleId = 2;
+      request(requestObject, (req, res, body) => {
+        expect(res.statusCode).toBe(400);
+        expect(body.status).toBe('unsuccessful');
+        expect(body.message
+          .includes('\nInvalid role!')
+        ).toBe(true);
         done();
       });
     });
@@ -242,19 +311,6 @@ describe('SignIn and SignUp validation: ', () => {
       (done) => {
         request(requestObject, (req, res, body) => {
           expect(body.status).not.toBe('unsuccessful');
-          done();
-        });
-      });
-
-    it('Should return an error message when username is not filled',
-      (done) => {
-        requestObject.json.userName = '';
-        request(requestObject, (req, res, body) => {
-          expect(res.statusCode).toBe(400);
-          expect(body.status).toBe('unsuccessful');
-          expect(body.message
-            .includes('Empty or undefined fields are not allowed')
-          ).toBe(true);
           done();
         });
       });
@@ -277,44 +333,33 @@ describe('createToken()', () => {
 });
 
 describe('verifyToken', () => {
-  let userDetail = {
+  const userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
-  let requestObject = {
+  const requestObject = {
     url: `${routeUrl}/users`,
     method: 'POST',
     json: userDetail,
   };
-  beforeEach((done) => {
+
+  beforeAll((done) => {
     request(requestObject, (req, res, body) => {
-      userDetail = {
-        userName: 'jackson',
-        email: 'jackson@gmail.com',
-        password: 'testing1',
-        roleId: 2,
-        isactive: true,
-        userId: body.userId,
-        token: body.token,
-      };
-      requestObject = {
-        url: `${routeUrl}/users`,
-        method: 'POST',
-        json: userDetail,
-      };
+      userDetail.userId = body.userId;
+      userDetail.token = body.token;
+      userDetail.oToken = body.token;
+      requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
+      requestObject.method = 'GET';
       done();
     });
   });
 
-  afterEach((done) => {
-    userDetail.userName = 'jackson';
-    userDetail.password = 'testing1';
-    userDetail.roleId = 2;
-    const user = index.User;
-    user.findOne({
+  afterAll((done) => {
+    const User = index.User;
+    User.findOne({
       where: {
         username: userDetail.userName,
       }
@@ -322,11 +367,6 @@ describe('verifyToken', () => {
       if (userFound) {
         userFound.destroy();
       }
-      requestObject = {
-        url: `${routeUrl}/users`,
-        method: 'POST',
-        json: userDetail,
-      };
       done();
     }).catch(() => {
       done();
@@ -335,8 +375,6 @@ describe('verifyToken', () => {
 
   it('should authenticate the request when valid token is used',
     (done) => {
-      requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
-      requestObject.method = 'GET';
       request(requestObject, (req, res, body) => {
         expect(res.statusCode).toBe(200);
         expect(body.status).toBe('successful');
@@ -351,8 +389,6 @@ describe('verifyToken', () => {
       password: 'testing',
       email: 'jamaes@yahoo.com',
     });
-    requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
-    requestObject.method = 'GET';
     requestObject.json.token = token;
     request(requestObject, (req, res, body) => {
       expect(body.message).toBe('No user found!');
@@ -362,31 +398,26 @@ describe('verifyToken', () => {
     });
   });
 
-  it('should move to next function when user detail is correct', (done) => {
-    requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
-    requestObject.method = 'GET';
+  it(`should show correct error message when accessing
+  protected route without token`, (done) => {
+    requestObject.json.token = null;
     request(requestObject, (req, res, body) => {
-      expect(body.message).not.toBe('No user found!');
+      expect(body.message).toBe('You are not authenticated!');
       done();
     });
   });
 });
 
-describe('allowOnlyAdmin()', () => {
+describe('isAdmin()', () => {
   const userDetail = {
     userName: 'touchstone',
     password: 'testing1',
-    email: 'touchstone@gmail.com',
-    roleId: 1,
   };
   const url = `${routeUrl}/users/login`;
   const requestObject = {
     url,
     method: 'POST',
-    json: {
-      userName: 'touchstone',
-      password: 'testing1',
-    }
+    json: userDetail,
   };
   const signupRequest = {
     url: `${routeUrl}/users`,
@@ -395,7 +426,7 @@ describe('allowOnlyAdmin()', () => {
       userName: 'jackson',
       email: 'jackson@gmail.com',
       password: 'testing1',
-      roleId: 2,
+      roleId: 3,
       isactive: true,
     }
   };
@@ -430,7 +461,7 @@ describe('allowOnlyAdmin()', () => {
     });
   });
 
-  it('Should allow only admin navigate to the next route',
+  it('Should allow admin navigate to the next route',
     (done) => {
       requestObject.json = userDetail;
       requestObject.url = `${routeUrl}/search/users`;
@@ -449,6 +480,26 @@ describe('allowOnlyAdmin()', () => {
       expect(body.status).toBe('unsuccessful');
       expect(body.message).toBe('Access denied!');
       done();
+    });
+  });
+
+  it('Should allow SuperAdmin navigate to the next route',
+  (done) => {
+    requestObject.url = `${routeUrl}/users/login`;
+    requestObject.json = { userName: 'SuperAdmin',
+      password: 'testing1', };
+    requestObject.method = 'POST';
+    request(requestObject, (req0, res0, body0) => {
+      userDetail.token = body0.token;
+      userDetail.userId = body0.userId;
+      userDetail.roleType = body0.roleType;
+      requestObject.json = userDetail;
+      requestObject.url = `${routeUrl}/search/users`;
+      requestObject.method = 'GET';
+      request(requestObject, (req, res, body) => {
+        expect(body.message).not.toBe('Access denied!');
+        done();
+      });
     });
   });
 });
