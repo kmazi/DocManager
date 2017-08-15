@@ -72,7 +72,7 @@ module.exports = {
           count: documents.count,
           documents: documents.rows,
           curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: parseInt(documents.count / params.limit, 10),
+          pageCount: Math.ceil(documents.count / params.limit),
           pageSize: params.limit,
         });
       } else {
@@ -97,20 +97,15 @@ module.exports = {
  * @return {null} it returns no value
  */
   getAll(req, res) {
-    const access = req.params.access || '';
-    let params;
-    // check it limit and offset where passed
-    if (req.query.offset && req.query.limit) {
-      params = { offset: req.query.offset, limit: req.query.limit };
-    } else {
-      params = { offset: 0, limit: 8 };
-    }
+    const access = req.params.access;
+    const params = { offset: req.query.offset || 0,
+      limit: req.query.limit || 8 };
     let searchQuery = {};
     switch (access) {
     case 'Public':
       searchQuery = { access };
       break;
-    case 'Admin':
+    case 'Amin':
     case 'SuperAdmin':
     case 'Learning':
     case 'Devops':
@@ -122,17 +117,18 @@ module.exports = {
       }
       break;
     case 'All':
-      searchQuery = req.body.user.roleType !== 'Admin'
-      || req.body.user.roleType !== 'SuperAdmin' ? {
+      searchQuery = {
         $or:
         [{ userId: req.body.user.userId },
-          { access: req.body.user.roleType },
-          { access: 'Public' }]
-      } : {};
+        { access: req.body.user.roleType },
+        { access: 'Public' }]
+      };
       break;
     default:
-      if (req.body.user.roleType !== 'Admin'
-      || req.body.user.roleType !== 'SuperAdmin') {
+      if (req.body.user.roleType === 'Admin'
+      || req.body.user.roleType === 'SuperAdmin') {
+        searchQuery = {};
+      } else {
         searchQuery = null;
       }
       break;
@@ -156,7 +152,7 @@ module.exports = {
           response.documents = foundDocuments.rows;
           response.curPage = parseInt(params.offset / params.limit, 10) + 1;
           response.pageCount =
-          parseInt(foundDocuments.count / params.limit, 10);
+          Math.ceil(foundDocuments.count / params.limit);
           response.pageSize = foundDocuments.rows.length;
           res.status(200);
         }
@@ -168,6 +164,7 @@ module.exports = {
         });
       });
     } else {
+      console.log(searchQuery, '......');
       return res.status(400).send({
         status: 'unsuccessful',
         message: 'Access denied!',
@@ -356,7 +353,7 @@ module.exports = {
           count: documents.count,
           documents: documents.rows,
           curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: parseInt(documents.count / params.limit, 10),
+          pageCount: Math.ceil(documents.count / params.limit),
           pageSize: documents.rows.length
         });
       } else {
@@ -383,9 +380,9 @@ module.exports = {
     const documentId = Number(req.params.id);
     const response = {};
     response.status = 'unsuccessful';
+    response.message = 'No document found!';
     Document.findById(documentId).then((knownDocument) => {
       if (!knownDocument) {
-        response.status = 'unsuccessful';
         response.message = 'Could not find document!';
         return res.status(400).send(response);
       } else if (knownDocument.userId === req.body.user.userId) {
@@ -393,20 +390,12 @@ module.exports = {
           response.status = 'successful';
           response.message = `"${knownDocument.title}" has been deleted!`;
           return res.status(200).send(response);
-        }).catch(() => {
-          response.status = 'unsuccessful';
-          response.message = 'Could not delete the document!';
-          return res.status(400).send(response);
         });
       } else {
         response.status = 'unsuccessful';
         response.message = 'Access denied!';
-        return res.send(response);
+        return res.status(400).send(response);
       }
-    }).catch(() => {
-      response.status = 'unsuccessful';
-      response.message = 'No document found!';
-      return res.status(400).send(response);
-    });
+    }).catch(() => res.status(400).send(response));
   },
 };

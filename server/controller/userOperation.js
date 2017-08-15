@@ -216,7 +216,7 @@ module.exports = {
           count: users.count,
           users: users.row,
           curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: parseInt(users.count / params.limit, 10),
+          pageCount: Math.ceil(users.count / params.limit),
           pageSize: users.rows.length
         });
       }).catch(() => {
@@ -226,45 +226,6 @@ module.exports = {
         });
       });
     }
-  },
-
-  /**
-   * Updates a specific user's role
-   * @param {object} req - The request object from express server
-   * @param {object} res - The response object from express server
-   * @return {null} Returns null
-   */
-  updateRole(req, res) {
-    const userId = Number(req.params.id);
-    Role.count().then((count) => {
-      if (req.body.roleId && req.body.roleId > 0 &&
-        req.body.roleId <= count) {
-        User.update({ roleId: req.body.roleId }, {
-          where: {
-            id: userId,
-          }
-        }).then(() => {
-          res.status(200).send({
-            status: 'successful',
-          });
-        }).catch(() => {
-          res.status(400).send({
-            status: 'unsuccessful',
-            message: 'Could not find any user to update!',
-          });
-        });
-      } else {
-        res.status(400).send({
-          status: 'unsuccessful',
-          message: 'Invalid role ID',
-        });
-      }
-    }).catch(() => {
-      res.status(400).send({
-        status: 'unsuccessful',
-        message: 'Could not count roles!',
-      });
-    });
   },
 
   /**
@@ -406,8 +367,8 @@ module.exports = {
         }).then(() => {
           res.status(200).send({
             status: 'successful',
-            message: `${knownUser.username} has been successfull
-            ${statusUpdate ? 'deactivated!' : 'activated'}`,
+            message: `${knownUser.username} has been successfully
+            ${statusUpdate ? 'activated!' : 'deactivated'}`,
           });
         }).catch();
       }

@@ -17,11 +17,11 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         is: {
           args: ['^[a-z]+$', 'i'],
-          msg: 'last name should contain only alphabets'
+          msg: 'username should contain only alphabets'
         },
         len: {
           arg: [2, 20],
-          msg: 'last name should be between 2 to 20 letters'
+          msg: 'username should be between 2 to 20 letters'
         }
       }
     },

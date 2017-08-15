@@ -151,7 +151,7 @@ module.exports = {
         response.roles = roles.rows;
         response.curPage = parseInt(params.offset / params.limit, 10) + 1;
         response.pageCount = parseInt(roles.count / params.limit, 10);
-        response.pageSize = roles.rows.length;
+        response.pageSize = params.limit;
         res.status(200).send(response);
       } else {
         res.status(400).send({

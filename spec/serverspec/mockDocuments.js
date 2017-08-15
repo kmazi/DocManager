@@ -17,7 +17,12 @@ const mockDocuments = [{
 }, {
   title: 'Test spec document 5',
   body: 'The name of my friend is great and cool',
-  access: 'All',
+  access: 'Devops',
+},
+{
+  title: 'Test spec document 6',
+  body: 'The name of my friend!',
+  access: 'Learning',
 }];
 
 export default mockDocuments;

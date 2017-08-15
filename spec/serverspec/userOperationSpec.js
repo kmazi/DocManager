@@ -7,7 +7,7 @@ describe('signUpUser(): ', () => {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -42,7 +42,7 @@ describe('signUpUser(): ', () => {
       userName: 'jackson',
       email: 'jackson@gmail.com',
       password: 'testing1',
-      roleId: 2,
+      roleId: 3,
       isactive: true,
     };
   });
@@ -100,7 +100,7 @@ describe('signInUser()', () => {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -198,7 +198,7 @@ describe('viewUserProfile()', () => {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -306,7 +306,7 @@ describe('updateUser()', () => {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -320,7 +320,7 @@ describe('updateUser()', () => {
         userName: 'jackson',
         email: 'jackson@gmail.com',
         password: 'testing1',
-        roleId: 2,
+        roleId: 3,
         isactive: true,
         userId: body.userId,
         token: body.token,
@@ -337,7 +337,7 @@ describe('updateUser()', () => {
   afterEach((done) => {
     userDetail.userName = 'jackson';
     userDetail.password = 'testing1';
-    userDetail.roleId = 2;
+    userDetail.roleId = 3;
     const user = index.User;
     user.findOne({
       where: {
@@ -425,12 +425,12 @@ describe('updateUser()', () => {
   });
 });
 
-describe('deleteUser()', () => {
+describe('Deleting a User', () => {
   let userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -444,7 +444,7 @@ describe('deleteUser()', () => {
         userName: 'jackson',
         email: 'jackson@gmail.com',
         password: 'testing1',
-        roleId: 2,
+        roleId: 3,
         isactive: true,
         userId: body.userId,
         token: body.token,
@@ -461,7 +461,7 @@ describe('deleteUser()', () => {
   afterEach((done) => {
     userDetail.userName = 'jackson';
     userDetail.password = 'testing1';
-    userDetail.roleId = 2;
+    userDetail.roleId = 3;
     const user = index.User;
     user.findOne({
       where: {
@@ -525,7 +525,7 @@ describe('deleteUser()', () => {
     });
   });
 
-  it(`should allow admin to successfully deactivate
+  it(`should allow admin and superAdmin to successfully deactivate
     a user`, (done) => {
     requestObject.url = `${routeUrl}/users/login`;
     requestObject.method = 'POST';
@@ -538,8 +538,6 @@ describe('deleteUser()', () => {
       request(requestObject, (req, res, resBody) => {
         expect(resBody.status).toBe('successful');
         expect(res.statusCode).toBe(200);
-        expect(resBody.message)
-        .toBe('jackson has been successfull deactivated!');
         done();
       });
     });
