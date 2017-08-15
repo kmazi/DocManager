@@ -7,7 +7,7 @@ const mockDocuments = [{
   body: 'This isdof what the man said on friday hadlf if griea',
   access: 'Private',
 }, {
-  title: 'Test spec document 3',
+  title: 'Test subordinate document 3',
   body: 'This isdof which is why adhfkdff hadlf if yowf aleri griea',
   access: 'Fellow',
 }, {
@@ -15,12 +15,12 @@ const mockDocuments = [{
   body: 'This isdof griea',
   access: 'Devops',
 }, {
-  title: 'Test spec document 5',
+  title: 'Test main document 5',
   body: 'The name of my friend is great and cool',
   access: 'Devops',
 },
 {
-  title: 'Test spec document 6',
+  title: 'Test runing document 6',
   body: 'The name of my friend!',
   access: 'Learning',
 }];

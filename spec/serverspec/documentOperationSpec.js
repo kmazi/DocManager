@@ -660,7 +660,8 @@ describe('Deleting a document', () => {
     documentObject.json = { token: userToken };
     request(documentObject, (req, res, body) => {
       expect(body.status).toBe('successful');
-      expect(body.message).toBe('"Test spec document 3" has been deleted!');
+      expect(body.message)
+      .toBe('"Test subordinate document 3" has been deleted!');
       expect(res.statusCode).toBe(200);
       done();
     });
@@ -1038,7 +1039,7 @@ describe('getAll function', () => {
       expect(body.status).toBe('successful');
       expect(body.count).toBe(7);
       expect(body.documents.length).toBe(4);
-      expect(body.documents[0].title).toBe('Test spec document 3');
+      expect(body.documents[0].title).toBe('Test subordinate document 3');
       done();
     });
   });
@@ -1175,6 +1176,193 @@ describe('getAll function', () => {
     request(documentObject, (req, res, body) => {
       expect(body.status).toBe('unsuccessful');
       expect(body.message).toBe('No document found!');
+      done();
+    });
+  });
+});
+
+describe('search function', () => {
+  const docUrl = `${routeUrl}/documents`;
+  const userDetail = {
+    userName: 'jackson',
+    email: 'jackson@gmail.com',
+    password: 'testing1',
+    roleId: 5,
+    isactive: true,
+  };
+  const adminDocument = {
+    title: 'Admin Document',
+    body: 'This document belongs to an admin',
+    access: 'Private',
+  };
+  const userDocument = {
+    title: 'Why I love team Gimli.',
+    body: 'Team gimli shows high spirit and devotion',
+    access: 'Private',
+  };
+  let userToken;
+  let adminToken;
+  let superAdminToken;
+  const userObject = {
+    url: `${routeUrl}/users`,
+    method: 'POST',
+    json: userDetail,
+  };
+  const adminLogin = {
+    url: `${routeUrl}/users/login`,
+    method: 'POST',
+    json: {
+      userName: 'touchstone',
+      password: 'testing1',
+    }
+  };
+  const superAdminLogin = {
+    url: `${routeUrl}/users/login`,
+    method: 'POST',
+    json: {
+      userName: 'SuperAdmin',
+      password: 'testing1',
+    }
+  };
+  const documentObject = {
+    url: docUrl,
+    method: 'POST',
+    json: adminDocument,
+  };
+  beforeAll((done) => {
+    request(userObject, (req, res, body) => {
+      userDocument.userId = body.userId;
+      userDocument.token = body.token;
+      userToken = body.token;
+      // create an admin user
+      request(adminLogin, (req, res, body1) => {
+        adminToken = body1.token;
+        adminDocument.token = adminToken;
+        adminLogin.body = body1;
+        // login as superadmin
+        request(superAdminLogin, (req, res, body2) => {
+          superAdminToken = body2.token;
+          // create a document by an admin account
+          request(documentObject, (req1, res1, body3) => {
+            adminDocument.docId = body3.documentId;
+            const Document = index.Document;
+            const newMockDocuments = mockDocuments.map((mockDocument) => {
+              mockDocument.userId = body.userId;
+              return mockDocument;
+            });
+            Document.bulkCreate(newMockDocuments)
+              .then(() => Document.findAll()).then(() => {
+                done();
+              }).catch(() => {
+                done();
+              });
+          });
+        });
+      });
+    });
+  });
+  const User = index.User;
+  const Document = index.Document;
+  afterAll((done) => {
+    User.findOne({
+      where: {
+        username: userDetail.userName,
+      }
+    }).then((userFound) => {
+      if (userFound) {
+        userFound.destroy();
+      }
+      Document.findOne({
+        where: {
+          title: adminDocument.title,
+        }
+      }).then((documentFound) => {
+        if (documentFound) {
+          documentFound.destroy();
+        }
+        done();
+      }).catch(() => {
+        done();
+      });
+      done();
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it(`should return correct error message when no search text is passed
+  to the server`,
+  (done) => {
+    documentObject.url = `${routeUrl}/search/documents`;
+    documentObject.method = 'GET';
+    documentObject.json.token = userToken;
+    request(documentObject, (req, res, body) => {
+      expect(body.status).toBe('unsuccessful');
+      expect(body.message).toBe('No title to search for!');
+      done();
+    });
+  });
+
+  it(`should deny unauthenticated users from searching for
+  any document`,
+ (done) => {
+   documentObject.url = `${routeUrl}/search/documents?q=the`;
+   documentObject.method = 'GET';
+   documentObject.json.token = '';
+   request(documentObject, (req, res, body) => {
+     expect(body.status).toBe('unsuccessful');
+     expect(body.message).toBe('You are not authenticated!');
+     done();
+   });
+ });
+
+  it('should return an explanatory message when there is no match',
+  (done) => {
+    documentObject.url = `${routeUrl}/search/documents?q=the`;
+    documentObject.method = 'GET';
+    documentObject.json.token = adminToken;
+    request(documentObject, (req, res, body) => {
+      expect(body.status).toBe('unsuccessful');
+      expect(body.message).toBe('No match found!');
+      done();
+    });
+  });
+
+  it('should allow admin to search through all documents in the database',
+  (done) => {
+    documentObject.url = `${routeUrl}/search/documents?q=main sub&limit=8`;
+    documentObject.method = 'GET';
+    documentObject.json.token = adminToken;
+    request(documentObject, (req, res, body) => {
+      expect(body.status).toBe('successful');
+      expect(body.count).toBe(2);
+      done();
+    });
+  });
+
+  it('should allow superAdmin to search through all documents in the database',
+  (done) => {
+    documentObject.url = `${routeUrl}/search/documents?q=main sub&limit=8`;
+    documentObject.method = 'GET';
+    documentObject.json.token = superAdminToken;
+    request(documentObject, (req, res, body) => {
+      expect(body.status).toBe('successful');
+      expect(body.count).toBe(2);
+      done();
+    });
+  });
+
+  it('should allow a regular user search through documents accessible to them',
+  (done) => {
+    documentObject.url =
+    `${routeUrl}/search/documents?q=main document&limit=8&offset=0`;
+    documentObject.method = 'GET';
+    documentObject.json.token = userToken;
+    request(documentObject, (req, res, body) => {
+      expect(body.status).toBe('successful');
+      expect(body.count).toBe(6);
+      const docTitles = body.documents.map(document => document.title);
+      expect(docTitles.includes('Admin Document')).toBe(false);
       done();
     });
   });

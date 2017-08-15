@@ -323,7 +323,7 @@ module.exports = {
         $or: searchQueryContents,
       },
     };
-    let searchQuery = req.body.user.roleType === 'Admin'
+    const searchQuery = req.body.user.roleType === 'Admin'
     || req.body.user.roleType === 'SuperAdmin' ?
       titleSearchQuery : {
         $or:
@@ -331,17 +331,6 @@ module.exports = {
         { access: req.body.user.roleType, ...titleSearchQuery },
         { access: 'Public', ...titleSearchQuery }]
       };
-
-    if (!req.query.q) {
-      searchQuery = req.body.user.roleType === 'Admin'
-      || req.body.user.roleType === 'SuperAdmin' ?
-        {} : {
-          $or:
-          [{ userId: req.body.user.userId },
-          { access: req.body.user.roleType },
-          { access: 'Public' }]
-        };
-    }
     Document.findAndCountAll({
       where: { ...searchQuery },
       attributes: ['id', 'title', 'body', 'access', 'createdAt'],

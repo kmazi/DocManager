@@ -14,7 +14,7 @@
     "seed:db": "NODE_ENV=production sequelize db:migrate:undo:all  && sequelize db:migrate && sequelize db:seed:all",
     "start:dev": "nodemon --watch server --exec babel-node --presets es2015 -- main.js",
     "start": "npm run seed:db && babel-node main.js",
-    "test:nyc": "nyc --reporter=html --reporter=text mocha --compilers js:babel-core/register ./server/test/**/*.js --timeout 2290000"
+    "test:nyc": "nyc --reporter=json --reporter=text mocha --compilers js:babel-core/register ./server/test/**/*.js --timeout 2290000"
   },
   "repository": {
     "type": "git",
