@@ -144,7 +144,7 @@ exports[`The Authenticate component: should render correctly 1`] = `
               id="Learning"
               name="group1"
               type="radio"
-              value="3"
+              value="4"
             />
             <label
               htmlFor="Learning"
@@ -157,10 +157,11 @@ exports[`The Authenticate component: should render correctly 1`] = `
               id="Fellow"
               name="group1"
               type="radio"
-              value="2"
+              value="3"
             />
             <label
               htmlFor="Fellow"
+              id="Fellowlabel"
             >
               Fellow
             </label>
@@ -170,7 +171,7 @@ exports[`The Authenticate component: should render correctly 1`] = `
               id="DevOps"
               name="group1"
               type="radio"
-              value="4"
+              value="5"
             />
             <label
               htmlFor="DevOps"
@@ -337,7 +338,7 @@ exports[`The Authenticate component: should show signin form when signinbtn is c
               id="Learning"
               name="group1"
               type="radio"
-              value="3"
+              value="4"
             />
             <label
               htmlFor="Learning"
@@ -350,10 +351,11 @@ exports[`The Authenticate component: should show signin form when signinbtn is c
               id="Fellow"
               name="group1"
               type="radio"
-              value="2"
+              value="3"
             />
             <label
               htmlFor="Fellow"
+              id="Fellowlabel"
             >
               Fellow
             </label>
@@ -363,7 +365,7 @@ exports[`The Authenticate component: should show signin form when signinbtn is c
               id="DevOps"
               name="group1"
               type="radio"
-              value="4"
+              value="5"
             />
             <label
               htmlFor="DevOps"
@@ -530,7 +532,7 @@ exports[`The Authenticate component: should show signup form when signupbtn is c
               id="Learning"
               name="group1"
               type="radio"
-              value="3"
+              value="4"
             />
             <label
               htmlFor="Learning"
@@ -543,10 +545,11 @@ exports[`The Authenticate component: should show signup form when signupbtn is c
               id="Fellow"
               name="group1"
               type="radio"
-              value="2"
+              value="3"
             />
             <label
               htmlFor="Fellow"
+              id="Fellowlabel"
             >
               Fellow
             </label>
@@ -556,7 +559,7 @@ exports[`The Authenticate component: should show signup form when signupbtn is c
               id="DevOps"
               name="group1"
               type="radio"
-              value="4"
+              value="5"
             />
             <label
               htmlFor="DevOps"

@@ -3,7 +3,7 @@ const faker = require('faker');
 
 const randomNum = Math.ceil(Math.random(1000) * 1000);
 const fullname = faker.name.findName();
-const username = `daniel${randomNum}`;
+const username = `${fullname}${randomNum}`;
 const email = faker.internet.email();
 
 module.exports = {
@@ -12,96 +12,84 @@ module.exports = {
     .url(config.url)
     .waitForElementVisible('body')
     .pause(1000)
-    .click('#getStarted')
+    .click('#signupbtn')
+    .waitForElementVisible('div#signupform')
     .pause(1000)
-    .waitForElementVisible('div.login-page-wrapper')
+    .setValue('#signupform input[name=username]', username)
     .pause(1000)
-    .click('#registerlink')
+    .setValue('#signupform input[type=email]', email)
     .pause(1000)
-    .assert.containsText('h3#registerlabel', 'Register')
+    .setValue('#signupform input[name=password]', 'testing1')
     .pause(1000)
-    .setValue('input[name=fullname]', fullname)
+    .setValue('#signupform input[name=comfirmpassword]', 'testing1')
     .pause(1000)
-    .setValue('input[name=username]', username)
+    .click('#Fellowlabel')
     .pause(1000)
-    .setValue('input[name=email]', email)
+    .click('#signupbtn')
     .pause(1000)
-    .setValue('input#registerPassword', '123456')
+    .waitForElementVisible('div#docheader')
     .pause(1000)
-    .setValue('input[name=passwordConfirmation]', '123456')
+    .assert.containsText('div#docheader span.right a',
+    `Hi ${username}! Sign Out`)
     .pause(1000)
-    .click('#registerbutton')
-    .pause(1000)
-    .waitForElementVisible('div.documents-wrapper')
-    .pause(1000)
-    .assert.containsText('p.currentFilter', 'Showing Public documents')
-    .pause(1000)
-    .click('#logout'),
+    .click('div#docheader span.right a'),
 
-  'Returns error for incomplete fields': browser =>
+  'Shows error for incomplete fields': browser =>
   browser
     .waitForElementVisible('body')
     .pause(1000)
-    .click('#getStarted')
-    .waitForElementVisible('div.login-page-wrapper')
+    .click('#signupbtn')
+    .waitForElementVisible('div#signupform')
     .pause(1000)
-    .click('#registerlink')
+    .setValue('#signupbtn input[name=username]', username)
     .pause(1000)
-    .assert.containsText('h3#registerlabel', 'Register')
-    .setValue('input[name=fullname]', '')
+    .setValue('#signupbtn input[name=email]', '')
     .pause(1000)
-    .setValue('input[name=username]', username)
+    .setValue('input#registerPassword', 'test')
     .pause(1000)
-    .setValue('input[name=email]', email)
+    .setValue('input[name=passwordConfirmation]', 'test')
     .pause(1000)
-    .setValue('input#registerPassword', '123456')
-    .pause(1000)
-    .setValue('input[name=passwordConfirmation]', '123456')
-    .pause(1000)
-    .click('#registerbutton')
-    .assert.containsText('p#fullnameError', 'Fullname is required')
+    .click('#signupbtn')
+    .assert.containsText('#swal2-title', 'Error Signing up')
     .pause(1000),
 
-  'Logs a user in': browser =>
+  'Log a user in': browser =>
   browser
     .url(config.url)
     .waitForElementVisible('body')
     .pause(1000)
-    .click('#getStarted')
+    .waitForElementVisible('#signinform')
     .pause(1000)
-    .waitForElementVisible('div#loginform')
+    .assert.containsText('#authbuttons span#signinbtn', 'SignIn')
     .pause(1000)
-    .assert.containsText('h3#loginlabel', 'Login')
+    .setValue('#signinform input[type=text]', username)
     .pause(1000)
-    .setValue('input[name=identifier]', 'memuna@haruna.com')
+    .setValue('#signinform input[type=password]', 'memunat')
     .pause(1000)
-    .setValue('input[name=password]', 'memunat')
+    .click('#signinbtn')
     .pause(1000)
-    .click('#loginbutton')
+    .waitForElementVisible('div#docheader')
     .pause(1000)
-    .waitForElementVisible('div.documents-wrapper')
+    .assert.containsText('div#docheader span.right a',
+    `Hi ${username}! Sign Out`)
     .pause(1000)
-    .assert.containsText('p.currentFilter', 'Showing Public documents')
-    .pause(1000)
-    .click('#logout'),
+    .click('div#docheader span.right a'),
 
   'Returns error for invalid credentials': browser =>
   browser
     .waitForElementVisible('body')
     .pause(1000)
-    .click('#getStarted')
+    .waitForElementVisible('#signinform')
     .pause(1000)
-    .waitForElementVisible('div#loginform')
+    .assert.containsText('#authbuttons span#signinbtn', 'SignIn')
     .pause(1000)
-    .assert.containsText('h3#loginlabel', 'Login')
+    .setValue('#signinform input[type=text]', username)
     .pause(1000)
-    .setValue('input[name=identifier]', 'memuna@h.com')
+    .setValue('#signinform input[type=password]', 'memunat')
     .pause(1000)
-    .setValue('input[name=password]', 'memunat')
+    .click('#signinbtn')
     .pause(1000)
-    .click('#loginbutton')
-    .pause(1000)
-    .assert.containsText('div.errors h5', 'Invalid credentials')
+    .assert.containsText('#swal2-title', 'Error Signing in')
     .pause(1000)
     .end()
 };

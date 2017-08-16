@@ -61,7 +61,7 @@ exports[`The signupform component: should alert an error message when signup fai
         id="Learning"
         name="group1"
         type="radio"
-        value="3"
+        value="4"
       />
       <label
         htmlFor="Learning"
@@ -74,10 +74,11 @@ exports[`The signupform component: should alert an error message when signup fai
         id="Fellow"
         name="group1"
         type="radio"
-        value="2"
+        value="3"
       />
       <label
         htmlFor="Fellow"
+        id="Fellowlabel"
       >
         Fellow
       </label>
@@ -87,7 +88,7 @@ exports[`The signupform component: should alert an error message when signup fai
         id="DevOps"
         name="group1"
         type="radio"
-        value="4"
+        value="5"
       />
       <label
         htmlFor="DevOps"
@@ -157,7 +158,7 @@ exports[`The signupform component: should render the signup form correctly 1`] =
       id="Learning"
       name="group1"
       type="radio"
-      value="3"
+      value="4"
     />
     <label
       htmlFor="Learning"
@@ -170,10 +171,11 @@ exports[`The signupform component: should render the signup form correctly 1`] =
       id="Fellow"
       name="group1"
       type="radio"
-      value="2"
+      value="3"
     />
     <label
       htmlFor="Fellow"
+      id="Fellowlabel"
     >
       Fellow
     </label>
@@ -183,7 +185,7 @@ exports[`The signupform component: should render the signup form correctly 1`] =
       id="DevOps"
       name="group1"
       type="radio"
-      value="4"
+      value="5"
     />
     <label
       htmlFor="DevOps"

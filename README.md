@@ -55,13 +55,3 @@ To contribute to this project, kindly fork the project make changes as well as c
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* God
-* Mark Edomwande
-* Celestine Okoro
-* Bamidele Daniel
-* Esther Falayi
-* Memuna Haruna
-* Co Andelans

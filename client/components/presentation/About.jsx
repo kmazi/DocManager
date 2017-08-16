@@ -15,12 +15,6 @@ const About = () => (
       It offers features such as creating, editing,
       restricting and sharing personal documents.
     </p>
-    <h4 className="center-align">Contributors</h4>
-    <hr />
-    <ol>
-      <li>Mazi Ugochukwu Kingsley</li>
-      <li>Mark Edomwande</li>
-    </ol>
   </div>);
 
 
