@@ -25,7 +25,7 @@ describe('generalValidation()', () => {
   it('should throw error when user field is empty', () => {
     const user = generalValidation('', 'username');
     expect(user.status).toBe('unsuccessful');
-    expect(user.message.includes('\nEmpty or undefined username field!'))
+    expect(user.message.includes('\nEmpty or invalid username field!'))
       .toBe(true);
   });
 
@@ -38,11 +38,11 @@ describe('generalValidation()', () => {
   it('Should throw error when null or undefined value is submitted', () => {
     let user = generalValidation(null, 'username');
     expect(user.status).toBe('unsuccessful');
-    expect(user.message.includes('\nEmpty or undefined username field!'))
+    expect(user.message.includes('\nEmpty or invalid username field!'))
       .toBe(true);
     user = generalValidation(undefined, 'password');
     expect(user.status).toBe('unsuccessful');
-    expect(user.message.includes('\nEmpty or undefined password field!'))
+    expect(user.message.includes('\nEmpty or invalid password field!'))
       .toBe(true);
   });
 });
@@ -174,21 +174,6 @@ describe('SignIn and SignUp validation: ', () => {
         });
       });
 
-    it('Should throw correct error message when password has a wrong format',
-      (done) => {
-        requestObject.json.password = '';
-        request(requestObject, (req, res, body) => {
-          expect(body.status).toBe('unsuccessful');
-          expect(res.statusCode).toBe(400);
-          expect(body.message
-            .includes('\nPassword length must be between 6 and 20'))
-            .toBe(false);
-          expect(body.message
-            .includes('\nWrong password')).toBe(true);
-          done();
-        });
-      });
-
     it('Should throw correct error message when username has a wrong format',
       (done) => {
         requestObject.json.userName = '';
@@ -196,8 +181,20 @@ describe('SignIn and SignUp validation: ', () => {
           expect(body.status).toBe('unsuccessful');
           expect(res.statusCode).toBe(400);
           expect(body.message
-            .includes('\nEmpty or undefined username field!'))
+            .includes('\nEmpty or invalid username field!'))
             .toBe(true);
+          done();
+        });
+      });
+
+    it('Should throw an error message when password has a wrong format',
+      (done) => {
+        requestObject.json.userName = 'jackson';
+        requestObject.json.password = '';
+        request(requestObject, (req, res, body) => {
+          expect(body.status).toBe('unsuccessful');
+          expect(res.statusCode).toBe(400);
+          expect(body.message[0]).toBe('\nWrong password');
           done();
         });
       });
@@ -249,7 +246,7 @@ describe('SignIn and SignUp validation: ', () => {
         expect(res.statusCode).toBe(400);
         expect(body.status).toBe('unsuccessful');
         expect(body.message
-          .includes('\nEmpty or undefined username field!')
+          .includes('\nEmpty or invalid username field!')
         ).toBe(true);
         done();
       });
@@ -262,7 +259,7 @@ describe('SignIn and SignUp validation: ', () => {
         expect(res.statusCode).toBe(400);
         expect(body.status).toBe('unsuccessful');
         expect(body.message
-          .includes('\nEmpty or undefined password field!')
+          .includes('\nEmpty or invalid password field!')
         ).toBe(true);
         done();
       });
@@ -498,6 +495,109 @@ describe('isAdmin()', () => {
       requestObject.method = 'GET';
       request(requestObject, (req, res, body) => {
         expect(body.message).not.toBe('Access denied!');
+        done();
+      });
+    });
+  });
+});
+
+describe('isSuperAdmin()', () => {
+  const userDetail = {
+    userName: 'SuperAdmin',
+    password: 'testing1',
+  };
+  const url = `${routeUrl}/users/login`;
+  const requestObject = {
+    url,
+    method: 'POST',
+    json: userDetail,
+  };
+  const signupRequest = {
+    url: `${routeUrl}/users`,
+    method: 'POST',
+    json: {
+      userName: 'jackson',
+      email: 'jackson@gmail.com',
+      password: 'testing1',
+      roleId: 3,
+      isactive: true,
+    }
+  };
+  let newToken = '';
+  beforeEach((done) => {
+    request(requestObject, (req, res, body) => {
+      userDetail.token = body.token;
+      userDetail.userId = body.userId;
+      userDetail.roleType = body.roleType;
+      request(signupRequest, (req, res, signUpBody) => {
+        newToken = signUpBody.token;
+        done();
+      });
+    });
+  });
+
+  afterEach((done) => {
+    userDetail.userName = 'jackson';
+    userDetail.password = 'testing1';
+    const user = index.User;
+    user.findOne({
+      where: {
+        username: signupRequest.json.userName,
+      }
+    }).then((userFound) => {
+      if (userFound) {
+        userFound.destroy();
+      }
+      done();
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Should allow superAdmin navigate to the next route to create a role',
+    (done) => {
+      userDetail.roletype = 'Testers';
+      requestObject.json = userDetail;
+      requestObject.url = `${routeUrl}/role`;
+      requestObject.method = 'POST';
+      request(requestObject, (req, res, body) => {
+        expect(body.message).not.toBe('Access denied!');
+        expect(body.status).toBe('successful');
+        requestObject.url = `${routeUrl}/role/${body.role.id}`;
+        requestObject.method = 'DELETE';
+        request(requestObject, () => {
+          done();
+        });
+      });
+    });
+
+  it('should deny access to other users that are not superadmin', (done) => {
+    userDetail.roletype = 'Testers';
+    requestObject.json = userDetail;
+    requestObject.url = `${routeUrl}/role`;
+    requestObject.method = 'POST';
+    requestObject.json.token = newToken;
+    request(requestObject, (req, res, body) => {
+      expect(body.status).toBe('unsuccessful');
+      expect(body.message).toBe('Access denied!');
+      done();
+    });
+  });
+
+  it('should not allow an admin to create a role', (done) => {
+    userDetail.userName = 'touchstone';
+    userDetail.password = 'testing1';
+    requestObject.json = userDetail;
+    requestObject.url = `${routeUrl}/users/login`;
+    requestObject.method = 'POST';
+    request(requestObject, (req, res, body1) => {
+      userDetail.token = body1.token;
+      userDetail.roletype = 'Testers';
+      requestObject.url = `${routeUrl}/role`;
+      requestObject.method = 'POST';
+      request(requestObject, (req, res, body) => {
+        expect(body.message).toBe('Access denied!');
+        expect(body.status).toBe('unsuccessful');
         done();
       });
     });

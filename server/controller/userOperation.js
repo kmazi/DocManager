@@ -163,8 +163,8 @@ module.exports = {
    */
   getAll(req, res) {
     // check it limit and offset where passed
-    const params = { offset: req.query.offset || 0,
-      limit: req.query.limit || 8 };
+    const params = { offset: Number(req.query.offset) || 0,
+      limit: Number(req.query.limit) || 8 };
     User.findAndCountAll({
       attributes:
       ['id', 'username', 'email', 'roleId', 'isactive', 'createdAt'],
@@ -175,8 +175,8 @@ module.exports = {
         count: users.count,
         users: users.rows,
         curPage: parseInt(params.offset / params.limit, 10) + 1,
-        pageCount: parseInt(users.count / params.limit, 10),
-        pageSize: users.rows.length
+        pageCount: Math.ceil(users.count / params.limit),
+        pageSize: users.rows.length < 8 ? users.rows.length : 8,
       });
     }).catch(() => {
       res.status(400).send({
@@ -214,10 +214,10 @@ module.exports = {
         res.status(200).send({
           status: 'successful',
           count: users.count,
-          users: users.row,
+          users: users.rows,
           curPage: parseInt(params.offset / params.limit, 10) + 1,
           pageCount: Math.ceil(users.count / params.limit),
-          pageSize: users.rows.length
+          pageSize: users.rows.length < 8 ? users.rows.length : 8,
         });
       }).catch(() => {
         res.status(400).send({

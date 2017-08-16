@@ -164,7 +164,6 @@ module.exports = {
         });
       });
     } else {
-      console.log(searchQuery, '......');
       return res.status(400).send({
         status: 'unsuccessful',
         message: 'Access denied!',

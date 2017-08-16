@@ -10,7 +10,7 @@ module.exports = {
  * @return {null} returns void
  */
   create(req, res) {
-    const roletype = req.body;
+    const roletype = { roletype: req.body.roletype };
     Role.findOrCreate({
       where: { ...roletype },
       defaults: {
@@ -19,7 +19,8 @@ module.exports = {
     }).spread((roleCreated, isCreated) => {
       if (isCreated) {
         res.send({
-          status: 'successful'
+          status: 'successful',
+          role: roleCreated,
         });
       } else {
         res.send({
