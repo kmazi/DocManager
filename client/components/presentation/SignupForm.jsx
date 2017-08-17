@@ -119,7 +119,7 @@ const SignupForm = ({ signUserUp, history,
         <label htmlFor="DevOps">DevOps</label><br />
       </div>
       <button
-        id="signupbtn"
+        id="signup"
         className="center-align waves-effect waves-light btn"
         onClick={
           event => signUp(event, signUserUp, history, roleType, allDocuments)}

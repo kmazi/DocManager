@@ -1,4 +1,5 @@
 import index from '../models';
+import pagination from '../helpers/pagination';
 
 const Role = index.Roles;
 
@@ -78,7 +79,7 @@ module.exports = {
   edit(req, res) {
     const response = {};
     response.status = 'unsuccessful';
-    const newRoleValue = req.body;
+    const newRoleValue = { roletype: req.body.roletype };
     const roleId = Number(req.params.id);
     Role.findById(roleId).then((foundRole) => {
       if (!foundRole) {
@@ -150,9 +151,7 @@ module.exports = {
         response.status = 'successful';
         response.count = roles.count;
         response.roles = roles.rows;
-        response.curPage = parseInt(params.offset / params.limit, 10) + 1;
-        response.pageCount = parseInt(roles.count / params.limit, 10);
-        response.pageSize = params.limit;
+        response.paginationMetaData = pagination(roles, params);
         res.status(200).send(response);
       } else {
         res.status(400).send({

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt-nodejs';
 import index from '../models';
+import pagination from '../helpers/pagination';
 import {
   createToken,
   validateEmail,
@@ -174,9 +175,7 @@ module.exports = {
         status: 'successful',
         count: users.count,
         users: users.rows,
-        curPage: parseInt(params.offset / params.limit, 10) + 1,
-        pageCount: Math.ceil(users.count / params.limit),
-        pageSize: users.rows.length < 8 ? users.rows.length : 8,
+        paginationMetaData: pagination(users, params),
       });
     }).catch(() => {
       res.status(400).send({
@@ -215,9 +214,7 @@ module.exports = {
           status: 'successful',
           count: users.count,
           users: users.rows,
-          curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: Math.ceil(users.count / params.limit),
-          pageSize: users.rows.length < 8 ? users.rows.length : 8,
+          paginationMetaData: pagination(users, params),
         });
       }).catch(() => {
         res.status(400).send({

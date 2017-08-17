@@ -46,7 +46,7 @@ After development, copy all relevant files to the production server including th
 
 ## Contributing
 
-To contribute to this project, kindly fork the project make changes as well as comprehensive tests on all new features added. You can then make a pull request and mail me via this email - ugochukwu.mazi@andela.com- to merge your pull request.
+To contribute to this project, kindly fork the project make changes as well as write comprehensive tests on all new features added. You can then make a pull request and mail me via email - ugochukwu.mazi@andela.com- to merge your pull request.
 
 ## Author
 

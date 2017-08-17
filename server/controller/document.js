@@ -1,4 +1,5 @@
 import index from '../models';
+import pagination from '../helpers/pagination';
 
 const Document = index.Document;
 const User = index.User;
@@ -71,9 +72,7 @@ module.exports = {
           status: 'successful',
           count: documents.count,
           documents: documents.rows,
-          curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: Math.ceil(documents.count / params.limit),
-          pageSize: params.limit,
+          paginationMetaData: pagination(documents, params),
         });
       } else {
         res.status(400).send({
@@ -150,10 +149,7 @@ module.exports = {
           response.message = '';
           response.count = foundDocuments.count;
           response.documents = foundDocuments.rows;
-          response.curPage = parseInt(params.offset / params.limit, 10) + 1;
-          response.pageCount =
-          Math.ceil(foundDocuments.count / params.limit);
-          response.pageSize = foundDocuments.rows.length;
+          response.paginationMetaData = pagination(foundDocuments, params);
           res.status(200);
         }
         res.send(response);
@@ -313,8 +309,8 @@ module.exports = {
         message: 'No title to search for!'
       });
     }
-    const searchContents = req.query.q.split(' ')
-    .filter(search => search !== ' ');
+    const searchContents = req.query.q.trim().split(/\s/)
+    .filter(search => search !== '');
     const searchQueryContents = searchContents
     .map(searchContent => ({ $iLike: `%${searchContent}%` }));
     const titleSearchQuery = {
@@ -340,9 +336,7 @@ module.exports = {
           status: 'successful',
           count: documents.count,
           documents: documents.rows,
-          curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: Math.ceil(documents.count / params.limit),
-          pageSize: documents.rows.length
+          paginationMetaData: pagination(documents, params),
         });
       } else {
         res.status(400).send({

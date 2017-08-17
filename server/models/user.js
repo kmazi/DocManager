@@ -15,10 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true,
       validate: {
-        is: {
-          args: ['^[a-z]+$', 'i'],
-          msg: 'username should contain only alphabets'
-        },
         len: {
           arg: [2, 20],
           msg: 'username should be between 2 to 20 letters'
@@ -31,8 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         len: {
-          arg: [6, 20],
-          msg: 'password length should be between 6 to 20 characters'
+          arg: [6, 50],
+          msg: 'password length should be between 6 to 50 characters'
         },
       } },
     isactive: { type: DataTypes.BOOLEAN,
