@@ -499,7 +499,7 @@ describe('getAll: ', () => {
       expect(body.message).not.toBe('You are not authenticated!');
       expect(body.status).toBe('successful');
       expect(res.statusCode).toBe(200);
-      expect(body.users.length).toBe(6);
+      expect(body.users.length).toBe(5);
       done();
     });
   });
@@ -660,7 +660,7 @@ describe('find: ', () => {
       expect(body.message).not.toBe('You are not authenticated!');
       expect(body.status).toBe('successful');
       expect(res.statusCode).toBe(200);
-      expect(body.users.length).toBe(4);
+      expect(body.users.length).toBe(3);
       done();
     });
   });

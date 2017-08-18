@@ -11,6 +11,7 @@ exports[`The DocumentPreview component: should render pagination links in Docume
     <div
       className="col s3"
       id="docview"
+      name="docview"
     >
       <div>
         <h6
@@ -81,6 +82,7 @@ exports[`The DocumentPreview component: should render the DocumentPreview compon
     <div
       className="col s3"
       id="docview"
+      name="docview"
     >
       <div>
         <h6
@@ -152,6 +154,7 @@ exports[`The DocumentPreview component: should render the delete button when pre
     <div
       className="col s3"
       id="docview"
+      name="docview"
     >
       <div>
         <h6
@@ -223,6 +226,7 @@ exports[`The DocumentPreview component: should show error message when button[na
     <div
       className="col s3"
       id="docview"
+      name="docview"
     >
       <div>
         <h6
