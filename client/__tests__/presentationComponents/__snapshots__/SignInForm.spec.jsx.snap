@@ -17,7 +17,7 @@ exports[`The signinform component: should render the signinform correctly 1`] = 
   />
   <button
     className="center-align waves-effect waves-light btn"
-    id="signinbtn"
+    id="signin"
     onClick={[Function]}
   >
     submit

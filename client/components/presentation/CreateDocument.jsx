@@ -93,7 +93,7 @@ const CreateDocument = ({ documentCreation, userId, roleType }) => (
         id="public"
         value="Public"
       />
-        <label htmlFor="public">Public</label>
+        <label id="docrole" htmlFor="public">Public</label>
         <input
           className="with-gap"
           name="group1"

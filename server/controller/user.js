@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt-nodejs';
 import index from '../models';
+import pagination from '../helpers/pagination';
 import {
   createToken,
   validateEmail,
@@ -163,8 +164,8 @@ module.exports = {
    */
   getAll(req, res) {
     // check it limit and offset where passed
-    const params = { offset: req.query.offset || 0,
-      limit: req.query.limit || 8 };
+    const params = { offset: Number(req.query.offset) || 0,
+      limit: Number(req.query.limit) || 8 };
     User.findAndCountAll({
       attributes:
       ['id', 'username', 'email', 'roleId', 'isactive', 'createdAt'],
@@ -174,9 +175,7 @@ module.exports = {
         status: 'successful',
         count: users.count,
         users: users.rows,
-        curPage: parseInt(params.offset / params.limit, 10) + 1,
-        pageCount: parseInt(users.count / params.limit, 10),
-        pageSize: users.rows.length
+        paginationMetaData: pagination(users, params),
       });
     }).catch(() => {
       res.status(400).send({
@@ -214,10 +213,8 @@ module.exports = {
         res.status(200).send({
           status: 'successful',
           count: users.count,
-          users: users.row,
-          curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: parseInt(users.count / params.limit, 10),
-          pageSize: users.rows.length
+          users: users.rows,
+          paginationMetaData: pagination(users, params),
         });
       }).catch(() => {
         res.status(400).send({
@@ -226,45 +223,6 @@ module.exports = {
         });
       });
     }
-  },
-
-  /**
-   * Updates a specific user's role
-   * @param {object} req - The request object from express server
-   * @param {object} res - The response object from express server
-   * @return {null} Returns null
-   */
-  updateRole(req, res) {
-    const userId = Number(req.params.id);
-    Role.count().then((count) => {
-      if (req.body.roleId && req.body.roleId > 0 &&
-        req.body.roleId <= count) {
-        User.update({ roleId: req.body.roleId }, {
-          where: {
-            id: userId,
-          }
-        }).then(() => {
-          res.status(200).send({
-            status: 'successful',
-          });
-        }).catch(() => {
-          res.status(400).send({
-            status: 'unsuccessful',
-            message: 'Could not find any user to update!',
-          });
-        });
-      } else {
-        res.status(400).send({
-          status: 'unsuccessful',
-          message: 'Invalid role ID',
-        });
-      }
-    }).catch(() => {
-      res.status(400).send({
-        status: 'unsuccessful',
-        message: 'Could not count roles!',
-      });
-    });
   },
 
   /**
@@ -406,8 +364,8 @@ module.exports = {
         }).then(() => {
           res.status(200).send({
             status: 'successful',
-            message: `${knownUser.username} has been successfull
-            ${statusUpdate ? 'deactivated!' : 'activated'}`,
+            message: `${knownUser.username} has been successfully
+            ${statusUpdate ? 'activated!' : 'deactivated'}`,
           });
         }).catch();
       }

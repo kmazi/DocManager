@@ -1,4 +1,5 @@
 import index from '../models';
+import pagination from '../helpers/pagination';
 
 const Document = index.Document;
 const User = index.User;
@@ -13,10 +14,10 @@ module.exports = {
   create(req, res) {
     const title = req.body.title || '';
     const body = req.body.body || '';
-    const userId = req.body.user.userId || req.body.userId || '';
+    const userId = req.body.user.userId;
     const access = req.body.access || '';
     // Don't create document if fields are empty
-    if (title === '' || body === '' || access === '' || userId === '') {
+    if (title === '' || body === '' || access === '') {
       res.status(400).send({
         status: 'unsuccessful',
         message: 'Empty title or body or access field!',
@@ -71,9 +72,7 @@ module.exports = {
           status: 'successful',
           count: documents.count,
           documents: documents.rows,
-          curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: parseInt(documents.count / params.limit, 10),
-          pageSize: documents.rows.length
+          paginationMetaData: pagination(documents, params),
         });
       } else {
         res.status(400).send({
@@ -97,20 +96,15 @@ module.exports = {
  * @return {null} it returns no value
  */
   getAll(req, res) {
-    const access = req.params.access || '';
-    let params;
-    // check it limit and offset where passed
-    if (req.query.offset && req.query.limit) {
-      params = { offset: req.query.offset, limit: req.query.limit };
-    } else {
-      params = { offset: 0, limit: 8 };
-    }
+    const access = req.params.access;
+    const params = { offset: req.query.offset || 0,
+      limit: req.query.limit || 8 };
     let searchQuery = {};
     switch (access) {
     case 'Public':
       searchQuery = { access };
       break;
-    case 'Admin':
+    case 'Amin':
     case 'SuperAdmin':
     case 'Learning':
     case 'Devops':
@@ -122,17 +116,18 @@ module.exports = {
       }
       break;
     case 'All':
-      searchQuery = req.body.user.roleType !== 'Admin'
-      || req.body.user.roleType !== 'SuperAdmin' ? {
+      searchQuery = {
         $or:
         [{ userId: req.body.user.userId },
-          { access: req.body.user.roleType },
-          { access: 'Public' }]
-      } : {};
+        { access: req.body.user.roleType },
+        { access: 'Public' }]
+      };
       break;
     default:
-      if (req.body.user.roleType !== 'Admin'
-      || req.body.user.roleType !== 'SuperAdmin') {
+      if (req.body.user.roleType === 'Admin'
+      || req.body.user.roleType === 'SuperAdmin') {
+        searchQuery = {};
+      } else {
         searchQuery = null;
       }
       break;
@@ -154,10 +149,7 @@ module.exports = {
           response.message = '';
           response.count = foundDocuments.count;
           response.documents = foundDocuments.rows;
-          response.curPage = parseInt(params.offset / params.limit, 10) + 1;
-          response.pageCount =
-          parseInt(foundDocuments.count / params.limit, 10);
-          response.pageSize = foundDocuments.rows.length;
+          response.paginationMetaData = pagination(foundDocuments, params);
           res.status(200);
         }
         res.send(response);
@@ -200,7 +192,7 @@ module.exports = {
               }
               break;
             case 'Public':
-              doc = req.body.user.userId && req.body.user.isactive
+              doc = req.body.user.userId
               ? foundDocument : {};
               break;
             case req.body.user.roleType:
@@ -317,8 +309,8 @@ module.exports = {
         message: 'No title to search for!'
       });
     }
-    const searchContents = req.query.q.split(' ')
-    .filter(search => search !== ' ');
+    const searchContents = req.query.q.trim().split(/\s/)
+    .filter(search => search !== '');
     const searchQueryContents = searchContents
     .map(searchContent => ({ $iLike: `%${searchContent}%` }));
     const titleSearchQuery = {
@@ -326,7 +318,7 @@ module.exports = {
         $or: searchQueryContents,
       },
     };
-    let searchQuery = req.body.user.roleType === 'Admin'
+    const searchQuery = req.body.user.roleType === 'Admin'
     || req.body.user.roleType === 'SuperAdmin' ?
       titleSearchQuery : {
         $or:
@@ -334,17 +326,6 @@ module.exports = {
         { access: req.body.user.roleType, ...titleSearchQuery },
         { access: 'Public', ...titleSearchQuery }]
       };
-
-    if (!req.query.q) {
-      searchQuery = req.body.user.roleType === 'Admin'
-      || req.body.user.roleType === 'SuperAdmin' ?
-        {} : {
-          $or:
-          [{ userId: req.body.user.userId },
-          { access: req.body.user.roleType },
-          { access: 'Public' }]
-        };
-    }
     Document.findAndCountAll({
       where: { ...searchQuery },
       attributes: ['id', 'title', 'body', 'access', 'createdAt'],
@@ -355,9 +336,7 @@ module.exports = {
           status: 'successful',
           count: documents.count,
           documents: documents.rows,
-          curPage: parseInt(params.offset / params.limit, 10) + 1,
-          pageCount: parseInt(documents.count / params.limit, 10),
-          pageSize: documents.rows.length
+          paginationMetaData: pagination(documents, params),
         });
       } else {
         res.status(400).send({
@@ -383,9 +362,9 @@ module.exports = {
     const documentId = Number(req.params.id);
     const response = {};
     response.status = 'unsuccessful';
+    response.message = 'No document found!';
     Document.findById(documentId).then((knownDocument) => {
       if (!knownDocument) {
-        response.status = 'unsuccessful';
         response.message = 'Could not find document!';
         return res.status(400).send(response);
       } else if (knownDocument.userId === req.body.user.userId) {
@@ -393,20 +372,12 @@ module.exports = {
           response.status = 'successful';
           response.message = `"${knownDocument.title}" has been deleted!`;
           return res.status(200).send(response);
-        }).catch(() => {
-          response.status = 'unsuccessful';
-          response.message = 'Could not delete the document!';
-          return res.status(400).send(response);
         });
       } else {
         response.status = 'unsuccessful';
         response.message = 'Access denied!';
-        return res.send(response);
+        return res.status(400).send(response);
       }
-    }).catch(() => {
-      response.status = 'unsuccessful';
-      response.message = 'No document found!';
-      return res.status(400).send(response);
-    });
+    }).catch(() => res.status(400).send(response));
   },
 };

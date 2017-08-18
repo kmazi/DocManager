@@ -1,4 +1,5 @@
-
+[![Build Status](https://travis-ci.org/andela-mugochukwu/DocManager.svg?branch=serverside-test)](https://travis-ci.org/andela-mugochukwu/DocManager)
+[![Coverage Status](https://coveralls.io/repos/github/andela-mugochukwu/DocManager/badge.svg?branch=serverside-test)](https://coveralls.io/github/andela-mugochukwu/DocManager?branch=serverside-test)
 # DocManager
 Docmanager is a full-stack application built with nodejs and the redux framework for creating, securing, and accessing documents from anywhere in the world. Click on this [link](http://docmanger.herokuapp.com) to use the app.
 
@@ -46,7 +47,7 @@ After development, copy all relevant files to the production server including th
 
 ## Contributing
 
-To contribute to this project, kindly fork the project make changes as well as comprehensive tests on all new features added. You can then make a pull request and mail me via this email - ugochukwu.mazi@andela.com- to merge your pull request.
+To contribute to this project, kindly fork the project make changes as well as write comprehensive tests on all new features added. You can then make a pull request and mail me via email - ugochukwu.mazi@andela.com- to merge your pull request.
 
 ## Author
 
@@ -55,13 +56,3 @@ To contribute to this project, kindly fork the project make changes as well as c
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* God
-* Mark Edomwande
-* Celestine Okoro
-* Bamidele Daniel
-* Esther Falayi
-* Memuna Haruna
-* Co Andelans

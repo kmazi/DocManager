@@ -1,4 +1,5 @@
 import index from '../models';
+import pagination from '../helpers/pagination';
 
 const Role = index.Roles;
 
@@ -10,7 +11,7 @@ module.exports = {
  * @return {null} returns void
  */
   create(req, res) {
-    const roletype = req.body;
+    const roletype = { roletype: req.body.roletype };
     Role.findOrCreate({
       where: { ...roletype },
       defaults: {
@@ -19,7 +20,8 @@ module.exports = {
     }).spread((roleCreated, isCreated) => {
       if (isCreated) {
         res.send({
-          status: 'successful'
+          status: 'successful',
+          role: roleCreated,
         });
       } else {
         res.send({
@@ -77,7 +79,7 @@ module.exports = {
   edit(req, res) {
     const response = {};
     response.status = 'unsuccessful';
-    const newRoleValue = req.body;
+    const newRoleValue = { roletype: req.body.roletype };
     const roleId = Number(req.params.id);
     Role.findById(roleId).then((foundRole) => {
       if (!foundRole) {
@@ -149,9 +151,7 @@ module.exports = {
         response.status = 'successful';
         response.count = roles.count;
         response.roles = roles.rows;
-        response.curPage = parseInt(params.offset / params.limit, 10) + 1;
-        response.pageCount = parseInt(roles.count / params.limit, 10);
-        response.pageSize = roles.rows.length;
+        response.paginationMetaData = pagination(roles, params);
         res.status(200).send(response);
       } else {
         res.status(400).send({

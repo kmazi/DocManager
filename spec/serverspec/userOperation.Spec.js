@@ -1,13 +1,14 @@
 import request from 'request';
 import index from '../../server/models';
+import mockUsers from './mockUsers';
 
-const routeUrl = 'http://localhost:1844/api/v1';
-describe('signUpUser(): ', () => {
+const routeUrl = 'http://docmanger.herokuapp.com/api/v1';
+describe('signUp: ', () => {
   let userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -42,7 +43,7 @@ describe('signUpUser(): ', () => {
       userName: 'jackson',
       email: 'jackson@gmail.com',
       password: 'testing1',
-      roleId: 2,
+      roleId: 3,
       isactive: true,
     };
   });
@@ -78,11 +79,12 @@ describe('signUpUser(): ', () => {
     };
     request(requestObject, (req, res, body) => {
       expect(body.status).not.toBe('successful');
+      expect(body.message.length).toBe(2);
       done();
     });
   });
 
-  it('should throw error when invalid form is posted', (done) => {
+  it('should throw error when isactive status is not set', (done) => {
     requestObject.json = {
       userName: 'jackson',
       email: 'jackson@gmail.com',
@@ -90,17 +92,18 @@ describe('signUpUser(): ', () => {
     };
     request(requestObject, (req, res, body) => {
       expect(body.status).not.toBe('successful');
+      expect(body.message.includes('Set "isactive" property')).toBe(true);
       done();
     });
   });
 });
 
-describe('signInUser()', () => {
+describe('signIn: ', () => {
   const userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -110,7 +113,8 @@ describe('signInUser()', () => {
   };
 
   beforeEach((done) => {
-    request(requestObject, () => {
+    request(requestObject, (req, res, body) => {
+      userDetail.userId = body.userId;
       done();
     });
   });
@@ -159,6 +163,34 @@ describe('signInUser()', () => {
     });
   });
 
+  it(`should return valid error message when a
+  deactivated user tries to signup`, (done) => {
+    const superAdmin = {
+      url: `${routeUrl}/users/login`,
+      method: 'POST',
+      json: {
+        userName: 'SuperAdmin',
+        password: 'testing1',
+      }
+    };
+    requestObject.url = `${routeUrl}/users/login`;
+    // signin as superadmin
+    request(superAdmin, (req, res, body0) => {
+      superAdmin.url = `${routeUrl}/users/${userDetail.userId}`;
+      superAdmin.json.token = body0.token;
+      superAdmin.method = 'DELETE';
+      // deactivate user
+      request(superAdmin, () => {
+        request(requestObject, (req, res, body) => {
+          expect(body.status).toBe('unsuccessful');
+          expect(body.message).toBe('user is inactive');
+          expect(res.statusCode).toBe(400);
+          done();
+        });
+      });
+    });
+  });
+
   it('should throw error when password is invalid', (done) => {
     requestObject.url = `${routeUrl}/users/login`;
     userDetail.password = 'james';
@@ -193,12 +225,12 @@ describe('signInUser()', () => {
   });
 });
 
-describe('viewUserProfile()', () => {
+describe('viewProfile: ', () => {
   const userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -299,14 +331,347 @@ describe('viewUserProfile()', () => {
         done();
       });
     });
+
+  it(`should prevent a deactivated user from viewing
+  their profile`, (done) => {
+    const superAdmin = {
+      url: `${routeUrl}/users/login`,
+      method: 'POST',
+      json: {
+        userName: 'SuperAdmin',
+        password: 'testing1',
+      }
+    };
+    requestObject.url = `${routeUrl}/users/login`;
+    // signin as superadmin
+    request(superAdmin, (req, res, body0) => {
+      superAdmin.url = `${routeUrl}/users/${userDetail.userId}`;
+      superAdmin.json.token = body0.token;
+      superAdmin.method = 'DELETE';
+      // deactivate user
+      request(superAdmin, () => {
+        requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
+        requestObject.method = 'GET';
+        request(requestObject, (req, res, body) => {
+          expect(body.status).toBe('unsuccessful');
+          expect(body.message).toBe('Inactive user!');
+          expect(res.statusCode).toBe(400);
+          done();
+        });
+      });
+    });
+  });
 });
 
-describe('updateUser()', () => {
+describe('getAll: ', () => {
+  const userDetail = {
+    userName: 'jackson',
+    email: 'jackson@gmail.com',
+    password: 'testing1',
+    roleId: 5,
+    isactive: true,
+  };
+  let userToken;
+  let adminToken;
+  let superAdminToken;
+  const userObject = {
+    url: `${routeUrl}/users`,
+    method: 'POST',
+    json: userDetail,
+  };
+  const adminLogin = {
+    url: `${routeUrl}/users/login`,
+    method: 'POST',
+    json: {
+      userName: 'touchstone',
+      password: 'testing1',
+    }
+  };
+  const superAdminLogin = {
+    url: `${routeUrl}/users/login`,
+    method: 'POST',
+    json: {
+      userName: 'SuperAdmin',
+      password: 'testing1',
+    }
+  };
+  const User = index.User;
+  let allUsers;
+  beforeAll((done) => {
+    request(userObject, (req, res, body) => {
+      userToken = body.token;
+      request(adminLogin, (req, res, body1) => {
+        adminToken = body1.token;
+        adminLogin.body = body1;
+        request(superAdminLogin, (req, res, body2) => {
+          superAdminToken = body2.token;
+          User.bulkCreate(mockUsers)
+          .then(() => User.findAll()).then((users) => {
+            allUsers = users.map(user => user.dataValues);
+            done();
+          }).catch(() => {
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  afterAll((done) => {
+    User.findOne({
+      where: {
+        username: userDetail.userName,
+      }
+    }).then((userFound) => {
+      if (userFound) {
+        userFound.destroy();
+      }
+      User.destroy({ where: {
+        roleId: 3,
+      }, });
+      done();
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Should deny access to unauthenticated user from viewing all users',
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/users`,
+      method: 'GET',
+      json: {
+        token: 'ksfdodjfisd.sfldsfskdfdklfd.dlsjdfslfk'
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).toBe('You are not authenticated!');
+      expect(body.status).toBe('unsuccessful');
+      done();
+    });
+  });
+
+  it('Should deny a regular user from viewing all users route',
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/users`,
+      method: 'GET',
+      json: {
+        token: userToken,
+        user: allUsers[0],
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).toBe('Access denied!');
+      expect(body.status).toBe('unsuccessful');
+      done();
+    });
+  });
+
+  it('Should allow admin to view all users in the database',
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/users?limit=8`,
+      method: 'GET',
+      json: {
+        token: adminToken
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).not.toBe('You are not authenticated!');
+      expect(body.status).toBe('successful');
+      expect(res.statusCode).toBe(200);
+      expect(body.users.length).toBe(8);
+      done();
+    });
+  });
+
+  it('Should allow superadmin to view all users in the database',
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/users?offset=4`,
+      method: 'GET',
+      json: {
+        token: superAdminToken,
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).not.toBe('You are not authenticated!');
+      expect(body.status).toBe('successful');
+      expect(res.statusCode).toBe(200);
+      expect(body.users.length).toBe(5);
+      done();
+    });
+  });
+
+  it(`Should reset limit and offset to 8 and 0 respectively when
+  they are not set`,
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/users?offset=null&limit=null`,
+      method: 'GET',
+      json: {
+        token: superAdminToken,
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).not.toBe('You are not authenticated!');
+      expect(body.status).toBe('successful');
+      expect(res.statusCode).toBe(200);
+      expect(body.users.length).toBe(8);
+      done();
+    });
+  });
+});
+
+describe('find: ', () => {
+  const userDetail = {
+    userName: 'jackson',
+    email: 'jackson@gmail.com',
+    password: 'testing1',
+    roleId: 5,
+    isactive: true,
+  };
+  let userToken;
+  let adminToken;
+  let superAdminToken;
+  const userObject = {
+    url: `${routeUrl}/users`,
+    method: 'POST',
+    json: userDetail,
+  };
+  const adminLogin = {
+    url: `${routeUrl}/users/login`,
+    method: 'POST',
+    json: {
+      userName: 'touchstone',
+      password: 'testing1',
+    }
+  };
+  const superAdminLogin = {
+    url: `${routeUrl}/users/login`,
+    method: 'POST',
+    json: {
+      userName: 'SuperAdmin',
+      password: 'testing1',
+    }
+  };
+  const User = index.User;
+  let allUsers;
+  beforeAll((done) => {
+    request(userObject, (req, res, body) => {
+      userToken = body.token;
+      request(adminLogin, (req, res, body1) => {
+        adminToken = body1.token;
+        adminLogin.body = body1;
+        request(superAdminLogin, (req, res, body2) => {
+          superAdminToken = body2.token;
+          User.bulkCreate(mockUsers)
+          .then(() => User.findAll()).then((users) => {
+            allUsers = users.map(user => user.dataValues);
+            done();
+          }).catch(() => {
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  afterAll((done) => {
+    User.findOne({
+      where: {
+        username: userDetail.userName,
+      }
+    }).then((userFound) => {
+      if (userFound) {
+        userFound.destroy();
+      }
+      User.destroy({ where: {
+        roleId: 3,
+      }, });
+      done();
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Should deny access to unauthenticated user from searching through users',
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/search/users`,
+      method: 'GET',
+      json: {
+        token: 'ksfdodjfisd.sfldsfskdfdklfd.dlsjdfslfk',
+        users: allUsers,
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).toBe('You are not authenticated!');
+      expect(body.status).toBe('unsuccessful');
+      done();
+    });
+  });
+
+  it('Should deny a regular user from searching through users',
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/search/users?q=te&limit=8`,
+      method: 'GET',
+      json: {
+        token: userToken,
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).toBe('Access denied!');
+      expect(body.status).toBe('unsuccessful');
+      done();
+    });
+  });
+
+  it(`Should return an error message when a search request is
+  sent without a search string`,
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/search/users?q=`,
+      method: 'GET',
+      json: {
+        token: adminToken
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).not.toBe('You are not authenticated!');
+      expect(body.status).toBe('unsuccessful');
+      expect(res.statusCode).toBe(400);
+      done();
+    });
+  });
+
+  it('Should allow superadmin to search through users in the database',
+  (done) => {
+    const apiObject = {
+      url: `${routeUrl}/search/users?q=r&offset=0`,
+      method: 'GET',
+      json: {
+        token: superAdminToken,
+      }
+    };
+    request(apiObject, (req, res, body) => {
+      expect(body.message).not.toBe('You are not authenticated!');
+      expect(body.status).toBe('successful');
+      expect(res.statusCode).toBe(200);
+      expect(body.users.length).toBe(3);
+      done();
+    });
+  });
+});
+
+describe('update: ', () => {
   let userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -320,7 +685,7 @@ describe('updateUser()', () => {
         userName: 'jackson',
         email: 'jackson@gmail.com',
         password: 'testing1',
-        roleId: 2,
+        roleId: 3,
         isactive: true,
         userId: body.userId,
         token: body.token,
@@ -337,7 +702,7 @@ describe('updateUser()', () => {
   afterEach((done) => {
     userDetail.userName = 'jackson';
     userDetail.password = 'testing1';
-    userDetail.roleId = 2;
+    userDetail.roleId = 3;
     const user = index.User;
     user.findOne({
       where: {
@@ -425,12 +790,12 @@ describe('updateUser()', () => {
   });
 });
 
-describe('deleteUser()', () => {
+describe('Delete: ', () => {
   let userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',
     password: 'testing1',
-    roleId: 2,
+    roleId: 3,
     isactive: true,
   };
   let requestObject = {
@@ -444,7 +809,7 @@ describe('deleteUser()', () => {
         userName: 'jackson',
         email: 'jackson@gmail.com',
         password: 'testing1',
-        roleId: 2,
+        roleId: 3,
         isactive: true,
         userId: body.userId,
         token: body.token,
@@ -461,7 +826,7 @@ describe('deleteUser()', () => {
   afterEach((done) => {
     userDetail.userName = 'jackson';
     userDetail.password = 'testing1';
-    userDetail.roleId = 2;
+    userDetail.roleId = 3;
     const user = index.User;
     user.findOne({
       where: {
@@ -538,8 +903,6 @@ describe('deleteUser()', () => {
       request(requestObject, (req, res, resBody) => {
         expect(resBody.status).toBe('successful');
         expect(res.statusCode).toBe(200);
-        expect(resBody.message)
-        .toBe('jackson has been successfull deactivated!');
         done();
       });
     });

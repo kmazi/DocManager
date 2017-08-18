@@ -28,7 +28,7 @@ describe('The signupform component:', () => {
       preventDefault: () => 'hello',
     };
     const enzymeWrapper = mount(<SignupForm {...props} />);
-    enzymeWrapper.find('button#signupbtn').props().onClick(event);
+    enzymeWrapper.find('button#signup').props().onClick(event);
     expect(props.signUserUp.mock.calls.length).toBe(1);
   });
 
@@ -38,7 +38,7 @@ describe('The signupform component:', () => {
       preventDefault: () => 'hello',
     };
     const enzymeWrapper = mount(<SignupForm {...props} />);
-    enzymeWrapper.find('button#signupbtn').props().onClick(event);
+    enzymeWrapper.find('button#signup').props().onClick(event);
     const component = enzymeWrapper;
     const tree = toJson(component);
     expect(tree).toMatchSnapshot();

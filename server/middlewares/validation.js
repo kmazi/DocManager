@@ -110,7 +110,7 @@ const generalValidation = (value, formField) => {
   // check for null and empty fields
   if (value === null || value === '' || typeof value === 'undefined') {
     user.status = 'unsuccessful';
-    user.message.push(`\nEmpty or undefined ${formField} field!`);
+    user.message.push(`\nEmpty or invalid ${formField} field!`);
     return user;
   }
   // check to see if script characters are included
