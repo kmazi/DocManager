@@ -88,6 +88,7 @@ const UserPage = ({ userName, userId, history, signUserOut,
           </h5><hr />
 
           <a
+            id="owndoclink"
             className="center-align btn"
             onClick={(event) => {
               fetchUserDocs(event, getUserDocs, userId, history);

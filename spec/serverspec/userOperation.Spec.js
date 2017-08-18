@@ -3,7 +3,7 @@ import index from '../../server/models';
 import mockUsers from './mockUsers';
 
 const routeUrl = 'http://localhost:1844/api/v1';
-fdescribe('signUp: ', () => {
+describe('signUp: ', () => {
   let userDetail = {
     userName: 'jackson',
     email: 'jackson@gmail.com',

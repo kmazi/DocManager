@@ -114,6 +114,71 @@ module.exports = {
   .click('.swal2-confirm.swal2-styled')
   .pause(1000),
 
+  'View documents created by you': browser => browser
+  .click('a#owndoclink')
+  .pause(1000)
+  .assert.elementPresent('#doc-view-background #docview')
+  .pause(1000)
+  .click('#doc-view-background div[name=docview]:first-child button:first-of-type')
+  .pause(1000)
+  .assert.elementPresent('#readdocument')
+  .assert.cssProperty('#readdocument #editbtn', 'display', 'block'),
+
+  'Edit documents created by you': browser => browser
+  .click('#readdocument #editbtn')
+  .pause(1000)
+  .setValue('#readdocument #title', 'I still love you!')
+  .assert.cssClassPresent('#readdocument #docbody', 'hide')
+  .pause(1000)
+  .keys(browser.Keys.TAB)
+  .pause(1000)
+  .keys(browser.Keys.SPACE)
+  .keys(['D', 'o', 'n', 't'])
+  .keys(browser.Keys.SPACE)
+  .keys(['y', 'o', 'u'])
+  .keys(browser.Keys.SPACE)
+  .keys(['t', 'h', 'i', 'n', 'k'])
+  .keys(browser.Keys.SPACE)
+  .keys(['s', 'o'])
+  .pause(1000)
+  .click('#readdocument #submitbtn')
+  .pause(3000)
+  .waitForElementVisible('#swal2-title')
+  .pause(2000)
+  .assert.containsText('#swal2-title', 'Update successful')
+  .pause(1000)
+  .click('.swal2-confirm.swal2-styled')
+  .assert.elementPresent('#docview'),
+
+  'Delete a document': browser => browser
+  .pause(1000)
+  .click('#docview button:nth-child(2n)')
+  .pause(3000)
+  .waitForElementVisible('#swal2-title')
+  .pause(2000)
+  .assert.containsText('#swal2-title', 'Delete document')
+  .pause(1000)
+  .click('.swal2-confirm.swal2-styled')
+  .pause(1000)
+  .click('.swal2-confirm.swal2-styled'),
+
+  'Search for a document': browser => browser
+  .pause(1000)
+  .click('.searchcontainer input')
+  .setValue('.searchcontainer input', '2')
+  .pause(1000)
+  .setValue('.searchcontainer input', 'aksdfdhskdf')
+  .pause(1000),
+
+  'View public, role and all documents': browser => browser
+  .pause(1000)
+  .click('#docheader > div > div button:first-child')
+  .pause(1000)
+  .click('#docheader > div > div button:nth-child(2n)')
+  .pause(1000)
+  .click('#docheader > div > div button:nth-child(2n)')
+  .pause(1000),
+
   'View own user profile': browser => browser
   .click('a#userprofilelink')
   .pause(1000)
@@ -164,7 +229,7 @@ module.exports = {
     .pause(1000)
     .waitForElementVisible('#signinform')
     .pause(1000)
-    .setValue('#signinform input[type=text]', 'touchstone')
+    .setValue('#signinform input[type=text]', 'SuperAdmin')
     .pause(1000)
     .setValue('#signinform input[type=password]', 'testing1')
     .pause(1000)
@@ -176,7 +241,23 @@ module.exports = {
     .pause(1000)
     .click('a#manageusers')
     .waitForElementVisible('#viewusers table')
-    .assert.elementPresent('#viewusers table')
+    .assert.elementPresent('#viewusers table'),
+
+  'SuperAdmin can deactivate a user': browser =>
+    browser
+    .pause(1000)
+    .click('#viewusers tbody tr:last-of-type #useractionbtn')
+    .pause(3000)
+    .waitForElementVisible('#swal2-title')
+    .assert.containsText('#swal2-title', 'Comfirm Deactivation')
+    .pause(2000)
+    .click('.swal2-confirm.swal2-styled')
+    .pause(2000)
+    .waitForElementVisible('#swal2-title')
+    .assert.containsText('#swal2-title', 'Deactivation successful')
+    .pause(2000)
+    .click('.swal2-confirm.swal2-styled')
+    .pause(2000)
     .click('div#docheader span.right a')
     .end()
 };

@@ -38,6 +38,7 @@ exports[`The CreateDocument component: should render correctly 1`] = `
       />
       <label
         htmlFor="public"
+        id="docrole"
       >
         Public
       </label>

@@ -76,7 +76,7 @@ exports[`The Authenticate component: should render correctly 1`] = `
           />
           <button
             className="center-align waves-effect waves-light btn"
-            id="signinbtn"
+            id="signin"
             onClick={[Function]}
           >
             submit
@@ -182,7 +182,7 @@ exports[`The Authenticate component: should render correctly 1`] = `
           </div>
           <button
             className="center-align waves-effect waves-light btn"
-            id="signupbtn"
+            id="signup"
             onClick={[Function]}
           >
             submit
@@ -270,7 +270,7 @@ exports[`The Authenticate component: should show signin form when signinbtn is c
           />
           <button
             className="center-align waves-effect waves-light btn"
-            id="signinbtn"
+            id="signin"
             onClick={[Function]}
           >
             submit
@@ -376,7 +376,7 @@ exports[`The Authenticate component: should show signin form when signinbtn is c
           </div>
           <button
             className="center-align waves-effect waves-light btn"
-            id="signupbtn"
+            id="signup"
             onClick={[Function]}
           >
             submit
@@ -464,7 +464,7 @@ exports[`The Authenticate component: should show signup form when signupbtn is c
           />
           <button
             className="center-align waves-effect waves-light btn"
-            id="signinbtn"
+            id="signin"
             onClick={[Function]}
           >
             submit
@@ -570,7 +570,7 @@ exports[`The Authenticate component: should show signup form when signupbtn is c
           </div>
           <button
             className="center-align waves-effect waves-light btn"
-            id="signupbtn"
+            id="signup"
             onClick={[Function]}
           >
             submit

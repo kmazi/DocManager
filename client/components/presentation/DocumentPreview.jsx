@@ -12,8 +12,8 @@ import Pagination from 'react-js-pagination';
  */
 const deleteDocById = (deleteDocument, docId) => {
   Alert({
-    title: 'Comfirm deactivation',
-    text: 'Are you sure you want to this document?',
+    title: 'Delete document',
+    text: 'Are you sure you want to delete this document?',
     type: 'info',
     showCloseButton: true,
     showCancelButton: true,
@@ -68,6 +68,7 @@ const DocumentPreview = ({ userDocuments, readDocument,
   roleType, userId }) => {
   const docs = userDocuments.map(document => (<div
     id="docview"
+    name="docview"
     key={document.id}
     className="col s3"
   >

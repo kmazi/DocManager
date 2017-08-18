@@ -99,7 +99,7 @@ exports[`The signupform component: should alert an error message when signup fai
     </div>
     <button
       className="center-align waves-effect waves-light btn"
-      id="signupbtn"
+      id="signup"
       onClick={[Function]}
     >
       submit
@@ -196,7 +196,7 @@ exports[`The signupform component: should render the signup form correctly 1`] =
   </div>
   <button
     className="center-align waves-effect waves-light btn"
-    id="signupbtn"
+    id="signup"
     onClick={[Function]}
   >
     submit

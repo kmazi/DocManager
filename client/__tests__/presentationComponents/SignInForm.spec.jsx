@@ -27,7 +27,7 @@ describe('The signinform component:', () => {
     const event = {
       preventDefault: () => 'hello',
     };
-    enzymeWrapper.find('button#signinbtn').props().onClick(event);
+    enzymeWrapper.find('button#signin').props().onClick(event);
     expect(props.signInUser.mock.calls.length).toBe(1);
   });
 });
