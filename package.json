@@ -4,7 +4,7 @@
   "description": "A document manager that controls access rights and privileges",
   "main": "main.js",
   "scripts": {
-    "test": "TEST_DATABASE_URL=postgres://urpballv:eaB84EtyjQoQXbH9bgThrYlVCPxB7RWU@pellefant.db.elephantsql.com:5432/urpballv NODE_ENV=test babel-node spec/run.js && jest --coverage -- -u",
+    "test": "NODE_ENV=test babel-node spec/run.js && jest --coverage -- -u",
     "test:local": "babel-node spec/run.js && yarn test:react -- -u",
     "test:react": "jest --coverage",
     "test:mocha": "./node_modules/.bin/babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/mocha -- --compilers js:babel-core/register ./server/test/*.js --timeout 2000000",
