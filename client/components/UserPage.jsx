@@ -88,6 +88,7 @@ const UserPage = ({ userName, userId, history, signUserOut,
           </h5><hr />
 
           <a
+            id="owndoclink"
             className="center-align btn"
             onClick={(event) => {
               fetchUserDocs(event, getUserDocs, userId, history);
@@ -98,16 +99,25 @@ const UserPage = ({ userName, userId, history, signUserOut,
             <i className="fa fa-unlock-alt" aria-hidden="true" />
           </a>
 
-          <Link className="center-align btn" to="/user/documents/createdocument">
+          <Link
+            id="createdoclink"
+            className="center-align btn"
+            to="/user/documents/createdocument"
+          >
           Create document&nbsp;&nbsp;
             <i className="fa fa-pencil-square-o" aria-hidden="true" />
           </Link><hr />
 
-          <Link className="center-align btn" to="/user/documents/users">
+          <Link
+            id="userprofilelink"
+            className="center-align btn"
+            to="/user/documents/users"
+          >
           My Profile&nbsp;&nbsp;
           <i className="fa fa-user" aria-hidden="true" /></Link>
 
           <a
+            id="manageusers"
             className="center-align btn"
             href="/user/documents/users/all"
             style={{ display: roleType === 'Admin'

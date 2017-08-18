@@ -1,6 +1,6 @@
-import * as Roles from './roleOperation';
-import * as Documents from './documentOperations';
-import * as Users from './userOperation';
+import * as Roles from './role';
+import * as Documents from './document';
+import * as Users from './user';
 
 module.exports = {
   Roles,

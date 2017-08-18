@@ -51,7 +51,7 @@ const SigninForm = ({ history, signInUser,
       <input type="text" className="forminput" placeholder="Username" />
       <input type="password" className="forminput" placeholder="Password" />
       <button
-        id="signinbtn"
+        id="signin"
         className="center-align waves-effect waves-light btn"
         onClick={event =>
           signUserIn(event, history, signInUser, roleType, allDocuments)}

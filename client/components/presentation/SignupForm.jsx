@@ -9,8 +9,9 @@ import $ from 'jquery';
  * triggered an event
  * @param {func} signUserUp - function that executes when signing users up
  * @param {object} history - the browser and app state history
- * @param {func} getUserDocuments - Function that executes when
-   * fetching documents belonging to a particular user
+ * @param {oobject} roleType - The role a user belongs to
+ * @param {func} allDocuments - Function that executes when
+   * fetching documents accessible to a particular user
  * @return {null} returns void
  */
 const signUp = (event, signUserUp, history, roleType, allDocuments) => {
@@ -95,7 +96,7 @@ const SignupForm = ({ signUserUp, history,
           type="radio"
           data-value="Learning"
           id="Learning"
-          value="3"
+          value="4"
         />
         <label htmlFor="Learning">Learning</label>
         <input
@@ -104,21 +105,21 @@ const SignupForm = ({ signUserUp, history,
           type="radio"
           data-value="Fellow"
           id="Fellow"
-          value="2"
+          value="3"
         />
-        <label htmlFor="Fellow">Fellow</label>
+        <label id="Fellowlabel" htmlFor="Fellow">Fellow</label>
         <input
           className="with-gap"
           name="group1"
           type="radio"
           data-value="DevOps"
-          value="4"
+          value="5"
           id="DevOps"
         />
         <label htmlFor="DevOps">DevOps</label><br />
       </div>
       <button
-        id="signupbtn"
+        id="signup"
         className="center-align waves-effect waves-light btn"
         onClick={
           event => signUp(event, signUserUp, history, roleType, allDocuments)}
