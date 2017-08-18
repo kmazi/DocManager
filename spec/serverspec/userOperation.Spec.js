@@ -2,7 +2,7 @@ import request from 'request';
 import index from '../../server/models';
 import mockUsers from './mockUsers';
 
-const routeUrl = 'http://localhost:1844/api/v1';
+const routeUrl = 'http://docmanger.herokuapp.com/api/v1';
 describe('signUp: ', () => {
   let userDetail = {
     userName: 'jackson',

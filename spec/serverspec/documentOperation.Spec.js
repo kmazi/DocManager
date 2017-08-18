@@ -4,12 +4,13 @@ import _ from 'lodash';
 import mockDocuments from './mockDocuments';
 import index from '../../server/models';
 
-const routeUrl = 'http://localhost:1844/api/v1';
+const routeUrl = 'http://docmanger.herokuapp.com/api/v1';
 
-describe('Creating a document()', () => {
+fdescribe('Creating a document()', () => {
+  const randomNum = Math.ceil(Math.random(1000) * 1000);
   const docUrl = `${routeUrl}/documents`;
   const userDetail = {
-    userName: 'jackson',
+    userName: `jackson${randomNum}`,
     email: 'jackson@gmail.com',
     password: 'testing1',
     roleId: 3,
@@ -31,7 +32,9 @@ describe('Creating a document()', () => {
     json: userDetail,
   };
   beforeAll((done) => {
+    jasmine.getEnv().defaultTimeoutInterval = 15000;
     request(requestObject, (req, res, body) => {
+      console.log('this is the body', body);
       userDocument.userId = body.userId;
       userId = body.userId;
       userDocument.token = body.token;
