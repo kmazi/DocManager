@@ -4,7 +4,7 @@
   "description": "A document manager that controls access rights and privileges",
   "main": "main.js",
   "scripts": {
-    "test": "jest --coverage -- -u",
+    "test": "NODE_ENV=test jest --coverage",
     "test:local": "NODE_ENV=development babel-node spec/run.js && yarn test:react -- -u",
     "test:react": "jest --coverage",
     "start1": "node server",
