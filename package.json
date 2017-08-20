@@ -7,8 +7,6 @@
     "test": "NODE_ENV=test babel-node spec/run.js && jest --coverage -- -u",
     "test:local": "NODE_ENV=development babel-node spec/run.js && yarn test:react -- -u",
     "test:react": "jest --coverage",
-    "test:mocha": "./node_modules/.bin/babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/mocha -- --compilers js:babel-core/register ./server/test/*.js --timeout 2000000",
-    "test:karma": "karma start karma.config.js",
     "start1": "node server",
     "build": "rimraf dist && webpack --config ./webpack.config.js --progress --profile --colors",
     "eslint": "eslint .",
@@ -16,7 +14,8 @@
     "start:dev": "nodemon --watch server --exec babel-node --presets es2015 -- main.js",
     "start": "npm run seed:db && babel-node main.js",
     "test:e2e": "nightwatch",
-    "test:nyc": "nyc --reporter=html --reporter=text mocha --timeout 150000 --compilers js:babel-register ./server/test/**/*.js"
+    "test:nyc": "NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 150000 --compilers js:babel-register ./server/test/**/*.js",
+    "test:nyc:local": "nyc --reporter=html --reporter=text mocha --timeout 150000 --compilers js:babel-register ./server/test/**/*.js"
   },
   "nyc": {
     "exclude": [
@@ -131,7 +130,6 @@
     "html-webpack-plugin": "^2.16.1",
     "isparta": "^4.0.0",
     "istanbul": "^0.4.5",
-    "jasmine": "^2.6.0",
     "jasmine-core": "^2.7.0",
     "jest": "^20.0.4",
     "mocha": "^3.5.0",
@@ -141,12 +139,11 @@
     "react-addons-test-utils": "^15.0.2",
     "react-test-renderer": "^15.6.1",
     "redux-devtools": "^3.2.0",
-    "redux-devtools-dock-monitor": "^1.1.1",
-    "redux-devtools-log-monitor": "^1.0.11",
     "redux-mock-store": "^1.2.3",
     "redux-testkit": "^1.0.6",
     "rimraf": "^2.5.2",
     "stats-webpack-plugin": "^0.6.1",
+    "supertest": "^3.0.0",
     "webpack": "^3.3.0",
     "webpack-dev-middleware": "1.10.2",
     "webpack-dev-server": "^1.14.1"
