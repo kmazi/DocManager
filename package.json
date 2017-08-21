@@ -60,7 +60,7 @@
     "bcrypt": "^1.0.2",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.17.2",
-    "css-loader": "^0.28.4",
+    "css-loader": "^0.28.5",
     "dotenv": "^4.0.0",
     "eventsource-polyfill": "^0.9.6",
     "express": "^4.15.3",
