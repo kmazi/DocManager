@@ -6875,6 +6875,10 @@ input[type=password]:not(.browser-default):focus:not([readonly]) {
   border-bottom: 1px solid whitesmoke;
   box-shadow: 0 1px 0 0 whitesmoke; }
 
+#editbtn {
+  margin-right: 3px;
+  margin-left: 5px; }
+
 .aboutpage h3 {
   display: block; }
 
