@@ -3,14 +3,8 @@
   "version": "1.0.0",
   "description": "A document manager that controls access rights and privileges",
   "main": "main.js",
-  "jest": {
-    "collectCoverage": true,
-    "coverageReporters": [
-      "lcov"
-    ]
-  },
   "scripts": {
-    "test": "NODE_ENV=test jest --coverage -u && ./node_modules/coveralls/bin/coveralls.js",
+    "test": "NODE_ENV=test jest --coverage -u && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test:local": "NODE_ENV=development babel-node spec/run.js && yarn test:react -- -u",
     "test:react": "jest --coverage",
     "start1": "node server",

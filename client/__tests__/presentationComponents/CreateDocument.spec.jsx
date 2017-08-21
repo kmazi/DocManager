@@ -19,8 +19,8 @@ describe('The CreateDocument component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test(`should not fire createDocument function when create button is clicked
-  and the form is empty`,
+  test(`should not fire create Document when
+  the form is empty`,
     () => {
       const event = {
         preventDefault: () => 'Hello',
@@ -36,7 +36,7 @@ describe('The CreateDocument component:', () => {
       expect(props.documentCreation.mock.calls.length).toBe(0);
     });
 
-  test('should fire handleEditorChange when text in TinyMCE changes',
+  test('should update the text entered when text in TinyMCE changes',
     () => {
       const event = {
         target: { getContent: () => 'hello', },
