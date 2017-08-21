@@ -216,7 +216,7 @@ exports[`The DocumentPreview component: should render the delete button when pre
 `;
 
 exports[`The DocumentPreview component: should show error message when button[name="read-doc"] is clicked
-  and an 1`] = `
+  and an error occurred 1`] = `
 <div
   className="row"
 >
