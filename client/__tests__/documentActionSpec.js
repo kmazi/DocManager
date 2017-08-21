@@ -394,7 +394,7 @@ describe('documentAction():', () => {
 });
 
   test(`that fetchAllDocuments function should return
-    the correct action object`, () => {
+    the correct action object when fetching all documents`, () => {
     const actionObject = documentAction.fetchAllDocuments();
     expect(actionObject).toEqual({
       type: types.START_FETCHING_ALL_DOCUMENTS,
@@ -414,7 +414,7 @@ describe('documentAction():', () => {
   });
 
   test(`that fetchAllDocumentsFailed function should return
-    the correct action object`, () => {
+    the correct action object when there is failure`, () => {
     const actionObject = documentAction
       .fetchAllDocumentsFailed('Access denied');
     expect(actionObject).toEqual({
