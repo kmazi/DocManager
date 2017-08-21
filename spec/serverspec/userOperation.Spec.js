@@ -2,7 +2,7 @@ import request from 'request';
 import index from '../../server/models';
 import mockUsers from './mockUsers';
 
-const routeUrl = 'http://localhost:1844/api/v1';
+const routeUrl = 'http://docmanger.herokuapp.com/api/v1';
 describe('signUp: ', () => {
   let userDetail = {
     userName: 'jackson',
@@ -499,7 +499,7 @@ describe('getAll: ', () => {
       expect(body.message).not.toBe('You are not authenticated!');
       expect(body.status).toBe('successful');
       expect(res.statusCode).toBe(200);
-      expect(body.users.length).toBe(6);
+      expect(body.users.length).toBe(5);
       done();
     });
   });
@@ -660,7 +660,7 @@ describe('find: ', () => {
       expect(body.message).not.toBe('You are not authenticated!');
       expect(body.status).toBe('successful');
       expect(res.statusCode).toBe(200);
-      expect(body.users.length).toBe(4);
+      expect(body.users.length).toBe(3);
       done();
     });
   });

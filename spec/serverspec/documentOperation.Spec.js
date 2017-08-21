@@ -1,21 +1,22 @@
 import request from 'request';
+import request1 from 'supertest';
 import _ from 'lodash';
 
+import app from '../../server/app';
 import mockDocuments from './mockDocuments';
 import index from '../../server/models';
 
-const routeUrl = 'http://localhost:1844/api/v1';
+const routeUrl = 'http://docmanger.herokuapp.com/api/v1';
 
-describe('Creating a document()', () => {
+describe('Creating a document', () => {
+  const randomNum = Math.ceil(Math.random(1000) * 1000);
   const docUrl = `${routeUrl}/documents`;
   const userDetail = {
-    userName: 'jackson',
-    email: 'jackson@gmail.com',
+    userName: 'junior',
+    email: 'junior@gmail.com',
     password: 'testing1',
     roleId: 3,
     isactive: true,
-    userId: 0,
-    token: '',
   };
 
   const userDocument = {
@@ -30,15 +31,31 @@ describe('Creating a document()', () => {
     method: 'POST',
     json: userDetail,
   };
-  beforeAll((done) => {
-    request(requestObject, (req, res, body) => {
-      userDocument.userId = body.userId;
-      userId = body.userId;
-      userDocument.token = body.token;
-      userToken = body.token;
+  let originalTimeOut;
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImphY2tzb240MzkiLCJ1c2VySWQiOjYwNTIsImVtYWlsIjoiamFja3NvbkBnbWFpbC5jb20iLCJpc2FjdGl2ZSI6dHJ1ZSwicm9sZVR5cGUiOiJGZWxsb3ciLCJjcmVhdGVkQXQiOiIyMDE3LTA4LTE5VDE1OjI4OjIxLjk4N1oiLCJpYXQiOjE1MDMxNTY1MDJ9.W3435EOGmx9Rf5nEaqi1kbAnsYmG4sdbICbnHaOgNbM';
+  beforeAll(() => {
+    // request(requestObject, (req, res, body) => {
+    //   userDocument.userId = body.userId;
+    //   userId = body.userId;
+    //   userDocument.token = body.token;
+    //   userToken = body.token;
+    //   done();
+    // });
+    
+  });
+
+  beforeEach((done) => {
+    originalTimeOut = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+    request1(app).post('/api/v1/users').send(userDetail).end((err, res) => {
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+      console.log('got here.....................', jasmine.DEFAULT_TIMEOUT_INTERVAL);
+      userDocument.token = res.body.token;
+      console.log(res.body, '.......');
       done();
     });
   });
+
   afterAll((done) => {
     const user = index.User;
     user.findOne({
@@ -50,10 +67,23 @@ describe('Creating a document()', () => {
         userFound.destroy();
       }
       done();
-    }).catch(() => {
+    }).catch((err) => {
+      done(err);
+    });
+  });
+
+  fit('jsut tryin this out', (done) => {
+    request1(app).post('/api/v1/documents')
+    .send(userDocument)
+    .end((err, res) => {
+      if (err) {
+        return done(err);
+      }
+      expect(res.statusCode).toBe(200);
       done();
     });
   });
+
   it(`should not create a document with empty
     title`, (done) => {
     userDocument.title = '';

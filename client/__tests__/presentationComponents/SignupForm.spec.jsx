@@ -23,7 +23,8 @@ describe('The signupform component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('should call sisgnUserUp function when signupbtn is clicked', () => {
+  test(`should submit the form to signup a user when signupbtn is clicked
+  and the form is valid`, () => {
     const event = {
       preventDefault: () => 'hello',
     };

@@ -18,7 +18,7 @@ describe('The search box component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('should submit the search text when clicked', () => {
+  test('should submit the search text when input changes', () => {
     enzymeWrapper.find('.searchcontainer input').props().onChange();
     expect(props.searchDocuments.mock.calls.length).toBe(1);
   });

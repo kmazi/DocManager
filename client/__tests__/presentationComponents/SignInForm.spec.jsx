@@ -23,7 +23,8 @@ describe('The signinform component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('should change submit button when it is clicked', () => {
+  test(`should submit the form by firing signInUser when
+  it is valid and the submit button is clicked`, () => {
     const event = {
       preventDefault: () => 'hello',
     };

@@ -6,7 +6,7 @@ import {
 } from
   '../../server/middlewares/validation';
 
-const routeUrl = 'http://localhost:1844/api/v1';
+const routeUrl = 'http://docmanger.herokuapp.com/api/v1';
 describe('generalValidation()', () => {
   it('should throw error when script char (<,>) is used', () => {
     const user =
