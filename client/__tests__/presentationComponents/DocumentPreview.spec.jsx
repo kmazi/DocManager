@@ -55,21 +55,21 @@ describe('The DocumentPreview component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('should fire readDocument when #1 button is clicked',
+  test('should fire open a document to read when read button is clicked',
     () => {
       const enzymeWrapper = shallow(<DocumentPreview {...props} />);
       enzymeWrapper.find('button[name="read-doc"]').props().onClick(event);
       expect(props.readDocument.mock.calls.length).toBe(1);
     });
 
-  test('should set #1 button text to opening when document id = read',
+  test('should set the read button text to "opening" when documentid = read',
     () => {
       const enzymeWrapper = shallow(<DocumentPreview {...props} />);
       expect(enzymeWrapper.find('button[name="read-doc"]')
       .text()).toBe('Opening ');
     });
 
-  test('should set #1 button text to Read when document id !== read',
+  test('should set read button text to Read when document id !== read',
     () => {
       props.read = 2;
       const enzymeWrapper = shallow(<DocumentPreview {...props} />);
@@ -94,7 +94,7 @@ describe('The DocumentPreview component:', () => {
       .text()).toBe('Delete ');
     });
 
-  test('should fire readDocument when button[name="read-doc"] is clicked',
+  test('should opening a document when button[name="read-doc"] is clicked',
     () => {
       const enzymeWrapper = shallow(<DocumentPreview {...props} />);
       enzymeWrapper.find('button[name="read-doc"]').props().onClick(event);
@@ -102,7 +102,7 @@ describe('The DocumentPreview component:', () => {
     });
 
   test(`should show error message when button[name="read-doc"] is clicked
-  and an`,
+  and an error occurred`,
     () => {
       response.status = 'unsuccessful';
       const enzymeWrapper = shallow(<DocumentPreview {...props} />);
@@ -112,14 +112,15 @@ describe('The DocumentPreview component:', () => {
       expect(tree).toMatchSnapshot();
     });
 
-  test('should fire deleteDocument when button[name="delete-doc"] is clicked',
+  test(`should successfully delete a documen when 
+  button[name="delete-doc"] is clicked`,
     () => {
       const enzymeWrapper = shallow(<DocumentPreview {...props} />);
       enzymeWrapper.find('button[name="delete-doc"]').props().onClick(event);
       expect(props.deleteDocument.mock.calls.length).toBe(0);
     });
 
-  test('should fire paginateDocument is fired when getDocument() runs',
+  test('should paginate documents after fetching documents is initiated',
     () => {
       getDocument(1, props.paginateDocument, 'Learning', 'Learning', 1);
       expect(props.paginateDocument.mock.calls.length).toBe(1);

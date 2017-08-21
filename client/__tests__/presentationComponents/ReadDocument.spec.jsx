@@ -29,7 +29,8 @@ describe('The ReadDocument component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('should fire changeTitleValue when #title input text changes',
+  test(`should successfully change the input element for when
+   #title input text changes`,
     () => {
       const enzymeWrapper = shallow(<ReadDocument {...props} />);
       enzymeWrapper.find('#readdocument #title').props().onChange();
@@ -45,7 +46,7 @@ describe('The ReadDocument component:', () => {
       expect(enzymeWrapper.find('#submitbtn').hasClass('hide')).toBe(true);
     });
 
-  test('should call processEdit editDocument',
+  test('should successfully edit a document when input value is valid',
     () => {
       const enzymeWrapper = shallow(<ReadDocument {...props} />);
       enzymeWrapper.find('#submitbtn').props().onClick(event);
@@ -78,7 +79,7 @@ describe('The ReadDocument component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('should display not edit button when roleType is Learning', () => {
+  test('should not display edit button when roleType is Learning', () => {
     props.roleType = 'Learning';
     const enzymeWrapper = shallow(<ReadDocument {...props} />);
     const component = enzymeWrapper;

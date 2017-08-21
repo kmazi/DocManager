@@ -29,7 +29,8 @@ describe('The DocumentView component:', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('should render an error message when shoulddisplay is false', () => {
+  test(`should render an error message
+  when shoulddisplay property is false`, () => {
     props.shouldDisplay = false;
     const enzymeWrapper = shallow(<DocumentView {...props} />);
     const component = enzymeWrapper;
