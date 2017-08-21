@@ -1,4 +1,7 @@
-import request from 'request';
+import request from 'supertest';
+
+import app from '../app';
+import { superAdmin, admin, testUser } from '../mocks/users';
 import index from '../../server/models';
 import {
   generalValidation, validateEmail,
@@ -6,143 +9,345 @@ import {
 } from
   '../../server/middlewares/validation';
 
-const routeUrl = 'http://docmanger.herokuapp.com/api/v1';
-describe('generalValidation()', () => {
-  it('should throw error when script char (<,>) is used', () => {
-    const user =
-    generalValidation('<script>alert(\'I Love you\')</script>', 'username');
-    expect(user.status).toBe('unsuccessful');
-    expect(user.message.includes('\nInvalid input character(s)'))
-    .toBe(true);
-  });
+const expect = require('chai').expect;
 
-  it('should pass when no script char (<,>) is used', () => {
-    const user = generalValidation('testing1');
-    expect(user.status).toBe('successful');
-    expect(user.message.includes('\nInvalid input character(s)')).toBe(false);
-  });
-
-  it('should throw error when user field is empty', () => {
-    const user = generalValidation('', 'username');
-    expect(user.status).toBe('unsuccessful');
-    expect(user.message.includes('\nEmpty or invalid username field!'))
-      .toBe(true);
-  });
-
-  it('should not throw error when user field is correctly filled', () => {
-    const user = generalValidation('peace', 'password');
-    expect(user.status).toBe('successful');
-    expect(user.message.length).toBe(0);
-  });
-
-  it('Should throw error when null or undefined value is submitted', () => {
-    let user = generalValidation(null, 'username');
-    expect(user.status).toBe('unsuccessful');
-    expect(user.message.includes('\nEmpty or invalid username field!'))
-      .toBe(true);
-    user = generalValidation(undefined, 'password');
-    expect(user.status).toBe('unsuccessful');
-    expect(user.message.includes('\nEmpty or invalid password field!'))
-      .toBe(true);
-  });
-});
-
-describe('validateEmail()', () => {
-  it('Should accept correct emails', () => {
-    let email = validateEmail('kingsleyu13@gmail.com');
-    expect(email.status).toBe('successful');
-    email = validateEmail('chima.eze.go@lycos.com.ng');
-    expect(email.status).toBe('successful');
-  });
-
-  it('Should reject incorrect emails', () => {
-    let email = validateEmail('kingsleyu13gmail.com');
-    expect(email.status).toBe('unsuccessful');
-    email = validateEmail('fich@jame@gmail.com');
-    expect(email.status).toBe('unsuccessful');
-    email = validateEmail('fichame@yahoo.co.uk');
-    expect(email.status).toBe('successful');
-  });
-
-  it('Should return correct error message when email validation fails', () => {
-    const email = validateEmail('yuuuuuu.com');
-    expect(email.status).toBe('unsuccessful');
-    expect(email.message.includes('\nEmail has got wrong format')).toBe(true);
-  });
-
-  it('should throw error when empty', () => {
-    const email = validateEmail('');
-    expect(email.status).toBe('unsuccessful');
-  });
-});
-
-describe('validatePassword:', () => {
-  it('should be at least 6 characters', () => {
-    let password = validatePassword('testi');
-    expect(password.status).toBe('unsuccessful');
-    expect(password.message.includes(
-      '\nPassword length must be between 6 and 20')).toBe(true);
-    password = validatePassword('testin');
-    expect(password.status).toBe('successful');
-  });
-
-  it('should be at most 20 characters', () => {
-    const password = validatePassword('testikhdhfh68dskksdhflfs9878s9ss');
-    expect(password.status).toBe('unsuccessful');
-    expect(password.message.includes(
-      '\nPassword length must be between 6 and 20')).toBe(true);
-  });
-
-  it('should be between 6 and 20 both inclusive characters', () => {
-    const password = validatePassword('merrymaking');
-    expect(password.status).toBe('successful');
-    expect(password.message.includes(
-      '\nPassword length must be between 6 and 20')).toBe(false);
-  });
-
-  it('should not display error message when no input is found', () => {
-    const password = validatePassword('');
-    expect(password.status).toBe('unsuccessful');
-    expect(password.message.includes(
-      '\nPassword length must be between 6 and 20')).not.toBe(true);
-  });
-});
-
-describe('SignIn and SignUp validation: ', () => {
-  const userDetail = {
-    userName: 'jackson',
-    email: 'jackson@gmail.com',
-    password: 'testing1',
-    roleId: 5,
-    isactive: true,
-  };
-  const requestObject = {
-    url: `${routeUrl}/users`,
-    method: 'POST',
-    json: userDetail,
-  };
-
-  afterEach(() => {
-    requestObject.json = userDetail;
-  });
-
-  describe('SignInValidation()', () => {
-    beforeEach(() => {
-      requestObject.url = `${routeUrl}/users/login`;
-    });
-
-    beforeAll((done) => {
-      request(requestObject, () => {
+describe('Validation functions:', () => {
+  let superAdminToken;
+  let adminToken;
+  before((done) => {
+    // login admin account
+    request(app).post('/api/v1/users/login')
+      .send(admin).end((err, res) => {
+        adminToken = res.body.token;
         done();
       });
+  });
+
+  before((done) => {
+    // login superadmin account
+    request(app).post('/api/v1/users/login')
+      .send(superAdmin).end((err, res) => {
+        superAdminToken = res.body.token;
+        done();
+      });
+  });
+
+  describe('generalValidation()', () => {
+    it('should throw error when script char (<,>) is used', () => {
+      const user =
+        generalValidation('<script>alert(\'I Love you\')</script>', 'username');
+      expect(user.status).to.equal('unsuccessful');
+      expect(user.message.includes('\nInvalid input character(s)'))
+        .to.equal(true);
     });
 
-    afterAll((done) => {
-      const user = index.User;
-      userDetail.roleId = 5;
-      user.findOne({
+    it('should pass when no script char (<,>) is used', () => {
+      const user = generalValidation('testing1');
+      expect(user.status).to.equal('successful');
+      expect(user.message.includes('\nInvalid input character(s)'))
+        .to.equal(false);
+    });
+
+    it('should throw error when user field is empty', () => {
+      const user = generalValidation('', 'username');
+      expect(user.status).to.equal('unsuccessful');
+      expect(user.message.includes('\nEmpty or invalid username field!'))
+        .to.equal(true);
+    });
+
+    it('should not throw error when user field is correctly filled', () => {
+      const user = generalValidation('peace', 'password');
+      expect(user.status).to.equal('successful');
+      expect(user.message.length).to.equal(0);
+    });
+
+    it('Should throw error when null or undefined value is submitted', () => {
+      let user = generalValidation(null, 'username');
+      expect(user.status).to.equal('unsuccessful');
+      expect(user.message.includes('\nEmpty or invalid username field!'))
+        .to.equal(true);
+      user = generalValidation(undefined, 'password');
+      expect(user.status).to.equal('unsuccessful');
+      expect(user.message.includes('\nEmpty or invalid password field!'))
+        .to.equal(true);
+    });
+  });
+
+  describe('validateEmail()', () => {
+    it('Should accept correct emails', () => {
+      let email = validateEmail('kingsleyu13@gmail.com');
+      expect(email.status).to.equal('successful');
+      email = validateEmail('chima.eze.go@lycos.com.ng');
+      expect(email.status).to.equal('successful');
+    });
+
+    it('Should reject incorrect emails', () => {
+      let email = validateEmail('kingsleyu13gmail.com');
+      expect(email.status).to.equal('unsuccessful');
+      email = validateEmail('fich@jame@gmail.com');
+      expect(email.status).to.equal('unsuccessful');
+      email = validateEmail('fichame@yahoo.co.uk');
+      expect(email.status).to.equal('successful');
+    });
+
+    it('Should return correct error message when email validation fails', () => {
+      const email = validateEmail('yuuuuuu.com');
+      expect(email.status).to.equal('unsuccessful');
+      expect(email.message.includes('\nEmail has got wrong format'))
+        .to.equal(true);
+    });
+
+    it('should throw error when empty', () => {
+      const email = validateEmail('');
+      expect(email.status).to.equal('unsuccessful');
+    });
+  });
+
+  describe('validatePassword:', () => {
+    it('should be at least 6 characters', () => {
+      let password = validatePassword('testi');
+      expect(password.status).to.equal('unsuccessful');
+      expect(password.message.includes(
+        '\nPassword length must be between 6 and 20')).to.equal(true);
+      password = validatePassword('testin');
+      expect(password.status).to.equal('successful');
+    });
+
+    it('should be at most 20 characters', () => {
+      const password = validatePassword('testikhdhfh68dskksdhflfs9878s9ss');
+      expect(password.status).to.equal('unsuccessful');
+      expect(password.message.includes(
+        '\nPassword length must be between 6 and 20')).to.equal(true);
+    });
+
+    it('should be between 6 and 20 both inclusive characters', () => {
+      const password = validatePassword('merrymaking');
+      expect(password.status).to.equal('successful');
+      expect(password.message.includes(
+        '\nPassword length must be between 6 and 20')).to.equal(false);
+    });
+
+    it('should not display error message when no input is found', () => {
+      const password = validatePassword('');
+      expect(password.status).to.equal('unsuccessful');
+      expect(password.message.includes(
+        '\nPassword length must be between 6 and 20')).to.equal(false);
+    });
+  });
+
+  describe('SignIn and SignUp validation: ', () => {
+    const userDetail = testUser;
+
+    describe('SignInValidation()', () => {
+      before((done) => {
+        request(app).post('/api/v1/users')
+          .send(userDetail).end(() => {
+            done();
+          });
+      });
+
+      after((done) => {
+        const user = index.User;
+        user.findOne({
+          where: {
+            username: userDetail.userName,
+          }
+        }).then((userFound) => {
+          if (userFound) {
+            userFound.destroy();
+          }
+          done();
+        }).catch(() => {
+          done();
+        });
+      });
+
+      it('Should return error message when empty form is sent', (done) => {
+        request(app).post('/api/v1/users/login')
+          .send({}).end((err, res) => {
+            expect(res.body.status).to.equal('unsuccessful');
+            expect(res.statusCode).to.equal(400);
+            expect(res.body.message.includes('\nEmpty forms are not allowed!'))
+              .to.equal(true);
+            done();
+          });
+      });
+
+      it('Should move to the next function when form submitted is valid',
+        (done) => {
+          request(app).post('/api/v1/users/login')
+            .send(userDetail).end((err, res) => {
+              expect(res.body.status).to.equal('successful');
+              done();
+            });
+        });
+
+      it('Should throw correct error message when username has a wrong format',
+        (done) => {
+          request(app).post('/api/v1/users/login')
+            .send({
+              userName: '',
+              password: 'testing1'
+            }).end((err, res) => {
+              expect(res.body.status).to.equal('unsuccessful');
+              expect(res.statusCode).to.equal(400);
+              expect(res.body.message
+                .includes('\nEmpty or invalid username field!'))
+                .to.equal(true);
+              done();
+            });
+        });
+
+      it('Should throw an error message when password is wrong',
+        (done) => {
+          request(app).post('/api/v1/users/login')
+            .send({
+              userName: userDetail.userName,
+              password: 'dsf'
+            }).end((req, res) => {
+              expect(res.body.status).to.equal('unsuccessful');
+              expect(res.statusCode).to.equal(400);
+              expect(res.body.message[0]).to.equal('\nWrong password');
+              done();
+            });
+        });
+    });
+
+    describe('SignUpValidation()', () => {
+      after((done) => {
+        const user = index.User;
+        user.findOne({
+          where: {
+            username: userDetail.userName,
+          }
+        }).then((userFound) => {
+          if (userFound) {
+            userFound.destroy();
+          }
+          done();
+        }).catch(() => {
+          done();
+        });
+      });
+
+      it('should throw error when nothing is submitted', (done) => {
+        request(app).post('/api/v1/users')
+          .send({}).end((err, res) => {
+            expect(res.body.status).to.equal('unsuccessful');
+            expect(res.body.message.includes('\nEmpty fields are not allowed'))
+              .to.equal(true);
+            expect(res.statusCode).to.equal(400);
+            done();
+          });
+      });
+      const randomUser = {
+        userName: 'jupiter',
+        password: '',
+        email: 'jupiter@gmai.com',
+        isactive: true,
+        roleId: 4,
+      };
+      it('Should return an error message when username is not filled',
+        (done) => {
+          randomUser.userName = '';
+          request(app).post('/api/v1/users')
+            .send(randomUser).end((err, res) => {
+              expect(res.statusCode).to.equal(400);
+              expect(res.body.status).to.equal('unsuccessful');
+              expect(res.body.message
+                .includes('\nEmpty or invalid username field!')
+              ).to.equal(true);
+              done();
+            });
+        });
+
+      it('Should return an error message when password textbox is not filled',
+        (done) => {
+          request(app).post('/api/v1/users')
+            .send(randomUser).end((err, res) => {
+              expect(res.statusCode).to.equal(400);
+              expect(res.body.status).to.equal('unsuccessful');
+              expect(res.body.message
+                .includes('\nEmpty or invalid password field!')
+              ).to.equal(true);
+              done();
+            });
+        });
+
+      it('Should return an error message when invalid email is sent',
+        (done) => {
+          randomUser.email = 'jackson.com';
+          request(app).post('/api/v1/users')
+            .send(randomUser).end((req, res) => {
+              expect(res.statusCode).to.equal(400);
+              expect(res.body.status).to.equal('unsuccessful');
+              expect(res.body.message
+                .includes('\nEmail has got wrong format')
+              ).to.equal(true);
+              done();
+            });
+        });
+
+      it('Should throw error when signup as admin or superadmin',
+        (done) => {
+          randomUser.roleId = 2;
+          randomUser.userName = 'janet';
+          randomUser.email = 'janet@gmail.com';
+          randomUser.password = 'testingw';
+          randomUser.isactive = true;
+          request(app).post('/api/v1/users')
+            .send(randomUser).end((req, res) => {
+              expect(res.statusCode).to.equal(400);
+              expect(res.body.status).to.equal('unsuccessful');
+              expect(res.body.message
+                .includes('\nInvalid role!')
+              ).to.equal(true);
+              done();
+            });
+        });
+
+      it('Should move on to the next function when form is valid',
+        (done) => {
+          request(app).post('/api/v1/users')
+            .send(userDetail).end((req, res) => {
+              expect(res.statusCode).to.equal(200);
+              done();
+            });
+        });
+    });
+  });
+
+  describe('createToken()', () => {
+    it('should return a token as string when called', () => {
+      const user = {
+        userName: 'jackson',
+        email: 'jackson@gmail.com',
+        roleId: '1',
+      };
+      expect(typeof createToken(user)).to.equal('string');
+    });
+
+    it('should return a valid error message when no payload is passed', () => {
+      expect(createToken()).to.equal('No payload to create token');
+    });
+  });
+
+  describe('verifyToken', () => {
+    const userDetail = testUser;
+    before((done) => {
+      request(app).post('/api/v1/users')
+        .send(userDetail).end((req, res) => {
+          userDetail.userId = res.body.userId;
+          userDetail.token = res.body.token;
+          done();
+        });
+    });
+
+    after((done) => {
+      const User = index.User;
+      User.findOne({
         where: {
-          username: 'jackson',
+          username: userDetail.userName,
         }
       }).then((userFound) => {
         if (userFound) {
@@ -154,69 +359,58 @@ describe('SignIn and SignUp validation: ', () => {
       });
     });
 
-    it('Should return error message when empty form is sent', (done) => {
-      requestObject.json = {};
-      request(requestObject, (req, res, body) => {
-        expect(body.status).toBe('unsuccessful');
-        expect(res.statusCode).toBe(400);
-        expect(body.message.includes('\nEmpty forms are not allowed!'))
-          .toBe(true);
-        done();
+    it('should authenticate the request when valid token is used',
+      (done) => {
+        request(app).get(`/api/v1/users/${userDetail.userId}`)
+          .set({ token: userDetail.token }).end((req, res) => {
+            expect(res.statusCode).to.equal(200);
+            expect(res.body.status).to.equal('successful');
+            done();
+          });
       });
+
+    it(`should not authenticate request when 
+    unknown user info is embedded in token`, (done) => {
+      const token = createToken({
+        userName: 'james',
+        password: 'testing',
+        email: 'jamaes@yahoo.com',
+      });
+      request(app).get(`/api/v1/users/${userDetail.userId}`)
+          .set({ token }).end((req, res) => {
+            expect(res.body.message).to.equal('No user found!');
+            expect(res.statusCode).to.equal(400);
+            expect(res.body.status).to.equal('unsuccessful');
+            done();
+          });
     });
 
-    it('Should move to the next function when form submitted is valid',
-      (done) => {
-        requestObject.url = `${routeUrl}/users/login`;
-        request(requestObject, (req, res, body) => {
-          expect(body.status).toBe('successful');
-          done();
-        });
-      });
-
-    it('Should throw correct error message when username has a wrong format',
-      (done) => {
-        requestObject.json.userName = '';
-        request(requestObject, (req, res, body) => {
-          expect(body.status).toBe('unsuccessful');
-          expect(res.statusCode).toBe(400);
-          expect(body.message
-            .includes('\nEmpty or invalid username field!'))
-            .toBe(true);
-          done();
-        });
-      });
-
-    it('Should throw an error message when password has a wrong format',
-      (done) => {
-        requestObject.json.userName = 'jackson';
-        requestObject.json.password = '';
-        request(requestObject, (req, res, body) => {
-          expect(body.status).toBe('unsuccessful');
-          expect(res.statusCode).toBe(400);
-          expect(body.message[0]).toBe('\nWrong password');
-          done();
-        });
-      });
+    it(`should show correct error message when accessing
+    protected route without token`, (done) => {
+      request(app).get(`/api/v1/users/${userDetail.userId}`)
+          .end((req, res) => {
+            expect(res.body.message).to.equal('You are not authenticated!');
+            done();
+          });
+    });
   });
 
-  describe('SignUpValidation()', () => {
-    // function to run before all tests
-    beforeEach(() => {
-      requestObject.url = `${routeUrl}/users`;
-      userDetail.userName = 'jackson';
-      userDetail.email = 'jackson@gmail.com';
-      userDetail.password = 'testing1';
-      userDetail.isactive = true;
-      userDetail.roleId = 5;
+  describe('isAdmin()', () => {
+    const signUpUser = testUser;
+    let newToken = '';
+    before((done) => {
+      request(app).post('/api/v1/users')
+        .send(signUpUser).end((req, res) => {
+          newToken = res.body.token;
+          done();
+        });
     });
 
-    afterAll((done) => {
+    after((done) => {
       const user = index.User;
-      userDetail.roleId = 5;
       user.findOne({
         where: {
-          username: 'jackson',
+          username: signUpUser.userName,
         }
       }).then((userFound) => {
         if (userFound) {
@@ -228,378 +422,97 @@ describe('SignIn and SignUp validation: ', () => {
       });
     });
 
-    it('should throw error when nothing is submitted', (done) => {
-      requestObject.json = {};
-      request(requestObject, (req, res, body) => {
-        expect(body.status).toBe('unsuccessful');
-        expect(body.message.includes('\nEmpty fields are not allowed'))
-        .toBe(true);
-        expect(res.statusCode).toBe(400);
-        done();
-      });
-    });
-
-    it('Should return an error message when username is not filled',
-    (done) => {
-      requestObject.json.userName = '';
-      request(requestObject, (req, res, body) => {
-        expect(res.statusCode).toBe(400);
-        expect(body.status).toBe('unsuccessful');
-        expect(body.message
-          .includes('\nEmpty or invalid username field!')
-        ).toBe(true);
-        done();
-      });
-    });
-
-    it('Should return an error message when password textbox is not filled',
-    (done) => {
-      requestObject.json.password = '';
-      request(requestObject, (req, res, body) => {
-        expect(res.statusCode).toBe(400);
-        expect(body.status).toBe('unsuccessful');
-        expect(body.message
-          .includes('\nEmpty or invalid password field!')
-        ).toBe(true);
-        done();
-      });
-    });
-
-    it('Should return an error message when invalid email is sent',
-    (done) => {
-      requestObject.json.email = 'jackson.com';
-      request(requestObject, (req, res, body) => {
-        expect(res.statusCode).toBe(400);
-        expect(body.status).toBe('unsuccessful');
-        expect(body.message
-          .includes('\nEmail has got wrong format')
-        ).toBe(true);
-        done();
-      });
-    });
-
-    it('Should return an error when the isactive prop is not set',
-    (done) => {
-      requestObject.json.isactive = null;
-      request(requestObject, (req, res, body) => {
-        expect(res.statusCode).toBe(400);
-        expect(body.status).toBe('unsuccessful');
-        expect(body.message
-          .includes('Set "isactive" property')
-        ).toBe(true);
-        done();
-      });
-    });
-
-    it('Should throw error when signup as admin or superadmin',
-    (done) => {
-      requestObject.json.roleId = 2;
-      request(requestObject, (req, res, body) => {
-        expect(res.statusCode).toBe(400);
-        expect(body.status).toBe('unsuccessful');
-        expect(body.message
-          .includes('\nInvalid role!')
-        ).toBe(true);
-        done();
-      });
-    });
-
-    it('Should move on to the next function when form is valid',
+    it('Should allow admin navigate to the next route',
       (done) => {
-        request(requestObject, (req, res, body) => {
-          expect(body.status).not.toBe('unsuccessful');
+        request(app).get('/api/v1/search/users?q=t')
+        .set({ token: adminToken }).end((err, res) => {
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.paginationMetaData.pageSize).to.equal(1);
+          done();
+        });
+      });
+
+    it('should deny access to other users that are not admin', (done) => {
+      request(app).get('/api/v1/search/users')
+      .set({ token: newToken }).end((err, res) => {
+        expect(res.body.status).to.equal('unsuccessful');
+        expect(res.body.message).to.equal('Access denied!');
+        done();
+      });
+    });
+
+    it('Should allow SuperAdmin navigate to the next route',
+      (done) => {
+        request(app).get('/api/v1/search/users?q=t')
+        .set({ token: superAdminToken }).end((err, res) => {
+          expect(res.statusCode).to.equal(200);
           done();
         });
       });
   });
-});
 
-describe('createToken()', () => {
-  it('should return a token as string when called', () => {
-    const user = {
-      userName: 'jackson',
-      email: 'jackson@gmail.com',
-      roleId: '1',
-    };
-    expect(typeof createToken(user)).toBe('string');
-  });
-
-  it('should return a valid error message when no payload is passed', () => {
-    expect(createToken()).toBe('No payload to create token');
-  });
-});
-
-describe('verifyToken', () => {
-  const userDetail = {
-    userName: 'jackson',
-    email: 'jackson@gmail.com',
-    password: 'testing1',
-    roleId: 3,
-    isactive: true,
-  };
-  const requestObject = {
-    url: `${routeUrl}/users`,
-    method: 'POST',
-    json: userDetail,
-  };
-
-  beforeAll((done) => {
-    request(requestObject, (req, res, body) => {
-      userDetail.userId = body.userId;
-      userDetail.token = body.token;
-      userDetail.oToken = body.token;
-      requestObject.url = `${routeUrl}/users/${userDetail.userId}`;
-      requestObject.method = 'GET';
-      done();
-    });
-  });
-
-  afterAll((done) => {
-    const User = index.User;
-    User.findOne({
-      where: {
-        username: userDetail.userName,
-      }
-    }).then((userFound) => {
-      if (userFound) {
-        userFound.destroy();
-      }
-      done();
-    }).catch(() => {
-      done();
-    });
-  });
-
-  it('should authenticate the request when valid token is used',
-    (done) => {
-      request(requestObject, (req, res, body) => {
-        expect(res.statusCode).toBe(200);
-        expect(body.status).toBe('successful');
+  describe('isSuperAdmin()', () => {
+    const signupRequest = testUser;
+    let newToken = '';
+    beforeEach((done) => {
+      request(app).post('/api/v1/users')
+      .send(signupRequest).end((req, res) => {
+        newToken = res.body.token;
         done();
       });
     });
 
-  it(`should not authenticate request when 
-  unknown user info is embedded in token`, (done) => {
-    const token = createToken({
-      userName: 'james',
-      password: 'testing',
-      email: 'jamaes@yahoo.com',
-    });
-    requestObject.json.token = token;
-    request(requestObject, (req, res, body) => {
-      expect(body.message).toBe('No user found!');
-      expect(res.statusCode).toBe(400);
-      expect(body.status).toBe('unsuccessful');
-      done();
-    });
-  });
-
-  it(`should show correct error message when accessing
-  protected route without token`, (done) => {
-    requestObject.json.token = null;
-    request(requestObject, (req, res, body) => {
-      expect(body.message).toBe('You are not authenticated!');
-      done();
-    });
-  });
-});
-
-describe('isAdmin()', () => {
-  const userDetail = {
-    userName: 'touchstone',
-    password: 'testing1',
-  };
-  const url = `${routeUrl}/users/login`;
-  const requestObject = {
-    url,
-    method: 'POST',
-    json: userDetail,
-  };
-  const signupRequest = {
-    url: `${routeUrl}/users`,
-    method: 'POST',
-    json: {
-      userName: 'jackson',
-      email: 'jackson@gmail.com',
-      password: 'testing1',
-      roleId: 3,
-      isactive: true,
-    }
-  };
-  let newToken = '';
-  beforeEach((done) => {
-    request(requestObject, (req, res, body) => {
-      userDetail.token = body.token;
-      userDetail.userId = body.userId;
-      userDetail.roleType = body.roleType;
-      request(signupRequest, (req, res, signUpBody) => {
-        newToken = signUpBody.token;
+    afterEach((done) => {
+      const user = index.User;
+      user.findOne({
+        where: {
+          username: signupRequest.userName,
+        }
+      }).then((userFound) => {
+        if (userFound) {
+          userFound.destroy();
+        }
         done();
-      });
-    });
-  });
-
-  afterEach((done) => {
-    userDetail.userName = 'jackson';
-    userDetail.password = 'testing1';
-    const user = index.User;
-    user.findOne({
-      where: {
-        username: signupRequest.json.userName,
-      }
-    }).then((userFound) => {
-      if (userFound) {
-        userFound.destroy();
-      }
-      done();
-    }).catch(() => {
-      done();
-    });
-  });
-
-  it('Should allow admin navigate to the next route',
-    (done) => {
-      requestObject.json = userDetail;
-      requestObject.url = `${routeUrl}/search/users`;
-      requestObject.method = 'GET';
-      request(requestObject, (req, res, body) => {
-        expect(body.message).not.toBe('Access denied!');
+      }).catch(() => {
         done();
       });
     });
 
-  it('should deny access to other users that are not admin', (done) => {
-    requestObject.json.token = newToken;
-    requestObject.url = `${routeUrl}/search/users`;
-    requestObject.method = 'GET';
-    request(requestObject, (req, res, body) => {
-      expect(body.status).toBe('unsuccessful');
-      expect(body.message).toBe('Access denied!');
-      done();
-    });
-  });
-
-  it('Should allow SuperAdmin navigate to the next route',
-  (done) => {
-    requestObject.url = `${routeUrl}/users/login`;
-    requestObject.json = { userName: 'SuperAdmin',
-      password: 'testing1', };
-    requestObject.method = 'POST';
-    request(requestObject, (req0, res0, body0) => {
-      userDetail.token = body0.token;
-      userDetail.userId = body0.userId;
-      userDetail.roleType = body0.roleType;
-      requestObject.json = userDetail;
-      requestObject.url = `${routeUrl}/search/users`;
-      requestObject.method = 'GET';
-      request(requestObject, (req, res, body) => {
-        expect(body.message).not.toBe('Access denied!');
-        done();
-      });
-    });
-  });
-});
-
-describe('isSuperAdmin()', () => {
-  const userDetail = {
-    userName: 'SuperAdmin',
-    password: 'testing1',
-  };
-  const url = `${routeUrl}/users/login`;
-  const requestObject = {
-    url,
-    method: 'POST',
-    json: userDetail,
-  };
-  const signupRequest = {
-    url: `${routeUrl}/users`,
-    method: 'POST',
-    json: {
-      userName: 'jackson',
-      email: 'jackson@gmail.com',
-      password: 'testing1',
-      roleId: 3,
-      isactive: true,
-    }
-  };
-  let newToken = '';
-  beforeEach((done) => {
-    request(requestObject, (req, res, body) => {
-      userDetail.token = body.token;
-      userDetail.userId = body.userId;
-      userDetail.roleType = body.roleType;
-      request(signupRequest, (req, res, signUpBody) => {
-        newToken = signUpBody.token;
-        done();
-      });
-    });
-  });
-
-  afterEach((done) => {
-    userDetail.userName = 'jackson';
-    userDetail.password = 'testing1';
-    const user = index.User;
-    user.findOne({
-      where: {
-        username: signupRequest.json.userName,
-      }
-    }).then((userFound) => {
-      if (userFound) {
-        userFound.destroy();
-      }
-      done();
-    }).catch(() => {
-      done();
-    });
-  });
-
-  it('Should allow superAdmin navigate to the next route to create a role',
-    (done) => {
-      userDetail.roletype = 'Testers';
-      requestObject.json = userDetail;
-      requestObject.url = `${routeUrl}/role`;
-      requestObject.method = 'POST';
-      request(requestObject, (req, res, body) => {
-        expect(body.message).not.toBe('Access denied!');
-        expect(body.status).toBe('successful');
-        requestObject.url = `${routeUrl}/role/${body.role.id}`;
-        requestObject.method = 'DELETE';
-        request(requestObject, () => {
-          done();
+    it('Should allow superAdmin navigate to the next route to create a role',
+      (done) => {
+        request(app).post('/api/v1/role')
+        .send({ roletype: 'Testers' })
+        .set({ token: superAdminToken })
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal('successful');
+          request(app).delete(`/api/v1/role/${res.body.role.id}`)
+          .set({ token: superAdminToken }).end(() => {
+            done();
+          });
         });
       });
-    });
 
-  it('should deny access to other users that are not superadmin', (done) => {
-    userDetail.roletype = 'Testers';
-    requestObject.json = userDetail;
-    requestObject.url = `${routeUrl}/role`;
-    requestObject.method = 'POST';
-    requestObject.json.token = newToken;
-    request(requestObject, (req, res, body) => {
-      expect(body.status).toBe('unsuccessful');
-      expect(body.message).toBe('Access denied!');
-      done();
-    });
-  });
-
-  it('should not allow an admin to create a role', (done) => {
-    userDetail.userName = 'touchstone';
-    userDetail.password = 'testing1';
-    requestObject.json = userDetail;
-    requestObject.url = `${routeUrl}/users/login`;
-    requestObject.method = 'POST';
-    request(requestObject, (req, res, body1) => {
-      userDetail.token = body1.token;
-      userDetail.roletype = 'Testers';
-      requestObject.url = `${routeUrl}/role`;
-      requestObject.method = 'POST';
-      request(requestObject, (req, res, body) => {
-        expect(body.message).toBe('Access denied!');
-        expect(body.status).toBe('unsuccessful');
+    it('should deny access to other users that are not superadmin', (done) => {
+      request(app).post('/api/v1/role')
+      .send({ roletype: 'Testers' })
+      .set({ token: newToken })
+      .end((req, res) => {
+        expect(res.body.status).to.equal('unsuccessful');
+        expect(res.body.message).to.equal('Access denied!');
         done();
       });
+    });
+
+    it('should not allow an admin to create a role', (done) => {
+      request(app).post('/api/v1/role')
+        .send({ roletype: 'Testers' })
+        .set({ token: adminToken })
+        .end((err, res) => {
+          expect(res.body.message).to.equal('Access denied!');
+          expect(res.body.status).to.equal('unsuccessful');
+          done();
+        });
     });
   });
 });

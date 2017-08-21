@@ -1,7 +1,10 @@
 [![Build Status](https://travis-ci.org/andela-mugochukwu/DocManager.svg?branch=supertest-migration)](https://travis-ci.org/andela-mugochukwu/DocManager)
-[![Coverage Status](https://coveralls.io/repos/github/andela-mugochukwu/DocManager/badge.svg)](https://coveralls.io/github/andela-mugochukwu/DocManager)
+[![Coverage Status](https://coveralls.io/repos/github/andela-mugochukwu/DocManager/badge.svg?branch=supertest-migration)](https://coveralls.io/github/andela-mugochukwu/DocManager?branch=supertest-migration)
 # DocManager
 Docmanager is a full-stack application built with nodejs and the redux framework for creating, securing, and accessing documents from anywhere in the world. Click on this [link](http://docmanger.herokuapp.com) to use the app.
+
+# Api Documentation
+Click on this [link](http://andela-mugochukwu.github.io/slate) to view the API documentation of this project
 
 # Features
 * Create a text document with access rights - Public, private or role based.
