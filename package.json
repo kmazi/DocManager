@@ -18,7 +18,9 @@
   },
   "nyc": {
     "exclude": [
-      "spec"
+      "**/*.spec.js",
+      "server/test",
+      "server/controller/role.js"
     ]
   },
   "repository": {

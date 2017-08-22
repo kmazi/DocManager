@@ -1,10 +1,11 @@
 import request from 'supertest';
+import chai from 'chai';
 
 import index from '../models';
 import app from '../app';
-import mockUsers, { superAdmin, admin } from '../mocks/users';
+import mockUsers, { superAdmin, admin, testUser } from '../mocks/users';
 
-const expect = require('chai').expect;
+const expect = chai.expect;
 
 describe('user controller:', () => {
   let superAdminToken;
@@ -28,8 +29,7 @@ describe('user controller:', () => {
   });
 
   describe('signUp: ', () => {
-    const userDetail = mockUsers[1];
-    userDetail.userName = mockUsers[1].username;
+    const userDetail = testUser;
     afterEach((done) => {
       const user = index.User;
       user.findOne({
@@ -48,16 +48,16 @@ describe('user controller:', () => {
 
     it(`should Add user info to database when all form fields
     are correctly filled`, (done) => {
-        request(app).post('/api/v1/users').send(userDetail).end((err, res) => {
-          expect(res.body.status).to.equal('successful');
-          expect(res.body.userName).to.equal('john');
-          expect(res.body.email).to.equal('john@gmail.com');
-          expect(res.body.roleType).to.equal('Fellow');
-          expect(res.statusCode).to.equal(200);
-          expect(res.body.token).to.not.be.null;
-          done();
-        });
+      request(app).post('/api/v1/users').send(userDetail).end((err, res) => {
+        expect(res.body.status).to.equal('successful');
+        expect(res.body.userName).to.equal('jackson');
+        expect(res.body.email).to.equal('jackson@gmail.com');
+        expect(res.body.roleType).to.equal('Fellow');
+        expect(res.statusCode).to.equal(200);
+        expect(res.body.token).to.not.be.null;
+        done();
       });
+    });
 
     it('should not create user that already exist', (done) => {
       request(app).post('/api/v1/users').send(userDetail).end(() => {
@@ -86,8 +86,8 @@ describe('user controller:', () => {
     it('should throw error when isactive status is not set', (done) => {
       request(app).post('/api/v1/users')
         .send({
-          userName: 'jackson',
-          email: 'jackson@gmail.com',
+          userName: 'miracle',
+          email: 'miracle@gmail.com',
           password: 'testing1',
         }).end((err, res) => {
           expect(res.body.status).to.equal('unsuccessful');
@@ -99,8 +99,7 @@ describe('user controller:', () => {
   });
 
   describe('signIn: ', () => {
-    const userDetail = mockUsers[1];
-    userDetail.userName = mockUsers[1].username;
+    const userDetail = testUser;
     beforeEach((done) => {
       request(app).post('/api/v1/users')
         .send(userDetail).end((err, res) => {
@@ -110,7 +109,7 @@ describe('user controller:', () => {
     });
 
     afterEach((done) => {
-      userDetail.userName = 'john';
+      userDetail.userName = 'jackson';
       userDetail.password = 'testing1';
       const user = index.User;
       user.findOne({
@@ -127,20 +126,20 @@ describe('user controller:', () => {
 
     it(`should return status as successful when
     the user is successfully authenticated`, (done) => {
-        request(app).post('/api/v1/users/login')
+      request(app).post('/api/v1/users/login')
           .send(userDetail).end((err, res) => {
             expect(res.body.status).to.equal('successful');
-            expect(res.body.userName).to.equal('john');
-            expect(res.body.email).to.equal('john@gmail.com');
+            expect(res.body.userName).to.equal('jackson');
+            expect(res.body.email).to.equal('jackson@gmail.com');
             expect(res.body.roleType).to.equal('Fellow');
             done();
           });
-      });
+    });
 
     it('should throw error when user dont exist in the database', (done) => {
-      const testUser = { userName: 'jacob', password: 'testing1' };
+      const test = { userName: 'jacob', password: 'testing1' };
       request(app).post('/api/v1/users/login')
-        .send(testUser).end((err, res) => {
+        .send(test).end((err, res) => {
           expect(res.body.status).to.equal('unsuccessful');
           expect(res.body.message.includes('Wrong username!')).to.equal(true);
           expect(res.statusCode).to.equal(400);
@@ -151,7 +150,7 @@ describe('user controller:', () => {
     it(`should return valid error message when a
     deactivated user tries to signup`, (done) => {
         // deactivate user
-        request(app).delete(`/api/v1/users/${userDetail.userId}`)
+      request(app).delete(`/api/v1/users/${userDetail.userId}`)
           .set({ token: superAdminToken }).end(() => {
             request(app).post('/api/v1/users/login')
               .send(userDetail).end((err, res) => {
@@ -161,7 +160,7 @@ describe('user controller:', () => {
                 done();
               });
           });
-      });
+    });
 
     it('should throw error when password is invalid', (done) => {
       request(app).post('/api/v1/users/login')
@@ -203,11 +202,10 @@ describe('user controller:', () => {
   });
 
   describe('viewProfile: ', () => {
-    const userDetail = mockUsers[1];
-    userDetail.userName = mockUsers[1].username;
+    const userDetail = testUser;
     let userId;
     let token;
-    beforeEach((done) => {
+    before((done) => {
       request(app).post('/api/v1/users')
         .send(userDetail).end((err, res) => {
           userId = res.body.userId;
@@ -216,7 +214,7 @@ describe('user controller:', () => {
         });
     });
 
-    afterEach((done) => {
+    after((done) => {
       const user = index.User;
       user.findOne({
         where: {
@@ -288,27 +286,21 @@ describe('user controller:', () => {
     it(`should prevent a deactivated user from viewing
     their profile`, (done) => {
         // deactivate user
-        request(app).get(`/api/v1/users/${userDetail.userId}`)
+      request(app).delete(`/api/v1/users/${userId}`)
           .set({ token: superAdminToken }).end(() => {
-            request(app).get(`/api/v1/users/${userDetail.userId}`)
+            request(app).get(`/api/v1/users/${userId}`)
               .set({ token }).end((err, res) => {
                 expect(res.body.status).to.equal('unsuccessful');
-                expect(res.body.message).to.equal('Error due to invalid user!');
+                expect(res.body.message).to.equal('Inactive user!');
                 expect(res.statusCode).to.equal(400);
                 done();
               });
           });
-      });
+    });
   });
 
   describe('getAll: ', () => {
-    const userDetail = {
-      userName: 'junior',
-      email: 'junior@gmail.com',
-      password: 'testing1',
-      roleId: 3,
-      isactive: true,
-    };
+    const userDetail = testUser;
     let userToken;
     const User = index.User;
     before((done) => {
@@ -400,9 +392,8 @@ describe('user controller:', () => {
       });
   });
 
-  describe.only('find: ', () => {
-    const userDetail = mockUsers[0];
-    userDetail.userName = mockUsers[0].username;
+  describe('find: ', () => {
+    const userDetail = testUser;
     let userToken;
     const User = index.User;
     before((done) => {
@@ -481,14 +472,15 @@ describe('user controller:', () => {
           .end((err, res) => {
             expect(res.body.status).to.equal('successful');
             expect(res.statusCode).to.equal(200);
-            expect(res.body.users.length).to.equal(7);
+            expect(res.body.users.length).to.equal(3);
+            expect(res.body.paginationMetaData.pageSize).to.equal(3);
             done();
           });
       });
   });
 
   describe('update: ', () => {
-    const userDetail = mockUsers[1];
+    const userDetail = testUser;
     beforeEach((done) => {
       request(app).post('/api/v1/users')
         .send(userDetail).end((err, res) => {
@@ -518,7 +510,9 @@ describe('user controller:', () => {
         is correct and their updated info is valid`,
       (done) => {
         request(app).put(`/api/v1/users/${userDetail.userId}`)
-          .send({ email: 'newJohn@gmail.com' }).end((err, res) => {
+          .send({ email: 'jacksonOM@gmail.com' })
+          .set({ token: userDetail.token })
+          .end((err, res) => {
             expect(res.body.status).to.equal('successful');
             expect(res.statusCode).to.equal(200);
             done();
@@ -528,9 +522,11 @@ describe('user controller:', () => {
     it('should not allow a user to update other user\'s profile',
       (done) => {
         request(app).put(`/api/v1/users/${userDetail.userId - 4}`)
-          .send({ email: 'newJohn1@gmail.com' }).end((err, res) => {
+          .send({ email: 'newJohn1@gmail.com' })
+          .set({ token: userDetail.token })
+          .end((err, res) => {
             expect(res.body.status).to.equal('unsuccessful');
-            expect(res.statusCode).to.equal(200);
+            expect(res.statusCode).to.equal(400);
             expect(res.body.message).to.equal('No user found!');
             done();
           });
@@ -559,7 +555,7 @@ describe('user controller:', () => {
   });
 
   describe('Delete: ', () => {
-    const userDetail = mockUsers[1];
+    const userDetail = testUser;
     let userToken;
     let userId;
     beforeEach((done) => {
@@ -587,9 +583,10 @@ describe('user controller:', () => {
       });
     });
 
-    it('should not deactivate a user when not logged in as admin', (done) => {
+    it('should not deactivate a user when not logged in as admin',
+    (done) => {
       request(app).delete(`/api/v1/users/${userId}`)
-        .ser({ token: userToken }).end((err, res) => {
+        .set({ token: userToken }).end((err, res) => {
           expect(res.body.status).to.equal('unsuccessful');
           expect(res.body.message).to.equal('Access denied!');
           expect(res.statusCode).to.equal(400);
@@ -599,39 +596,39 @@ describe('user controller:', () => {
 
     it(`should return error message when an unauthenticated 
       user tries to deactivate a user`, (done) => {
-        request(app).delete(`/api/v1/users/${userId}`)
-          .ser({ token: `${userToken}sserede` }).end((err, res) => {
+      request(app).delete(`/api/v1/users/${userId}`)
+          .set({ token: `${userToken}sserede` }).end((err, res) => {
             expect(res.body.status).to.equal('unsuccessful');
             expect(res.body.message).to.equal('You are not authenticated!');
             expect(res.statusCode).to.equal(400);
             done();
           });
-      });
+    });
 
     it(`should return error message when an admin enters 
     an invalid user id to deactivate`, (done) => {
-        request(app).delete('/api/v1/users/8a')
+      request(app).delete('/api/v1/users/8a')
           .set({ token: superAdminToken }).end((err, res) => {
             expect(res.body.status).to.equal('unsuccessful');
             expect(res.statusCode).to.equal(500);
             expect(res.body.message).to.equal('Invalid user ID!');
             done();
           });
-      });
+    });
 
     it(`should allow admin to successfully deactivate
       a user`, (done) => {
-        request(app).delete(`/api/v1/users/${userId}`)
+      request(app).delete(`/api/v1/users/${userId}`)
           .set({ token: superAdminToken }).end((err, res) => {
             expect(res.body.status).to.equal('successful');
             expect(res.statusCode).to.equal(200);
             done();
           });
-      });
+    });
 
     it(`should throw correct error message when
       superAdmin enters a user ID that isnt in the database`, (done) => {
-        request(app).delete('/api/v1/users/1500')
+      request(app).delete('/api/v1/users/1500')
           .set({ token: superAdminToken }).end((err, res) => {
             expect(res.body.status).to.equal('unsuccessful');
             expect(res.statusCode).to.equal(400);
@@ -639,6 +636,6 @@ describe('user controller:', () => {
               .to.equal('Could not find any user!');
             done();
           });
-      });
+    });
   });
 });
