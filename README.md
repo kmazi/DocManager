@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/andela-mugochukwu/DocManager.svg?branch=supertest-migration)](https://travis-ci.org/andela-mugochukwu/DocManager)
 [![Coverage Status](https://coveralls.io/repos/github/andela-mugochukwu/DocManager/badge.svg?branch=supertest-migration)](https://coveralls.io/github/andela-mugochukwu/DocManager?branch=supertest-migration)
+[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
 # DocManager
 Docmanager is a full-stack application built with nodejs and the redux framework for creating, securing, and accessing documents from anywhere in the world. Click on this [link](http://docmanger.herokuapp.com) to use the app.
 
