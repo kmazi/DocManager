@@ -43,10 +43,18 @@ export const superAdmin = {
 };
 
 export const testUser = {
-  username: 'jackson',
+  userName: 'jackson',
   email: 'jackson@gmail.com',
   password: 'testing1',
   roleId: 3,
+  isactive: true,
+};
+
+export const testUser1 = {
+  userName: 'janet',
+  email: 'janet@gmail.com',
+  password: 'testing1',
+  roleId: 4,
   isactive: true,
 };
 

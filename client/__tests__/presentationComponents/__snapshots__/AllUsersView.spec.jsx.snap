@@ -5,7 +5,7 @@ exports[`The AllUsersView component: should button text to Activate when isactiv
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": false,
@@ -34,7 +34,7 @@ exports[`The AllUsersView component: should display roleType as Admin when roleI
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": true,
@@ -63,7 +63,7 @@ exports[`The AllUsersView component: should display roleType as Devops when role
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": true,
@@ -92,7 +92,7 @@ exports[`The AllUsersView component: should display roleType as Learning when ro
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": true,
@@ -121,7 +121,7 @@ exports[`The AllUsersView component: should display roleType as SuperAdmin when 
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": true,
@@ -150,7 +150,7 @@ exports[`The AllUsersView component: should not display roleType when roleId is 
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": true,
@@ -179,7 +179,7 @@ exports[`The AllUsersView component: should render correctly 1`] = `
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": true,
@@ -376,7 +376,7 @@ exports[`The AllUsersView component: should render error message when responseSt
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": true,
@@ -405,7 +405,7 @@ exports[`The AllUsersView component: should render pagination link when counter 
   allUsers={
     Array [
       Object {
-        "createdAt": "Mon Aug 21 2017 07:20:08 GMT+0100 (WAT)",
+        "createdAt": "Wed Aug 23 2017 10:03:42 GMT+0100 (WAT)",
         "email": "jackson@gmail.com",
         "id": 1,
         "isactive": true,

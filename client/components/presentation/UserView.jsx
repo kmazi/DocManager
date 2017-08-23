@@ -104,10 +104,13 @@ const UserView = ({ userName, userId, userEmail, updateStatus,
           className="btn"
           id="editbtn"
           onClick={(event) => {
+            const btnText = $('#editbtn').text() === 'Edit profile' ?
+            'Back' : 'Edit profile';
             event.preventDefault();
             $('#userEmail').prop('disabled', (i, v) => (!v));
             $('#userEmail').focus();
             $('#passwordreset, #submitedit').toggleClass('hide');
+            $('#editbtn').text(btnText);
           }}
         >Edit profile</button>
         <button
@@ -117,6 +120,7 @@ const UserView = ({ userName, userId, userEmail, updateStatus,
             event.preventDefault();
             $('#userEmail').prop('disabled', (i, v) => (!v));
             $('#passwordreset, #submitedit').toggleClass('hide');
+            $('#editbtn').text('Edit profile');
             editDetail(userId, editUserDetail);
           }}
         >{updateStatus}</button>

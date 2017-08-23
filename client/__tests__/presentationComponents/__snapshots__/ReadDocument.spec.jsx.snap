@@ -237,7 +237,7 @@ exports[`The ReadDocument component: should display edit button when roleType is
 </div>
 `;
 
-exports[`The ReadDocument component: should display not edit button when roleType is Learning 1`] = `
+exports[`The ReadDocument component: should not display edit button when roleType is Learning 1`] = `
 <div
   className="container"
   id="readdocument"
