@@ -2,6 +2,7 @@ import createHistory from 'history/createBrowserHistory';
 import { applyMiddleware, createStore, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
+import { autoRehydrate } from 'redux-persist';
 import rootReducer from '../reducers';
 
 const history = createHistory();
@@ -17,8 +18,10 @@ const configureStore = initialState => createStore(
   initialState,
   compose(
     applyMiddleware(thunkMiddleware, middleware),
+    autoRehydrate(),
     window.devToolsExtension ? window.devToolsExtension() :
       f => f
   )
 );
+
 export { history, configureStore };

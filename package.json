@@ -14,7 +14,8 @@
     "start": "npm run seed:db && babel-node main.js",
     "test:e2e": "nightwatch",
     "test:nyc": "NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 150000 --compilers js:babel-register ./server/test/**/*.js",
-    "test:nyc:local": "nyc --reporter=html --reporter=text mocha --timeout 150000 --compilers js:babel-register ./server/test/**/*.js"
+    "test:nyc:local": "nyc --reporter=html --reporter=text mocha --timeout 150000 --compilers js:babel-register ./server/test/**/*.js",
+    "test:nyc:test": "NODE_ENV=test1 sequelize db:migrate && sequelize db:seed:all && nyc --reporter=html --reporter=text mocha --timeout 150000 --compilers js:babel-register ./server/test/**/*.js"
   },
   "nyc": {
     "exclude": [
@@ -56,6 +57,7 @@
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.17.2",
     "dotenv": "^4.0.0",
+    "eslint-plugin-jsx-a11y": "5.0.3",
     "eventsource-polyfill": "^0.9.6",
     "express": "^4.15.3",
     "extract-text-webpack-plugin": "^3.0.0",
@@ -68,6 +70,7 @@
     "json-loader": "^0.5.4",
     "jsonwebtoken": "^7.4.1",
     "karma": "^1.7.0",
+    "localforage": "^1.5.0",
     "lodash": "^4.17.4",
     "morgan": "^1.8.2",
     "nightwatch": "^0.9.16",
@@ -89,6 +92,7 @@
     "react-tinymce": "^0.6.0",
     "redux": "^3.5.2",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^4.9.1",
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "sass-loader": "^6.0.6",
@@ -118,7 +122,6 @@
     "eslint-config-airbnb": "^15.0.1",
     "eslint-loader": "^1.5.0",
     "eslint-plugin-import": "^2.6.0",
-    "eslint-plugin-jsx-a11y": "^5.0.1",
     "eslint-plugin-react": "^7.1.0",
     "html-webpack-plugin": "^2.16.1",
     "isparta": "^4.0.0",

@@ -14,11 +14,5 @@ const appReducer = combineReducers({
   deactivateUser,
   routing
 });
-const rootReducer = (state, action) => {
-  if (action.type === 'USER_SIGNOUT') {
-    state = undefined;
-  }
-  return appReducer(state, action);
-};
 
-export default rootReducer;
+export default appReducer;
