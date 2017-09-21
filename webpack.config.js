@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
   context: __dirname,
@@ -38,7 +39,7 @@ module.exports = {
     }),
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /.jsx?$/,
         include: [path.join(__dirname, 'client'),
@@ -60,16 +61,16 @@ module.exports = {
         }),
       },
       {
-        test: /\.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=100000',
+        test: /\.(jpe?g|png|gif|svg)$/,
+        loader: 'file-loader',
       },
-      { test: /\.json$/, loader: 'json-loader' },
       {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: [
-          'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-          'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
-        ]
+        test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/,
+        loader: 'file-loader'
       }
     ],
   },
