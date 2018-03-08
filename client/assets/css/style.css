@@ -6903,7 +6903,7 @@ button {
 
 .bkgImage {
   position: relative;
-  background: url(/Users/andeladeveloper/Documents/Projects/DocManager/client/assetsf009a51894de5af407be88db000c4544.jpg) top center/cover #eceff1; }
+  background: url("/images/document-manager.jpg") top center/cover #eceff1; }
   .bkgImage .homescreen {
     width: 50%;
     height: inherit;
