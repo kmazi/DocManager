@@ -1,0 +1,12 @@
+/node_modules/*
+.DS_Store
+.env
+.vscode
+/coverage/
+selenium-debug.log
+reports/
+.nyc_output/
+/client/assets/js/*.hot-update*
+/client/assets/js/*.woff
+/client/assets/js/*.woff2
+/client/assets/js/*.jpg
