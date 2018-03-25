@@ -6,24 +6,23 @@ import Home from './components/presentation/Home';
 import UserPage from './components/UserPage';
 import ErrorPage from './components/presentation/ErrorPage';
 
-const PrivateRoute = ({ component: Component, redirectTo, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={(routeProps) => {
-        return localStorage.getItem('docmanagertoken') ? (
-          <Component {...routeProps} />
+const PrivateRoute = ({ component: Component, redirectTo, ...rest }) => (
+  <Route
+    {...rest}
+    render={routeProps => (
+      localStorage.getItem('docmanagertoken') ? (
+        <Component {...routeProps} />
       ) : (
-        <Redirect to={{
-          pathname: redirectTo,
-          state: { from: routeProps.location }
-        }}
+        <Redirect
+          to={{
+            pathname: redirectTo,
+            state: { from: routeProps.location }
+          }}
         />
-      );
-    }}
-    />
+      )
+    )}
+  />
   );
-};
 
 export default (
   <Switch>
