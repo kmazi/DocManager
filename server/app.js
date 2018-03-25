@@ -15,7 +15,7 @@ const router = express.Router();
 dotenv.config();
 
 // set static path
-const sourcePath = express.static(path.join(__dirname, '../client/assets'));
+const sourcePath = express.static(path.join(__dirname, '../client/src/assets'));
 app.use('/', sourcePath);
 
 // Log requests to the console.

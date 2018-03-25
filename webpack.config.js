@@ -8,14 +8,13 @@ module.exports = {
   entry: [
     'eventsource-polyfill',
     'webpack-hot-middleware/client',
-    path.join(__dirname, 'client/Entry.jsx')
+    path.join(__dirname, 'client/src/Entry.jsx')
   ],
   devtool: 'eval-source-map',
   target: 'web',
   output: {
-    path: path.join(__dirname, '/client/assets/js'),
-    filename: 'bundle.js',
-    publicPath: path.join(__dirname, '/client/assets')
+    path: path.join(__dirname, '/client/dist'),
+    filename: 'bundle.js'
   },
   devServer: {
     contentBase: `${__dirname}/client`
@@ -32,10 +31,9 @@ module.exports = {
       debug: true
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
+    new CleanWebpackPlugin(['client/dist']),
     new ExtractTextPlugin({
-      filename: '../css/style.css',
-      allChunks: true
+      filename: 'style.css',
     }),
   ],
   module: {
@@ -49,11 +47,7 @@ module.exports = {
         loaders: ['react-hot-loader', 'babel-loader']
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.scss$/,
+        test: /\.scss$|\.css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           // resolve-url-loader may be chained before sass-loader if necessary
@@ -62,7 +56,9 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/,
-        loader: 'file-loader',
+        use: [
+          'file-loader'
+        ]
       },
       {
         test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/,
