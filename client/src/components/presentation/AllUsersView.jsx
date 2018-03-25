@@ -85,13 +85,6 @@ const AllUsersView = ({ allUsers, responseStatus, error,
           }}
         >{user.isactive ? 'Deactivate' : 'Activate'}</button>
       </td>
-      {/* <td>
-        <button
-          onClick={(event) => {
-            event.preventDefault();
-          }}
-        >Change Role</button>
-      </td> */}
     </tr>
   ));
 
