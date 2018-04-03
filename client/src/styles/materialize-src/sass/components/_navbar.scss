@@ -13,6 +13,8 @@ nav {
     }
   }
 
+  padding-left: 5px;
+  padding-right: 5px;
   color: $navbar-font-color;
   @extend .z-depth-1;
   background-color: $primary-color;
@@ -104,7 +106,7 @@ nav {
   .nav-title {
     display: inline-block;
     font-size: 32px;
-    padding: 28px 0;
+    padding: 0 0;
   }
 
 
