@@ -91,7 +91,8 @@
     "sequelize": "^4.2.0",
     "sequelize-cli": "^2.7.0",
     "sweetalert2": "^6.6.6",
-    "url-loader": "^0.5.9"
+    "url-loader": "^0.5.9",
+    "webpack": "^4.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
@@ -134,7 +135,6 @@
     "stats-webpack-plugin": "^0.6.1",
     "style-loader": "^0.20.3",
     "supertest": "^3.0.0",
-    "webpack": "^4.2.0",
     "webpack-dev-middleware": "1.10.2",
     "webpack-hot-middleware": "^2.18.2"
   }

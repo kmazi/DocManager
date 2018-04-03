@@ -1,6 +1,5 @@
 import http from 'http';
 import dotenv from 'dotenv';
-
 import app from './server/app';
 
 dotenv.config();
@@ -9,7 +8,7 @@ app.set('port', port);
 
 const server = http.createServer(app);
 if (process.env.NODE_ENV === "development") {
-  console.log("running on port", port, "in", process.env.ENV);  
+  console.log("running on port", port, "in", process.env.NODE_ENV);  
 }
 
 server.listen(port);
