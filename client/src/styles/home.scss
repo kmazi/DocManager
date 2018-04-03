@@ -73,7 +73,7 @@ section.row.main-section {
 }
 .bkgImage{
 	position: relative;
-	background: url('/images/document-manager.jpg')
+	background: url('/static/images/document-manager.jpg')
 		top center/
 		cover
 		$docpreviewbkg;
@@ -213,6 +213,9 @@ input[type=text]:not(.browser-default):disabled{
 	}
 	a{
 		padding: 4px;
+		padding-bottom: 2px;
+		border: solid thin;
+		margin: 2px;
 	}
 	a:hover {
 		cursor: pointer;
