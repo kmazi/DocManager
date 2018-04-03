@@ -70,53 +70,51 @@ const DocumentPreview = ({ userDocuments, readDocument,
     id="docview"
     name="docview"
     key={document.id}
-    className="col s3"
+    className="col s12 m6 card"
   >
-    <div>
-      <h6 className="center-align">
-        {document.title}</h6>
-      <hr />
-      <i
-        className="docicon fa fa-file-text center-align"
-        aria-hidden="true"
-      />
-      <br />
-      <button
-        id={document.id}
-        name="read-doc"
-        onClick={(event) => {
-          event.preventDefault();
-          readDocument(document.id, localStorage.getItem('docmanagertoken'))
-            .then((res) => {
-              if (res.status === 'successful') {
-                history.push('/user/documents/read');
-              } else {
-                Alert({
-                  title: 'Error loading document',
-                  text: res.message,
-                  type: 'error',
-                  confirmButtonText: 'ok'
-                });
-              }
-            });
-        }}
-      >{read === document.id ? 'Opening' : 'Read'}&nbsp;
-        <i className="fa fa-envelope-o" aria-hidden="true" />
-      </button>
-      <button
-        className={userId === document.userId || roleType === 'Admin'
-        || roleType === 'SuperAdmin'
-        ? '' : 'hide'}
-        id={document.id}
-        name="delete-doc"
-        onClick={(event) => {
-          event.preventDefault();
-          deleteDocById(deleteDocument, document.id);
-        }}
-      >{deleteId === document.id ? 'Deleting' : 'Delete'}&nbsp;
-        <i className="fa fa-trash" aria-hidden="true" />
-      </button>
-    </div>
+    <h6 className="center-align h6 light-blue lighten-5">
+      {document.title}</h6>
+    <hr />
+    <p>
+      Heaven is a real place for real people!Heaven is a real place for real people!
+      Heaven is a real place for real people!Heaven is a real place for real people!
+    </p>
+    <a
+      id={document.id}
+      name="read-doc"
+      className="right"
+      onClick={(event) => {
+        event.preventDefault();
+        readDocument(document.id, localStorage.getItem('docmanagertoken'))
+          .then((res) => {
+            if (res.status === 'successful') {
+              history.push('/user/documents/read');
+            } else {
+              Alert({
+                title: 'Error loading document',
+                text: res.message,
+                type: 'error',
+                confirmButtonText: 'ok'
+              });
+            }
+          });
+      }}
+    >{read === document.id ? 'Opening' : 'Open'}&nbsp;
+      <i className="fa fa-envelope-o" aria-hidden="true" />
+    </a>
+    <a
+      className={userId === document.userId || roleType === 'Admin'
+      || roleType === 'SuperAdmin'
+      ? 'right' : 'hide'}
+      id={document.id}
+      name="delete-doc"
+      onClick={(event) => {
+        event.preventDefault();
+        deleteDocById(deleteDocument, document.id);
+      }}
+    >{deleteId === document.id ? 'Deleting' : 'Delete'}&nbsp;
+      <i className="fa fa-trash" aria-hidden="true" />
+    </a>
   </div>)
   );
   return (
