@@ -12,8 +12,8 @@ import { publicDocuments,
 import { fetchAllUsers, signOut } from '../actions/userActions';
 
 const minHeight = {
-  minHeight: window.innerHeight - 131 ||
-  document.documentElement.clientHeight - 131
+  minHeight: window.innerHeight - 110 ||
+  document.documentElement.clientHeight - 110
 };
 const signOutUser = (event, history, signUserOut) => {
   event.preventDefault();
@@ -33,19 +33,20 @@ const fetchUserDocs = (event, getUserDocs, userId, history) => {
 const UserPage = ({ userName, userId, history, signUserOut,
   getPublicDocuments, getRoleDocuments, getAllUsers,
   getUserDocs, getAllDocuments, roleType }) => (
-    <section className="row" style={minHeight}>
-      <div id="docheader" className="header">
-        <span className="left">DocManger</span>
+    <section className="row main-section">
+      <nav id="docheader" className="header">
+        <span className="left nav-title">DocManger</span>
         <span className="right">
           <a
+            className="btn"
             href="/"
             onClick={(event) => {
               signOutUser(event, history, signUserOut);
             }}
-          >Hi {userName}! Sign Out&nbsp;
-          <i className="fa fa-sign-out" aria-hidden="true" /></a>
+          >Sign Out&nbsp;
+          </a>
         </span>
-        <div className="row">
+        {/* <div className="row">
           <div className="col m10 offset-m2">
             <button
               className="btn"
@@ -78,10 +79,18 @@ const UserPage = ({ userName, userId, history, signUserOut,
             >{roleType} Documents&nbsp;
               <i className="fa fa-key" aria-hidden="true" /></button>
           </div>
+        </div> */}
+      </nav>
+
+      <div style={minHeight}>
+        <h6 className="h6 center-align">Available documents</h6>
+        <div className="container">
+          <div className="row card-panel">
+            {userRoutes}
+          </div>
         </div>
       </div>
-
-      <div id="doccontent" className="row">
+      {/* <div id="doccontent" className="row">
         <div className="col m2 header" >
           <h5 className="btn">Dashboard&nbsp;&nbsp;
             <i className="fa fa-tasks" aria-hidden="true" />
@@ -136,15 +145,11 @@ const UserPage = ({ userName, userId, history, signUserOut,
           <i className="fa fa-question-circle" aria-hidden="true" /></Link>
 
         </div>
+      </div> */}
 
-        <div id="contentdisplay" className="col m10">
-          <div className="container" style={minHeight}>
-            {userRoutes}
-          </div>
-        </div>
-      </div>
-
-      <footer><a href="/">DocManager &copy;2017</a></footer>
+      <footer className="footer">
+        <a href="/">DocManger &copy;2018</a>
+      </footer>
     </section>
 );
 

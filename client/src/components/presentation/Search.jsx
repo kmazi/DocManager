@@ -11,7 +11,7 @@ const Search = ({ searchDocuments }) => (
           const searchText = $('.searchcontainer input').val();
           searchDocuments(searchText);
         }}
-        placeholder="search all documents"
+        placeholder="Search for documents"
       />
     </div>
   </div>

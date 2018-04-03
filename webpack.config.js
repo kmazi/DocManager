@@ -47,6 +47,10 @@ module.exports = {
         loaders: ['react-hot-loader', 'babel-loader']
       },
       {
+        test: /\.woff2?(\?[a-z0-9#=&.]+)?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
         test: /\.scss$|\.css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
@@ -59,10 +63,6 @@ module.exports = {
         use: [
           'file-loader'
         ]
-      },
-      {
-        test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
       },
       {
         test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/,

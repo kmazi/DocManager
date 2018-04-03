@@ -1,7 +1,13 @@
+$roboto-font-path: "/fonts/roboto/";
+$card-padding: 24px 30px; 
+@import "materialize-src/sass/materialize";
+
+
+$section-bg-color: #f0f1f3;
 $backgroundcolor: rgb(62,111,111);
 $shadebackground: #0288d1;
 $authbackground: #339cd5;
-$docpreviewbkg: #304788;
+$docpreviewbkg: #2b2e36;
 $btncolor: #2e71b4;
 $btnhover: #90caf9;
 $contentpadding: 5px;
@@ -9,12 +15,12 @@ $docviewfontsize: 70px;
 $italicstylefont: 'Lobster', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 $previewfontstyle: 'Asap Condensed', sans-serif;
 $previewheaderstyle: 'Bree Serif', serif;
-$textcolor: #2c3a46;
+$textcolor: #333536;
 
 body, .aboutpage h3, .aboutpage h4{
 	color: $textcolor;
 }
-section {
+section div.homescreen {
 	color: whitesmoke;
 }
 .homebtncolor{
@@ -56,6 +62,15 @@ input[type=password]:not(.browser-default):focus:not([readonly]){
 button{
 	background: btncolor;
 }
+.main-section {
+	background-color: $section-bg-color;
+	.header {
+		background-color: $docpreviewbkg;
+	}
+}
+section.row.main-section {
+	margin-bottom: 0;
+}
 .bkgImage{
 	position: relative;
 	background: url('/images/document-manager.jpg')
@@ -69,7 +84,7 @@ button{
 		padding-top: 10%;
 		border-radius: 10px;
 			h1.center-align{
-				font-size: 90px;
+				font-size: 60px;
 				margin-top: 0;
 				font-family: $italicstylefont;
 			}
@@ -78,10 +93,9 @@ button{
 				margin-right: auto;
 			}
 	}
-	#signupform div{
-		margin-bottom: 15px;
+	#signupform{
+		padding-bottom: 15px;
 	}
-
 	#mainoverlay{
 		position: absolute;
 		background: rgba(62,111,111, 0.7);
@@ -122,22 +136,28 @@ button{
 	}
 }
 .header {
-	background: $shadebackground;
 	span.left{
-		font-family: $italicstylefont;
-		font-size: 40px;
+		font-size: large;
 	}
 	span.right{
-		background: white;
-		margin: 5px;
-		padding: 10px;
+		.btn {
+			background: #980e0e;
+		}
+		
+		padding-left: 4px;
+		padding-right: 4px;
+		margin-top: 10px;
 		a:hover{
 			text-decoration: underline;
+			border: solid thin #a51919;
 		}
 	}
 }
 input[type=text]:not(.browser-default):disabled{
 	color: gray;
+}
+.h6 {
+	color: #3e3b3b;
 }
 #doccontent{
 	min-height: inherit;
@@ -169,27 +189,6 @@ input[type=text]:not(.browser-default):disabled{
 		padding: 4px;
 		color: inherit;
 	}
-	#docview{
-		div{
-			background: $shadebackground;
-			max-height: 190px;
-			padding: 5px;
-			margin: 5px;
-			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-			h6{
-				font-weight: bold;
-				font-family: $previewheaderstyle;
-				height: 25px;
-			 	white-space: nowrap; 
-				width: 12em; 
-				overflow: hidden;
-				text-overflow: ellipsis; 
-			}
-			button{
-				border: thin solid whitesmoke;
-			}
-		}
-	}
 	#errorpage{
 		font-weight: bold;
 		font-size: 3em;
@@ -205,6 +204,25 @@ input[type=text]:not(.browser-default):disabled{
 	.docicon{
 		display: block;
 		font-size: $docviewfontsize;
+	}
+}
+#docview{
+	h6.light-blue {
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+	a{
+		padding: 4px;
+	}
+	a:hover {
+		cursor: pointer;
+		text-decoration: underline;
+	}
+	&.card {
+		//background-color: $section-bg-color;
+		hr {
+			color: $section-bg-color;
+		}
 	}
 }
 .searchcontainer{
@@ -229,11 +247,13 @@ input[type=text]:not(.browser-default):disabled{
 	background: $shadebackground;
 }
 footer {
-	background: $shadebackground;
+	background: #121219;
+	padding: 15px 10px;
 	min-height: 35px;
-	position: fixed;
 	width: 100%;
-	bottom: 0;
+	a {
+		font-size: small;
+	}
 }
 label{
 	padding-right: 10px;
@@ -243,13 +263,6 @@ label{
 }
 .a{
 	display: block;
-}
-.footer {
-	margin-top: 20px;
-
-	a {
-		padding: 5px 10px 5px 0;
-	}
 }
 
 @media screen and (max-width : 480px) {

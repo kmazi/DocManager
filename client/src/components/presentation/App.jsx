@@ -1,6 +1,5 @@
 import React from 'react';
 
-import '../../styles/materialize-src/sass/materialize.scss';
 import '../../styles/home.scss';
 import Routes from '../../Routes';
 
