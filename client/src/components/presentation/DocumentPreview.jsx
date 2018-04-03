@@ -84,6 +84,7 @@ const DocumentPreview = ({ userDocuments, readDocument,
       name="read-doc"
       className="right"
       onClick={(event) => {
+        // read === document.id ? 'Opening' : 'Open';
         event.preventDefault();
         readDocument(document.id, localStorage.getItem('docmanagertoken'))
           .then((res) => {
@@ -99,7 +100,7 @@ const DocumentPreview = ({ userDocuments, readDocument,
             }
           });
       }}
-    >{read === document.id ? 'Opening' : 'Open'}&nbsp;
+    >Open&nbsp;
       <i className="fa fa-envelope-o" aria-hidden="true" />
     </a>
     <a
@@ -109,10 +110,11 @@ const DocumentPreview = ({ userDocuments, readDocument,
       id={document.id}
       name="delete-doc"
       onClick={(event) => {
+        // deleteId === document.id ? 'Deleting' : 'Delete';
         event.preventDefault();
         deleteDocById(deleteDocument, document.id);
       }}
-    >{deleteId === document.id ? 'Deleting' : 'Delete'}&nbsp;
+    >Delete&nbsp;
       <i className="fa fa-trash" aria-hidden="true" />
     </a>
   </div>)
