@@ -70,7 +70,7 @@ const DocumentPreview = ({ userDocuments, readDocument,
     id="docview"
     name="docview"
     key={document.id}
-    className="col s12 m6 card"
+    className="col s12 m4 card"
   >
     <h6 className="center-align h6 light-blue lighten-5">
       {document.title}</h6>
