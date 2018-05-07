@@ -2,36 +2,31 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   context: __dirname,
   entry: [
-    'eventsource-polyfill',
+    'babel-polyfill',
     'webpack-hot-middleware/client',
     path.join(__dirname, 'client/src/Entry.jsx')
   ],
-  devtool: 'eval-source-map',
-  target: 'web',
   output: {
     path: path.join(__dirname, '/client/dist'),
     filename: 'bundle.js'
   },
-  devServer: {
-    contentBase: `${__dirname}/client`
-  },
   node: {
     console: true,
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-    dns: 'empty'
   },
   plugins: [
-    new webpack.LoaderOptionsPlugin({
+    new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin(path.join(__dirname, '/client/dist')),
+    new CopyWebpackPlugin([
+      { from: path.join(__dirname, '/client/src/assets/images/document-manager.jpg'),
+        to: path.join(__dirname, '/client/dist/images') }
+    ], {
       debug: true
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin(['client/dist']),
     new ExtractTextPlugin({
       filename: 'style.css',
     }),
@@ -40,8 +35,7 @@ module.exports = {
     rules: [
       {
         test: /.jsx?$/,
-        include: [path.join(__dirname, 'client'),
-          path.join(__dirname, 'server/shared')
+        include: [path.join(__dirname, 'client')
         ],
         exclude: /(node_modules|bower_components)/,
         loaders: ['react-hot-loader', 'babel-loader']
