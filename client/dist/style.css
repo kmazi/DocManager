@@ -6904,6 +6904,10 @@ input[type=password]:not(.browser-default):focus:not([readonly]) {
 button {
   background: btncolor; }
 
+.loptions {
+  display: block;
+  padding: 5px 5px; }
+
 .main-section {
   background-color: #f0f1f3; }
   .main-section .header {
@@ -7017,8 +7021,7 @@ input[type=text]:not(.browser-default):disabled {
     font-size: 70px; }
 
 #docview h6.light-blue {
-  padding-top: 5px;
-  padding-bottom: 5px; }
+  padding: 7px 5px; }
 
 #docview a {
   padding: 4px;

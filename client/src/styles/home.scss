@@ -62,6 +62,10 @@ input[type=password]:not(.browser-default):focus:not([readonly]){
 button{
 	background: btncolor;
 }
+.loptions{
+	display: block;
+	padding: 5px 5px;
+}
 .main-section {
 	background-color: $section-bg-color;
 	.header {
@@ -208,8 +212,7 @@ input[type=text]:not(.browser-default):disabled{
 }
 #docview{
 	h6.light-blue {
-		padding-top: 5px;
-		padding-bottom: 5px;
+		padding: 7px 5px;
 	}
 	a{
 		padding: 4px;

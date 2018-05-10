@@ -80,6 +80,7 @@ const DocumentPreview = ({ userDocuments, readDocument,
       Heaven is a real place for real people!Heaven is a real place for real people!
     </p>
     <a
+      href="/#"
       id={document.id}
       name="read-doc"
       className="right"
@@ -104,6 +105,7 @@ const DocumentPreview = ({ userDocuments, readDocument,
       <i className="fa fa-envelope-o" aria-hidden="true" />
     </a>
     <a
+      href="/#"
       className={userId === document.userId || roleType === 'Admin'
       || roleType === 'SuperAdmin'
       ? 'right' : 'hide'}
