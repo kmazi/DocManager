@@ -11,7 +11,7 @@ import { publicDocuments,
   } from '../actions/documentActions';
 import { fetchAllUsers, signOut } from '../actions/userActions';
 
-const minHeight = {
+const setMinHeight = {
   minHeight: window.innerHeight - 110 ||
   document.documentElement.clientHeight - 110
 };
@@ -46,59 +46,51 @@ const UserPage = ({ userName, userId, history, signUserOut,
           >Sign Out&nbsp;
           </a>
         </span>
-        {/* <div className="row">
-          <div className="col m10 offset-m2">
-            <button
-              className="btn"
-              onClick={(event) => {
-                event.preventDefault();
-                getAllDocuments(roleType);
-                history.push('/user/documents');
-              }}
-            >All Documents&nbsp;
-            <i className="fa fa-file-archive-o" aria-hidden="true" /></button>
-
-            <button
-              name="public"
-              className="btn"
-              onClick={(event) => {
-                event.preventDefault();
-                getPublicDocuments();
-                history.push('/user/documents');
-              }}
-            >Public Documents&nbsp;
-            <i className="fa fa-globe" aria-hidden="true" /></button>
-
-            <button
-              className="btn"
-              onClick={(event) => {
-                event.preventDefault();
-                getRoleDocuments(roleType);
-                history.push('/user/documents');
-              }}
-            >{roleType} Documents&nbsp;
-              <i className="fa fa-key" aria-hidden="true" /></button>
-          </div>
-        </div> */}
       </nav>
 
-      <div style={minHeight}>
+      <div style={setMinHeight} className="row">
         <h6 className="h6 center-align">Available documents</h6>
-        <div className="container">
-          <div className="row card-panel">
-            {userRoutes}
-          </div>
-        </div>
-      </div>
-      {/* <div id="doccontent" className="row">
-        <div className="col m2 header" >
+        <div className="col s2 m2" >
           <h5 className="btn">Dashboard&nbsp;&nbsp;
-            <i className="fa fa-tasks" aria-hidden="true" />
+              <i className="fa fa-tasks" aria-hidden="true" />
           </h5><hr />
+          <a
+            href="/#"
+            className="loptions"
+            onClick={(event) => {
+              event.preventDefault();
+              getAllDocuments(roleType);
+              history.push('/user/documents');
+            }}
+          >All Documents&nbsp;
+            <i className="fa fa-file-archive-o" aria-hidden="true" /></a>
+
+          <a
+            href="/#"
+            name="public"
+            className="loptions"
+            onClick={(event) => {
+              event.preventDefault();
+              getPublicDocuments();
+              history.push('/user/documents');
+            }}
+          >Public Documents&nbsp;
+            <i className="fa fa-globe" aria-hidden="true" /></a>
+
+          <a
+            href="/#"
+            className="loptions"
+            onClick={(event) => {
+              event.preventDefault();
+              getRoleDocuments(roleType);
+              history.push('/user/documents');
+            }}
+          >{roleType} Documents&nbsp;
+              <i className="fa fa-key" aria-hidden="true" /></a>
 
           <a
             id="owndoclink"
-            className="center-align btn"
+            className="loptions"
             onClick={(event) => {
               fetchUserDocs(event, getUserDocs, userId, history);
             }}
@@ -108,18 +100,20 @@ const UserPage = ({ userName, userId, history, signUserOut,
             <i className="fa fa-unlock-alt" aria-hidden="true" />
           </a>
 
+          <hr />
           <Link
             id="createdoclink"
-            className="center-align btn"
+            className="loptions"
             to="/user/documents/createdocument"
           >
           Create document&nbsp;&nbsp;
             <i className="fa fa-pencil-square-o" aria-hidden="true" />
-          </Link><hr />
+          </Link>
 
+          <hr />
           <Link
             id="userprofilelink"
-            className="center-align btn"
+            className="loptions"
             to="/user/documents/users"
           >
           My Profile&nbsp;&nbsp;
@@ -127,7 +121,7 @@ const UserPage = ({ userName, userId, history, signUserOut,
 
           <a
             id="manageusers"
-            className="center-align btn"
+            className="loptions"
             href="/user/documents/users/all"
             style={{ display: roleType === 'Admin'
             || roleType === 'SuperAdmin' ? '' : 'none' }}
@@ -140,12 +134,19 @@ const UserPage = ({ userName, userId, history, signUserOut,
           Manage Users&nbsp;&nbsp;
           <i className="fa fa-users" aria-hidden="true" /></a>
 
-          <Link className="center-align btn" to="/user/documents/about">
+          <hr />
+          <Link className="loptions" to="/user/documents/about">
           About&nbsp;&nbsp;
           <i className="fa fa-question-circle" aria-hidden="true" /></Link>
-
         </div>
-      </div> */}
+
+        <div
+          style={{ minHeight: window.innerHeight - 190 }}
+          className="col s10 m10 card-panel"
+        >
+          {userRoutes}
+        </div>
+      </div>
 
       <footer className="footer">
         <a href="/">DocManger &copy;2018</a>
