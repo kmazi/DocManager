@@ -10,7 +10,7 @@
     "test": "NODE_ENV=test jest --coverage -u && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test:local": "NODE_ENV=development babel-node spec/run.js && yarn test:react -- -u",
     "test:react": "jest --coverage",
-    "build:client": "webpack --config ./webpack.config.js --progress --profile --colors",
+    "build:client": "webpack --config ./webpack.config.js --progress --profile --colors --watch",
     "build:prod": "webpack --config ./webpack.production.config.js --progress --profile --colors",
     "seed:db": "sequelize db:migrate:undo:all  && sequelize db:migrate && sequelize db:seed:all",
     "start:dev": "nodemon --watch server --exec babel-node --presets es2015 -- server/main.js",

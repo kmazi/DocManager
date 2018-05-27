@@ -2,6 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 import Alert from 'sweetalert2';
 import $ from 'jquery';
+import parser from 'html-react-parser';
 import Pagination from 'react-js-pagination';
 
 /**
@@ -70,24 +71,25 @@ const DocumentPreview = ({ userDocuments, readDocument,
     id="docview"
     name="docview"
     key={document.id}
-    className="col s12 m4 card"
+    className="col s12 m4"
   >
-    <h6 className="center-align h6 light-blue lighten-5">
-      {document.title}</h6>
-    <hr />
-    <p>
-      Heaven is a real place for real people!Heaven is a real place for real people!
-      Heaven is a real place for real people!Heaven is a real place for real people!
-    </p>
-    <a
-      href="/#"
-      id={document.id}
-      name="read-doc"
-      className="right"
-      onClick={(event) => {
+    <div className="card">
+      <h6 className="center-align h6 light-blue lighten-5">
+        {document.title}</h6>
+      <hr />
+      <div>
+        {parser(document.body)}
+      </div>
+      <div>
+        <a
+          href="/#"
+          id={document.id}
+          name="read-doc"
+          className="right"
+          onClick={(event) => {
         // read === document.id ? 'Opening' : 'Open';
-        event.preventDefault();
-        readDocument(document.id, localStorage.getItem('docmanagertoken'))
+            event.preventDefault();
+            readDocument(document.id, localStorage.getItem('docmanagertoken'))
           .then((res) => {
             if (res.status === 'successful') {
               history.push('/user/documents/read');
@@ -100,25 +102,27 @@ const DocumentPreview = ({ userDocuments, readDocument,
               });
             }
           });
-      }}
-    >Open&nbsp;
-      <i className="fa fa-envelope-o" aria-hidden="true" />
-    </a>
-    <a
-      href="/#"
-      className={userId === document.userId || roleType === 'Admin'
-      || roleType === 'SuperAdmin'
-      ? 'right' : 'hide'}
-      id={document.id}
-      name="delete-doc"
-      onClick={(event) => {
-        // deleteId === document.id ? 'Deleting' : 'Delete';
-        event.preventDefault();
-        deleteDocById(deleteDocument, document.id);
-      }}
-    >Delete&nbsp;
-      <i className="fa fa-trash" aria-hidden="true" />
-    </a>
+          }}
+        >Open&nbsp;
+          <i className="fa fa-envelope-o" aria-hidden="true" />
+        </a>
+        <a
+          href="/#"
+          className={userId === document.userId || roleType === 'Admin'
+          || roleType === 'SuperAdmin'
+          ? 'right' : 'hide'}
+          id={document.id}
+          name="delete-doc"
+          onClick={(event) => {
+          // deleteId === document.id ? 'Deleting' : 'Delete';
+            event.preventDefault();
+            deleteDocById(deleteDocument, document.id);
+          }}
+        >Delete&nbsp;
+          <i className="fa fa-trash" aria-hidden="true" />
+        </a>
+      </div>
+    </div>
   </div>)
   );
   return (
