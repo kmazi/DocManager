@@ -7020,8 +7020,28 @@ input[type=text]:not(.browser-default):disabled {
     display: block;
     font-size: 70px; }
 
+.rel {
+  position: relative; }
+
 #docview h6.light-blue {
   padding: 7px 5px; }
+
+#docview .card div:nth-of-type(1) {
+  height: 110px;
+  overflow: hidden; }
+  #docview .card div:nth-of-type(1) p {
+    height: 95px;
+    padding: 2px 10px;
+    overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 3;
+    box-orient: vertical;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical; }
+
+#docview .card div {
+  height: 40px;
+  padding-right: 10px; }
 
 #docview a {
   padding: 4px;
@@ -7031,7 +7051,9 @@ input[type=text]:not(.browser-default):disabled {
 
 #docview a:hover {
   cursor: pointer;
-  text-decoration: underline; }
+  text-decoration: underline;
+  background-color: #e1f5fe;
+  border-color: #90caf9; }
 
 #docview.card hr {
   color: #f0f1f3; }
