@@ -50,7 +50,7 @@ const UserPage = ({ userName, userId, history, signUserOut,
 
       <div style={setMinHeight} className="row">
         <h6 className="h6 center-align">Available documents</h6>
-        <div className="col s2 m2" >
+        <div className="col l2" >
           <h5 className="btn">Dashboard&nbsp;&nbsp;
               <i className="fa fa-tasks" aria-hidden="true" />
           </h5><hr />
@@ -142,7 +142,7 @@ const UserPage = ({ userName, userId, history, signUserOut,
 
         <div
           style={{ minHeight: window.innerHeight - 190 }}
-          className="col s10 m10 card-panel"
+          className="col l10 card-panel"
         >
           {userRoutes}
         </div>

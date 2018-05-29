@@ -7024,7 +7024,13 @@ input[type=text]:not(.browser-default):disabled {
   position: relative; }
 
 #docview h6.light-blue {
-  padding: 7px 5px; }
+  padding: 7px 5px;
+  display: -webkit-box;
+  line-clamp: 1;
+  overflow: hidden;
+  box-orient: vertical;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical; }
 
 #docview .card div:nth-of-type(1) {
   height: 110px;
