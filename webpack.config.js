@@ -6,6 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   context: __dirname,
+  mode: 'development',
   entry: [
     'babel-polyfill',
     'webpack-hot-middleware/client',
@@ -20,7 +21,7 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin(path.join(__dirname, '/client/dist')),
+    // new CleanWebpackPlugin(path.join(__dirname, '/client/dist')),
     new CopyWebpackPlugin([
       { from: path.join(__dirname, '/client/src/assets/images/document-manager.jpg'),
         to: path.join(__dirname, '/client/dist/images') }

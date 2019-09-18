@@ -13,16 +13,16 @@ const PrivateRoute = ({ component: Component, redirectTo, ...rest }) => (
       localStorage.getItem('docmanagertoken') ? (
         <Component {...routeProps} />
       ) : (
-        <Redirect
-          to={{
-            pathname: redirectTo,
-            state: { from: routeProps.location }
-          }}
-        />
-      )
+          <Redirect
+            to={{
+              pathname: redirectTo,
+              state: { from: routeProps.location }
+            }}
+          />
+        )
     )}
   />
-  );
+);
 
 export default (
   <Switch>
